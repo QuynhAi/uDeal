@@ -8,6 +8,7 @@
     tools:context=".InboxScreen">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="409dp"
         android:layout_height="607dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,11 +22,12 @@
         android:background="@color/colorPrimaryDark"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:logo="@android:drawable/ic_dialog_email"
-        app:title="Inbox"
-        tools:layout_editor_absoluteY="0dp" />
+        app:title="Inbox" />
 
     <Button
         android:id="@+id/button2"
