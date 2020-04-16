@@ -14,6 +14,7 @@ public class Camera extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getActivity().setTitle("Post an Item");
         return inflater.inflate(R.layout.activity_camera, container, false);
     }
 }

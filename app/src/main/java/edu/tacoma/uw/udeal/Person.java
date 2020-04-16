@@ -14,6 +14,7 @@ public class Person extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getActivity().setTitle("My Profile");
         return inflater.inflate(R.layout.activity_person, container, false);
     }
 }
