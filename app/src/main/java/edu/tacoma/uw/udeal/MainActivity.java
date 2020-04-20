@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_camera:
                             selectedFragment = new Camera();
                             break;
-                        case R.id.nav_chat:
+                        case R.id.nav_inbox:
                             selectedFragment = new Chat();
                             break;
                         case R.id.nav_cart:
