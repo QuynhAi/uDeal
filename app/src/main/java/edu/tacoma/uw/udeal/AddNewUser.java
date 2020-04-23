@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import model.User;
+import model.UserLogin;
 
 public class AddNewUser extends AppCompatActivity {
     private EditText firstNameEdit;
@@ -56,15 +57,8 @@ public class AddNewUser extends AppCompatActivity {
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
 
-                if (firstName.isEmpty() || lastname.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()){
-                    Toast.makeText(getApplicationContext(), "missing info" , Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                User user = new User(firstName, lastname, username, email, password);
+                User user = new User(firstName, lastname, email, username, password);
                 onAddUser(user);
-
-                Intent intent = new Intent(AddNewUser.this, MainActivity.class);
-                startActivity(intent);
             }
         });
     }
@@ -75,8 +69,8 @@ public class AddNewUser extends AppCompatActivity {
         try {
             mArguments.put(User.FIRST_NAME, user.getFirstName());
             mArguments.put(User.LAST_NAME, user.getLastName());
-            mArguments.put(User.USER_NAME, user.getUserName());
             mArguments.put(User.EMAIL, user.getEmail());
+            mArguments.put(User.USER_NAME, user.getUserName());
             mArguments.put(User.PASSWORD, user.getPassword());
             new AddUserAsyncTask().execute(url.toString());
         } catch (JSONException e) {
@@ -116,6 +110,23 @@ public class AddNewUser extends AppCompatActivity {
                 }
             }
             return response;
+        }
+        @Override
+        protected void onPostExecute(String result){
+            try{
+                JSONObject resultObject = new JSONObject(result);
+                if(resultObject.getBoolean("success") == true){
+                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(AddNewUser.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Account already exists or missing information", Toast.LENGTH_SHORT).show();
+                    //Log.e(TAG, resultObject.getString("error"));
+                }
+            }catch(JSONException e){
+                Toast.makeText(getApplicationContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 }
