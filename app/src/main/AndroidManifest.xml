@@ -14,7 +14,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Login"></activity>
+        <activity android:name=".Login" android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".AddNewUser" />
         <activity android:name=".InboxScreen" />
         <activity android:name=".Home" />
