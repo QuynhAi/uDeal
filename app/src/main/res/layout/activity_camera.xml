@@ -6,19 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginLeft="161dp"
-        android:layout_marginTop="316dp"
-        android:layout_marginEnd="191dp"
-        android:layout_marginRight="191dp"
-        android:layout_marginBottom="396dp"
-        android:text="Camera"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+    <Button
+
+        android:id="@+id/takePicture"
+        android:layout_width="406dp"
+        android:layout_height="118dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="199dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#00FFFFFF"
+        android:drawableLeft="@drawable/ic_camera_alt_black_60dp"
+
+        android:hint="Take a photo of item"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/selectPicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/selectPicture"
+        android:layout_width="406dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="298dp"
+        android:background="#00FFFFFF"
+        android:drawableLeft="@drawable/ic_photo_library_black_60dp"
+        android:hint="Select photo from phone"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/takePicture" />
 </androidx.constraintlayout.widget.ConstraintLayout>

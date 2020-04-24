@@ -71,7 +71,6 @@ public class Login extends AppCompatActivity {
             new LoginAsyncTask().execute(url.toString());
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();
-
         }
     }
     private class LoginAsyncTask extends AsyncTask<String, Void, String> {
