@@ -11,9 +11,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login"></activity>
+        <activity
+            android:name="inbox.InboxListActivity"
+            android:label="@string/title_inbox_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="inbox.InboxDetailActivity"
+            android:label="@string/title_inbox_detail"
+            android:parentActivityName="inbox.InboxListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="inbox.InboxListActivity" />
+        </activity>
+        <activity android:name=".Login" />
         <activity android:name=".AddNewUser" />
-        <activity android:name=".InboxScreen" />
         <activity android:name=".Home" />
         <activity
             android:name=".SplashScreen"

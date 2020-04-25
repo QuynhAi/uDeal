@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import inbox.InboxListActivity;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                             selectedFragment = new Camera();
                             break;
                         case R.id.nav_inbox:
-                            selectedFragment = new Chat();
+                            selectedFragment = new InboxListActivity();
                             break;
                         case R.id.nav_cart:
                             selectedFragment = new Cart();
