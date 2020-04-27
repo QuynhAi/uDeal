@@ -1,15 +1,12 @@
-package edu.tacoma.uw.udeal;
+package model;
 
-public class MessageFormat {
-
+public class Message {
     private String Username;
     private String Message;
-    private String UniqueId;
 
-    public MessageFormat(String uniqueId, String username, String message) {
+    public Message(String username, String message) {
         Username = username;
         Message = message;
-        UniqueId = uniqueId;
     }
 
     public String getUsername() {
@@ -26,13 +23,5 @@ public class MessageFormat {
 
     public void setMessage(String message) {
         Message = message;
-    }
-
-    public String getUniqueId() {
-        return UniqueId;
-    }
-
-    public void setUniqueId(String uniqueId) {
-        UniqueId = uniqueId;
     }
 }

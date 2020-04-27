@@ -1,28 +1,40 @@
 package inbox;
-
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import edu.tacoma.uw.udeal.R;
 
 import inbox.dummy.DummyContent;
+import model.UserRegister;
+import model.UserInbox;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -40,33 +52,23 @@ public class InboxListActivity extends Fragment {
      * device.
      */
     private boolean mTwoPane;
+    private List<UserInbox> mUserList;
+    private RecyclerView mRecyclerView;
+    private int mColumnCount = 1;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_inbox_list, container, false);
         getActivity().setTitle("Inbox");
 
-
-//        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         if (getActivity().findViewById(R.id.inbox_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             mTwoPane = true;
         }
 
-        View recyclerView = view.findViewById(R.id.inbox_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        mRecyclerView = view.findViewById(R.id.inbox_list);
+        assert mRecyclerView != null;
+        setupRecyclerView((RecyclerView) mRecyclerView);
         return view;
     }
     @Override
@@ -74,39 +76,48 @@ public class InboxListActivity extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(mUserList == null){
+            new UserInboxTask().execute(getString(R.string.register));
+        }
+    }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        if (mUserList != null){
+            recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mUserList, mTwoPane));
+        }
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final InboxListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<UserInbox> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(InboxDetailFragment.ARG_ITEM_ID, item.id);
-                    InboxDetailFragment fragment = new InboxDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getFragmentManager().beginTransaction()
-                            .replace(R.id.inbox_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, InboxDetailActivity.class);
-                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item.id);
-                    context.startActivity(intent);
-                }
+//                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+//                if (mTwoPane) {
+//                    Bundle arguments = new Bundle();
+//                    arguments.putString(InboxDetailFragment.ARG_ITEM_ID, item.id);
+//                    InboxDetailFragment fragment = new InboxDetailFragment();
+//                    fragment.setArguments(arguments);
+//                    mParentActivity.getFragmentManager().beginTransaction()
+//                            .replace(R.id.inbox_detail_container, fragment)
+//                            .commit();
+//                } else {
+//                    Context context = view.getContext();
+//                    Intent intent = new Intent(context, InboxDetailActivity.class);
+//                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item.id);
+//                    context.startActivity(intent);
+//                }
             }
         };
 
         SimpleItemRecyclerViewAdapter(InboxListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      List<UserInbox> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;
@@ -122,8 +133,11 @@ public class InboxListActivity extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            //holder.profile.setText(mValues.get(position).id);
+            holder.name.setText(mValues.get(position).getUserName());
+
+            holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
+            holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -135,13 +149,65 @@ public class InboxListActivity extends Fragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
+            final ImageView profile;
+            final TextView name;
+            final ImageView item_image;
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                profile = (ImageView) view.findViewById(R.id.inbox_profile);
+                name = (TextView) view.findViewById(R.id.content);
+                item_image = (ImageView)view.findViewById(R.id.inbox_item_view);
+            }
+        }
+    }
+
+
+    private class UserInboxTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to download the list of users, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success") == true) {
+                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("member"));
+                    Log.i("here", String.valueOf(mUserList));
+                    if (!mUserList.isEmpty()) {
+                        setupRecyclerView((RecyclerView) mRecyclerView);
+                    }
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
