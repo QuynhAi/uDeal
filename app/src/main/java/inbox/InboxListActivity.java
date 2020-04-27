@@ -7,11 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +22,11 @@ import org.json.JSONObject;
 
 import edu.tacoma.uw.udeal.R;
 
-import inbox.dummy.DummyContent;
-import model.UserRegister;
 import model.UserInbox;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -98,21 +92,21 @@ public class InboxListActivity extends Fragment {
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-//                if (mTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putString(InboxDetailFragment.ARG_ITEM_ID, item.id);
-//                    InboxDetailFragment fragment = new InboxDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    mParentActivity.getFragmentManager().beginTransaction()
-//                            .replace(R.id.inbox_detail_container, fragment)
-//                            .commit();
-//                } else {
-//                    Context context = view.getContext();
-//                    Intent intent = new Intent(context, InboxDetailActivity.class);
-//                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item.id);
-//                    context.startActivity(intent);
-//                }
+                UserInbox item = (UserInbox) view.getTag();
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putSerializable(InboxDetailFragment.ARG_ITEM_ID, item);
+                    InboxDetailFragment fragment = new InboxDetailFragment();
+                    fragment.setArguments(arguments);
+                    mParentActivity.getFragmentManager().beginTransaction()
+                            .replace(R.id.inbox_detail_container, fragment)
+                            .commit();
+                } else {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, InboxDetailActivity.class);
+                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item);
+                    context.startActivity(intent);
+                }
             }
         };
 

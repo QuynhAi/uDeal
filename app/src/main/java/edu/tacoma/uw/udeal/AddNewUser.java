@@ -20,13 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-<<<<<<< HEAD
 import model.UserRegister;
-=======
-import model.User;
-import model.UserLogin;
->>>>>>> 0e1be8b7e246ec0e50fd2bcd9a038544b3edbf84
+
 
 public class AddNewUser extends AppCompatActivity {
     private EditText firstNameEdit;
@@ -60,18 +55,11 @@ public class AddNewUser extends AppCompatActivity {
                 String username = usernameEdit.getText().toString();
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-
-<<<<<<< HEAD
                 UserRegister user = new UserRegister(firstName, lastname, email, username, password);
-=======
-                User user = new User(firstName, lastname, email, username, password);
->>>>>>> 0e1be8b7e246ec0e50fd2bcd9a038544b3edbf84
                 onAddUser(user);
             }
         });
     }
-
-<<<<<<< HEAD
     public void onAddUser(UserRegister user) {
         StringBuilder url = new StringBuilder(getString(R.string.register));
         mArguments = new JSONObject();
@@ -81,17 +69,6 @@ public class AddNewUser extends AppCompatActivity {
             mArguments.put(UserRegister.EMAIL, user.getEmail());
             mArguments.put(UserRegister.USER_NAME, user.getUserName());
             mArguments.put(UserRegister.PASSWORD, user.getPassword());
-=======
-    public void onAddUser(User user) {
-        StringBuilder url = new StringBuilder(getString(R.string.register));
-        mArguments = new JSONObject();
-        try {
-            mArguments.put(User.FIRST_NAME, user.getFirstName());
-            mArguments.put(User.LAST_NAME, user.getLastName());
-            mArguments.put(User.EMAIL, user.getEmail());
-            mArguments.put(User.USER_NAME, user.getUserName());
-            mArguments.put(User.PASSWORD, user.getPassword());
->>>>>>> 0e1be8b7e246ec0e50fd2bcd9a038544b3edbf84
             new AddUserAsyncTask().execute(url.toString());
         } catch (JSONException e) {
             Toast.makeText(this, "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();
