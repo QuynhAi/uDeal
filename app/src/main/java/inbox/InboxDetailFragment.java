@@ -46,12 +46,7 @@ public class InboxDetailFragment extends Fragment {
             Log.e("detail", String.valueOf(getArguments()));
             mItem = (UserInbox) getArguments().getSerializable(ARG_ITEM_ID);
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            TextView inboxToolBarTitle = (TextView) activity.findViewById(R.id.toolbar_title);
-            if(appBarLayout != null){
-                Log.e("testing", String.valueOf(mItem));
-                inboxToolBarTitle.setText(mItem.getUserName());
-            }
+            activity.setTitle(mItem.getUserName());
         }
     }
 
