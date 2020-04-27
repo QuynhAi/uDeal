@@ -56,13 +56,12 @@ public class InboxListActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_inbox_list, container, false);
         getActivity().setTitle("Inbox");
 
-        if (getActivity().findViewById(R.id.inbox_detail_container) != null) {
-            mTwoPane = true;
-        }
-
         mRecyclerView = view.findViewById(R.id.inbox_list);
         assert mRecyclerView != null;
         setupRecyclerView((RecyclerView) mRecyclerView);
+        if (getActivity().findViewById(R.id.inbox_detail_container) != null) {
+            mTwoPane = true;
+        }
         return view;
     }
     @Override
@@ -93,6 +92,8 @@ public class InboxListActivity extends Fragment {
             @Override
             public void onClick(View view) {
                 UserInbox item = (UserInbox) view.getTag();
+                Log.i("testing point1", String.valueOf(item));
+                Log.i("testing point1a", String.valueOf(mTwoPane));
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putSerializable(InboxDetailFragment.ARG_ITEM_ID, item);
@@ -129,11 +130,11 @@ public class InboxListActivity extends Fragment {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getUserName());
-
             holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
             holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
 
             holder.itemView.setTag(mValues.get(position));
+            Log.e("setTag", String.valueOf((mValues.get(position))));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 

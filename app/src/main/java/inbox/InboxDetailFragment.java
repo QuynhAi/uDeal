@@ -7,13 +7,14 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import edu.tacoma.uw.udeal.R;
-import inbox.dummy.DummyContent;
+import model.UserInbox;
 
 /**
  * A fragment representing a single Inbox detail screen.
@@ -27,11 +28,8 @@ public class InboxDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    private UserInbox mItem;
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private DummyContent.DummyItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -45,17 +43,14 @@ public class InboxDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-
+            Log.e("detail", String.valueOf(getArguments()));
+            mItem = (UserInbox) getArguments().getSerializable(ARG_ITEM_ID);
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            TextView inboxToolbarTitle = (TextView) activity.findViewById(R.id.toolbar_title);
-            if (appBarLayout != null) {
-                //appBarLayout.setTitle("hi");
-                inboxToolbarTitle.setText(mItem.content);
+            TextView inboxToolBarTitle = (TextView) activity.findViewById(R.id.toolbar_title);
+            if(appBarLayout != null){
+                Log.e("testing", String.valueOf(mItem));
+                inboxToolBarTitle.setText(mItem.getUserName());
             }
         }
     }
@@ -67,7 +62,7 @@ public class InboxDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.inbox_detail)).setText("hello");
+            ((TextView) rootView.findViewById(R.id.inbox_detail)).setText("place holder");
         }
 
         return rootView;
