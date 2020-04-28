@@ -52,7 +52,6 @@ public class InboxListActivity extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.activity_inbox_list, container, false);
         getActivity().setTitle("Inbox");
 
@@ -92,16 +91,21 @@ public class InboxListActivity extends Fragment {
             @Override
             public void onClick(View view) {
                 UserInbox item = (UserInbox) view.getTag();
-                Log.i("testing point1", String.valueOf(item));
-                Log.i("testing point1a", String.valueOf(mTwoPane));
                 if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putSerializable(InboxDetailFragment.ARG_ITEM_ID, item);
-                    InboxDetailFragment fragment = new InboxDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getFragmentManager().beginTransaction()
-                            .replace(R.id.inbox_detail_container, fragment)
-                            .commit();
+//                    Original
+//                    Bundle arguments = new Bundle();
+//                    arguments.putSerializable(InboxDetailFragment.ARG_ITEM_ID, item);
+//                    InboxDetailFragment fragment = new InboxDetailFragment();
+//                    fragment.setArguments(arguments);
+//                    mParentActivity.getFragmentManager().beginTransaction()
+//                            .replace(R.id.inbox_detail_container, fragment)
+//                            .commit();
+
+                   // Testing
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, InboxDetailActivity.class);
+                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item);
+                    context.startActivity(intent);
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, InboxDetailActivity.class);
@@ -134,7 +138,6 @@ public class InboxListActivity extends Fragment {
             holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
 
             holder.itemView.setTag(mValues.get(position));
-            Log.e("setTag", String.valueOf((mValues.get(position))));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 
@@ -195,7 +198,6 @@ public class InboxListActivity extends Fragment {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
                     mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("member"));
-                    Log.i("here", String.valueOf(mUserList));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
                     }

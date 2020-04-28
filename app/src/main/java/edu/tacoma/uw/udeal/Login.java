@@ -31,6 +31,8 @@ public class Login extends AppCompatActivity {
     private EditText passwordEdit;
     private JSONObject mArguments;
     private String TAG = "Login";
+    public static String CURRENT_USER;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v){
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
+                CURRENT_USER = email;
                 UserLogin userLogin = new UserLogin(email, password);
                 loginMethod(userLogin);
 

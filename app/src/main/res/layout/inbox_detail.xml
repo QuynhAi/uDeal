@@ -7,3 +7,17 @@
     android:padding="16dp"
     android:textIsSelectable="true"
     tools:context="inbox.InboxDetailFragment" />
+
+
+<!--<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:id="@+id/inbox_list_temp"-->
+<!--    android:name="inbox.InboxListFragment"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_marginLeft="16dp"-->
+<!--    android:layout_marginRight="16dp"-->
+<!--    app:layoutManager="LinearLayoutManager"-->
+<!--    tools:context="inbox.InboxListActivity"-->
+<!--    tools:listitem="@layout/inbox_list_content" />-->

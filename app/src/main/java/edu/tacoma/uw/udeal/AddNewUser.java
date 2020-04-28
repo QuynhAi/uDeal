@@ -74,6 +74,8 @@ public class AddNewUser extends AppCompatActivity {
             Toast.makeText(this, "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();
         }
     }
+
+
     private class AddUserAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
