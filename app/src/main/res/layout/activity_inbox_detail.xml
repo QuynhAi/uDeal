@@ -8,20 +8,23 @@
     tools:context="inbox.InboxDetailActivity"
     tools:ignore="MergeRootFrame">
 
-    <androidx.core.widget.NestedScrollView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inbox_detail_container"
+        android:name="inbox.InboxListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layoutManager="LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/inbox_detail"
-        />
+        tools:context="inbox.InboxListActivity"
+        tools:listitem="@layout/my_message" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/colorAccent"
         android:layout_gravity="bottom|end"
         android:fitsSystemWindows="true"
         android:orientation="horizontal">
@@ -34,8 +37,7 @@
             android:ems="10"
             android:hint="Write a message"
             android:inputType="text"
-            android:paddingHorizontal="10dp"
-            android:text="" />
+            android:paddingHorizontal="10dp" />
 
         <ImageButton
             android:id="@+id/sendButton"
@@ -47,4 +49,5 @@
             android:layout_marginHorizontal="10dp"
             android:background="@drawable/ic_send_black_24dp"/>
     </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

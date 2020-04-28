@@ -43,17 +43,19 @@ public class InboxDetailActivity extends AppCompatActivity {
     private UserInbox mItem;
     private ImageButton sendBtn;
     private EditText messageTextField;
-
+    private View recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox_detail);
 
-
+        recyclerView = findViewById(R.id.inbox_detail_container);
         if (savedInstanceState == null) {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
             setTitle(mItem.getUserName());
         }
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
 
         sendBtn = (ImageButton)findViewById(R.id.sendButton);
         messageTextField = (EditText)findViewById(R.id.myMessageTextField);
@@ -62,9 +64,7 @@ public class InboxDetailActivity extends AppCompatActivity {
                 String msg = messageTextField.getText().toString();
                 if (!msg.equals("")){
                     Message myMessage = new Message(Login.CURRENT_USER,mItem.getUserName(), messageTextField.getText().toString() );
-                    View recyclerView = findViewById(R.id.inbox_detail);
-                    assert recyclerView != null;
-                    setupRecyclerView((RecyclerView) recyclerView);
+
                 } else {
                     return;
                 }
@@ -82,12 +82,12 @@ public class InboxDetailActivity extends AppCompatActivity {
 
         private final InboxDetailActivity mParentActivity;
         private final List<DummyContent.DummyItem> mValues;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        };
+//        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        };
 
         SimpleItemRecyclerViewAdapter(InboxDetailActivity parent, List<DummyContent.DummyItem> items) {
             mValues = items;
@@ -106,9 +106,9 @@ public class InboxDetailActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).id);
             holder.mContentView.setText(mValues.get(position).content);
-
             holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
+            //Log.e("testing point a", String.valueOf(holder));
+            //holder.itemView.setOnClickListener(mOnClickListener);
         }
 
         @Override
