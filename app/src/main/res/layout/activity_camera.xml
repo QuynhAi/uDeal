@@ -182,7 +182,7 @@
             android:id="@+id/descriptioninput"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="360dp"
-            android:layout_height="250dp"
+            android:layout_height="255dp"
             android:layout_marginBottom="16dp"
             android:hint="Write about your item!"
             app:hintEnabled="true"
@@ -193,7 +193,7 @@
             <EditText
                 android:id="@+id/description"
                 android:layout_width="360dp"
-                android:layout_height="250dp"
+                android:layout_height="245dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
