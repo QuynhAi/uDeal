@@ -37,29 +37,24 @@ public class InboxDetailFragment extends Fragment {
      */
     public InboxDetailFragment() {
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            Log.e("detail", String.valueOf(getArguments()));
-            mItem = (UserInbox) getArguments().getSerializable(ARG_ITEM_ID);
-            Activity activity = this.getActivity();
-            activity.setTitle(mItem.getUserName());
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.inbox_detail, container, false);
-
-        // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.inbox_detail)).setText("place holder");
-        }
-
-        return rootView;
-    }
+//
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        if (getArguments().containsKey(ARG_ITEM_ID)) {
+//            mItem = (UserInbox) getArguments().getSerializable(ARG_ITEM_ID);
+//            Activity activity = this.getActivity();
+//            activity.setTitle(mItem.getUserName());
+//        }
+//    }
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        View rootView = inflater.inflate(R.layout.inbox_detail, container, false);
+//        if (mItem != null) {
+//            ((TextView) rootView.findViewById(R.id.inbox_detail)).setText("place holder");
+//        }
+//        return rootView;
+//    }
 }
