@@ -20,9 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import model.UserRegister;
 
-import model.User;
-import model.UserLogin;
 
 public class AddNewUser extends AppCompatActivity {
     private EditText firstNameEdit;
@@ -56,22 +55,20 @@ public class AddNewUser extends AppCompatActivity {
                 String username = usernameEdit.getText().toString();
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-
-                User user = new User(firstName, lastname, email, username, password);
+                UserRegister user = new UserRegister(firstName, lastname, email, username, password);
                 onAddUser(user);
             }
         });
     }
-
-    public void onAddUser(User user) {
+    public void onAddUser(UserRegister user) {
         StringBuilder url = new StringBuilder(getString(R.string.register));
         mArguments = new JSONObject();
         try {
-            mArguments.put(User.FIRST_NAME, user.getFirstName());
-            mArguments.put(User.LAST_NAME, user.getLastName());
-            mArguments.put(User.EMAIL, user.getEmail());
-            mArguments.put(User.USER_NAME, user.getUserName());
-            mArguments.put(User.PASSWORD, user.getPassword());
+            mArguments.put(UserRegister.FIRST_NAME, user.getFirstName());
+            mArguments.put(UserRegister.LAST_NAME, user.getLastName());
+            mArguments.put(UserRegister.EMAIL, user.getEmail());
+            mArguments.put(UserRegister.USER_NAME, user.getUserName());
+            mArguments.put(UserRegister.PASSWORD, user.getPassword());
             new AddUserAsyncTask().execute(url.toString());
         } catch (JSONException e) {
             Toast.makeText(this, "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();

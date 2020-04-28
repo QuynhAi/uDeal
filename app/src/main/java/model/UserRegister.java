@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class UserRegister {
 
     private String first;
     private String last;
@@ -23,7 +23,7 @@ public class User {
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
 
-    public User(String first, String last, String email, String username, String password) {
+    public UserRegister(String first, String last, String email, String username, String password) {
         this.first = first;
         this.last = last;
         this.username = username;
