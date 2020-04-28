@@ -3,18 +3,25 @@ package inbox;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.Fragment;
 
 import android.view.MenuItem;
 
+import edu.tacoma.uw.udeal.Camera;
+import edu.tacoma.uw.udeal.Cart;
+import edu.tacoma.uw.udeal.Home;
+import edu.tacoma.uw.udeal.Person;
 import edu.tacoma.uw.udeal.R;
 
 /**
@@ -30,6 +37,15 @@ public class InboxDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox_detail);
 
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        //I added this if statement to keep the selected fragment when rotating the device
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new Home()).commit();
+        }
+
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
 
@@ -44,6 +60,37 @@ public class InboxDetailActivity extends AppCompatActivity {
             }
         }
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+
+                    switch (item.getItemId()) {
+                        case R.id.nav_home:
+                            selectedFragment = new Home();
+                            break;
+                        case R.id.nav_camera:
+                            selectedFragment = new Camera();
+                            break;
+                        case R.id.nav_inbox:
+                            selectedFragment = new InboxListActivity();
+                            break;
+                        case R.id.nav_cart:
+                            selectedFragment = new Cart();
+                            break;
+                        case R.id.nav_person:
+                            selectedFragment = new Person();
+                            break;
+                    }
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+
+                    return true;
+                }
+            };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
