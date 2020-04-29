@@ -104,12 +104,12 @@ public class InboxListActivity extends Fragment {
                    // Testing
                     Context context = view.getContext();
                     Intent intent = new Intent(context, InboxDetailActivity.class);
-                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item);
+                    intent.putExtra(InboxDetailActivity.ARG_ITEM_ID, item);
                     context.startActivity(intent);
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, InboxDetailActivity.class);
-                    intent.putExtra(InboxDetailFragment.ARG_ITEM_ID, item);
+                    intent.putExtra(InboxDetailActivity.ARG_ITEM_ID, item);
                     context.startActivity(intent);
                 }
             }
