@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">uDeal</string>
     <string name="logo_description">The uDeal logo.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reg_text">Don\'t have an account? <b><font color="black">Sign up.</font></b></string>
+    <string name="title_inbox_list">Inboxes</string>
+    <string name="title_inbox_detail">Inbox Detail</string>
+    <string name="write_a_message">Write a message</string>
 </resources>
