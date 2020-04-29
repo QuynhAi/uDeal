@@ -74,9 +74,12 @@
             android:layout_height="55dp"
             android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
             android:layout_marginBottom="32dp"
             app:hintEnabled="true"
             app:layout_constraintBottom_toTopOf="@+id/locationinput"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <EditText
@@ -107,7 +110,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/locationinput"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="280dp"
+            android:layout_width="270dp"
             android:layout_height="55dp"
             android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
@@ -118,7 +121,7 @@
 
             <EditText
                 android:id="@+id/location"
-                android:layout_width="280dp"
+                android:layout_width="270dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
@@ -144,18 +147,21 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/priceinput"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="75dp"
+            android:layout_width="70dp"
             android:layout_height="55dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
             android:layout_marginBottom="32dp"
             app:hintEnabled="true"
             app:layout_constraintBottom_toTopOf="@+id/descriptioninput"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/locationinput">
 
             <EditText
                 android:id="@+id/price"
-                android:layout_width="75dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
@@ -183,6 +189,10 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="360dp"
             android:layout_height="255dp"
+            android:layout_marginStart="23dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginEnd="23dp"
+            android:layout_marginRight="23dp"
             android:layout_marginBottom="16dp"
             android:hint="Write about your item!"
             app:hintEnabled="true"
@@ -208,10 +218,10 @@
             android:layout_width="300dp"
             android:layout_height="50dp"
 
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/button_border"
             android:paddingTop="5dp"
