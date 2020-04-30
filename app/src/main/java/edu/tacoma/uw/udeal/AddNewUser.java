@@ -61,7 +61,7 @@ public class AddNewUser extends AppCompatActivity {
         });
     }
     public void onAddUser(UserRegister user) {
-        StringBuilder url = new StringBuilder(getString(R.string.register));
+        StringBuilder url = new StringBuilder(getString(R.string.register_final));
         mArguments = new JSONObject();
         try {
             mArguments.put(UserRegister.FIRST_NAME, user.getFirstName());

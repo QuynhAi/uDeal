@@ -6,8 +6,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +23,19 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import model.Item;
+import model.UserRegister;
 
 
 public class Camera extends Fragment {
@@ -35,6 +48,8 @@ public class Camera extends Fragment {
     private static final int PICK_FROM_GALLERY = 1;
     private static final int TAKE_PHOTO = 0;
     private ImageView myImageView;
+    private JSONObject  mArguments;
+    private String TAG = "addNewItem";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,9 +95,15 @@ public class Camera extends Fragment {
         postItem = (Button) view.findViewById(R.id.post);
         postItem.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String stitle = mytitle.getText().toString();
-                String sprice = myprice.getText().toString();
-                String sdescription = mydescription.getText().toString();
+                int id = 2; // REPLACE THIS WITH USER ID OF CURRENT USER
+                String title = mytitle.getText().toString();
+                double price = Double.parseDouble( myprice.getText().toString()); // FIND BETTER WAY TO CONVERT TO DOUBLE
+                String desc = mydescription.getText().toString();
+                String loc = "Seattle, WA"; // REPLACE THIS WITH LOCATION IN FIELD
+                String cat = "Test Category"; // REPLACE THIS WITH CATEGORY FROM DROPDOWN MENU
+
+                Item item = new Item(id, title, loc, desc, cat, price);
+                onAddItem(item);
             }
         });
 
@@ -129,6 +150,76 @@ public class Camera extends Fragment {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
                 }
                 break;
+        }
+    }
+
+    public void onAddItem(Item item) {
+        StringBuilder url = new StringBuilder(getString(R.string.additem));
+        mArguments = new JSONObject();
+        try {
+            mArguments.put(Item.MEMBER_ID, item.getmMemberID());
+            mArguments.put(Item.TITLE, item.getmTitle());
+            mArguments.put(Item.LOCATION, item.getmLocation());
+            mArguments.put(Item.DESCRIPTION, item.getmDescription());
+            mArguments.put(Item.CATEGORY, item.getmCategory());
+            mArguments.put(Item.PRICE, item.getmPrice());
+            new AddItemAsyncTask().execute(url.toString());
+        } catch (JSONException e) {
+            Toast.makeText(getActivity().getApplicationContext(), "Error with JSON creation: " +
+                    e.getMessage() , Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class AddItemAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+                    Log.i(TAG, mArguments.toString());
+                    wr.write(mArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to add the new item, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+        @Override
+        protected void onPostExecute(String result){
+            try{
+                JSONObject resultObject = new JSONObject(result);
+                if(resultObject.getBoolean("success") == true){
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
+                  //  Intent intent = new Intent(AddNewUser.this, MainActivity.class);
+                  //  startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
+                    //Log.e(TAG, resultObject.getString("error"));
+                }
+            }catch(JSONException e){
+                Toast.makeText(getActivity().getApplicationContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
