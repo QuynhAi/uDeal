@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="register">http://nguyen97-services-backend.herokuapp.com/register</string>
-    <string name="register_final">https://udeal-app-services-backend.herokuapp.com/register</string>
+    <string name="members">https://udeal-app-services-backend.herokuapp.com/members</string>
+    <string name="register">https://udeal-app-services-backend.herokuapp.com/register</string>
     <string name="login">https://udeal-app-services-backend.herokuapp.com/login</string>
     <string name="additem">https://udeal-app-services-backend.herokuapp.com/additem</string>
     <string name="addphoto">https://udeal-app-services-backend.herokuapp.com/addphoto</string>
