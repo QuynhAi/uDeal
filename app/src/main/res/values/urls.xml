@@ -5,5 +5,7 @@
     <string name="login">https://udeal-app-services-backend.herokuapp.com/login</string>
     <string name="additem">https://udeal-app-services-backend.herokuapp.com/additem</string>
     <string name="addphoto">https://udeal-app-services-backend.herokuapp.com/addphoto</string>
+    <string name="upload">https://udeal-app-services-backend.herokuapp.com/upload</string>
+    <string name="storage">https://udeal-app.s3.us-west-2.amazonaws.com/</string>
 
 </resources>
