@@ -67,14 +67,9 @@ public class Camera extends Fragment {
     public static final String MY_URL_TAG = "url";
     public static final String MY_FILE_NAME = "myfilename";
     public static final String MY_FILE = "myfile";
-   // public static final String URL_LOCATION = "Location";
     public File compressedFile;
     private Bitmap tempPhotoStorage;
-    private ByteArrayInputStream compressed;
-
     private String imageUploadName;
-
-    private String MY_CHARSET = "UTF-8";
 
     @Nullable
     @Override
@@ -99,18 +94,12 @@ public class Camera extends Fragment {
         selectPicture = (Button) view.findViewById(R.id.selectPicture);
         selectPicture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-              //  Intent i = new Intent(Intent.ACTION_PICK,
-             //           android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
                 } else {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto, PICK_FROM_GALLERY);
                 }
-
-                //   final int ACTIVITY_SELECT_IMAGE = 1234;
-              //  startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
             }
         });
 
@@ -121,15 +110,15 @@ public class Camera extends Fragment {
         postItem = (Button) view.findViewById(R.id.post);
         postItem.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                int id = 2; // REPLACE THIS WITH USER ID OF CURRENT USER
+                int id = 3; // TODO: REPLACE THIS WITH USER ID OF CURRENT USER
                 String title = mytitle.getText().toString();
-                double price = Double.parseDouble( myprice.getText().toString()); // FIND BETTER WAY TO CONVERT TO DOUBLE
+                double price = Double.parseDouble( myprice.getText().toString()); // TODO: FIND BETTER WAY TO CONVERT TO DOUBLE
                 String desc = mydescription.getText().toString();
-                String loc = "Seattle, WA"; // REPLACE THIS WITH LOCATION IN FIELD
-                String cat = "Test Category"; // REPLACE THIS WITH CATEGORY FROM DROPDOWN MENU
-
+                String loc = "Bellevue, WA"; // TODO: REPLACE THIS WITH LOCATION IN FIELD
+                String cat = "Automobiles"; // TODO: REPLACE THIS WITH CATEGORY FROM DROPDOWN MENU
+                // TODO: POSSIBLY INCLUDE TIMESTAMP COLUMN IN DATABASE WHEN ITEM WAS ADDED
                 Item item = new Item(id, title, loc, desc, cat, price);
-               // onAddItem(item);
+                onAddItem(item);
                 onAddImage(item);
             }
         });
@@ -176,7 +165,7 @@ public class Camera extends Fragment {
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
                 } else {
-                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                    //TODO: something like displaying a message that user didn`t allow the app to access gallery and you wont be able to let him select from gallery
                 }
                 break;
         }
@@ -201,31 +190,25 @@ public class Camera extends Fragment {
     }
 
     public void onAddImage(Item item) {
-        // HANDLE THE URL OF IMAGE (PUT IN POSTGRESSQL DATABASE)
+        // Handle unique key of image (put in database)
         StringBuilder urlURL = new StringBuilder(getString(R.string.addphoto));
-   //     mArguments2 = new JSONObject();
+        mArguments2 = new JSONObject();
         // First create the unique URL extension
         String tempPhotoID = generatePhotoID();
-     /*   try {
+        try {
             mArguments2.put(Item.MEMBER_ID, item.getmMemberID());
-            mArguments2.put(Item.ITEM_ID, 8);// CHANGE THIS TO GET ITME ID. IT DOESNT WORK YET BECAUSE
-            // (1) I CNA ADD ITEM TO ITEM DATABASE, BUT NOW I NEED TO RETRIEVE ITS ID... SO HOW OD I RETRIEVE
-            // ITS ID to put THIS ITEM INTo THE PHOTO DATABASE
+            // TODO: CHANGE THIS TO GET ITEM ID. Possibly put this in the AddItem class once
+            // TODO: it is done uploading, so you can then retrieve the item ID to execute this
+            mArguments2.put(Item.ITEM_ID, 8);
             mArguments2.put(MY_URL_TAG, tempPhotoID);
             new AddPhotoAsyncTask().execute(urlURL.toString());
         } catch (JSONException e) {
             Toast.makeText(getActivity().getApplicationContext(), "URL Error with JSON creation: " +
                     e.getMessage() , Toast.LENGTH_SHORT).show();
         }
-        // HANDLE THE IMAGE ITSELF (PUT IN S3) */
-      //  StringBuilder urlUpload = new StringBuilder(getString(R.string.upload));
-       // String tempUrl = urlUpload.toString();
-        String tempUrl = "https://udeal-app-services-backend.herokuapp.com/upload";
-        //tempUrl = urlURL.toString();
-        //mArguments = new JSONObject();
+        // HANDLE THE IMAGE ITSELF (PUT IN S3)
         processImage();
-      //  uploadImage(tempUrl, tempPhotoID);
-        new MultipartUtility().execute("https://udeal-app-services-backend.herokuapp.com/upload");
+        new MultipartUtility().execute(getString(R.string.upload));
     }
 
     private String generatePhotoID() {
@@ -247,39 +230,8 @@ public class Camera extends Fragment {
             fos.close();
             compressedFile = f;
         } catch (IOException e) {
-            System.out.println("FILE NOT CREATED");
+            Log.d("myTag", "Compressed file creation unsuccessful");
         }
-    }
-
-    private void uploadImage(String url, String photoID) {
-    //  try {
-     //     MultipartUtility multipart = new MultipartUtility(url);
-       //   multipart.addFormField(MY_FILE_NAME, photoID);
-       //   multipart.addFilePart(MY_FILE, compressedFile);
-       //   List<String> response = multipart.finish();
-          //  Debug.e(TAG, "SERVER REPLIED:");
-      //    for (String line : response) {
-              //   Debug.e(TAG, "Upload Files Response:::" + line);
-      //        System.out.println("Upload Files Response::::" + line);
-// get your server response here.
-              //     responseString = line;
-      //    }
-      //} catch (IOException e) {
-   //       System.out.println("ISSUE IN MULTIPART");
-   //   }
-
-
-//add your file here.
-        /*This is to add file content*/
-  /*      for (int i = 0; i < myFileArray.size(); i++) {
-            multipart.addFilePart(myFileArray.getParamName(),
-                    new File(myFileArray.getFileName()));
-        } */
-      /*  try {
-
-        } catch(IOException e) {
-            System.out.println("ERROR IN MULTIPART LINE 270");
-        }*/
     }
 
     private class AddItemAsyncTask extends AsyncTask<String, Void, String> {
