@@ -69,7 +69,7 @@ public class InboxDetailActivity extends AppCompatActivity {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
             setTitle(mItem.getUserName());
         }
-        Log.e("testing 123  ", String.valueOf(mItem));
+        //Log.e("testing 123  ", String.valueOf(mItem));
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
@@ -124,39 +124,68 @@ public class InboxDetailActivity extends AppCompatActivity {
         private final List<Message> mValues;
         SimpleItemRecyclerViewAdapter(InboxDetailActivity parent, List<Message> items) {
             mValues = items;
-            Log.e("inbox act", String.valueOf(items));
             mParentActivity = parent;
+            //Log.e("SimpleItemRecyclerViewAdapter", "SimpleItemRecyclerViewAdapter");
+            //Log.e("inbox act", String.valueOf(items));
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.my_message, parent, false);
-            return new ViewHolder(view);
+            //
+            View view;
+            ViewHolder viewHolder;
+            switch (viewType){
+                case 0: //
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.their_message, parent, false);
+                    viewHolder = new ViewHolder(view, viewType);
+                    return viewHolder;
+                default:
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_message, parent, false);
+                    viewHolder = new ViewHolder(view, viewType);
+                    return viewHolder;
+            }
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).getMessage());
-            holder.mContentView.setText(mValues.get(position).getMessage());
+            if ((mValues.get(position).getSender()).equals("test") ){
+                holder.mIdView.setText(mValues.get(position).getSender());
+                holder.mContentView.setText(mValues.get(position).getMessage());
+            } else {
+                holder.mContentView.setText(mValues.get(position).getMessage());
+            }
             holder.itemView.setTag(mValues.get(position));
-            //Log.e("testing point a", String.valueOf(holder));
-            //holder.itemView.setOnClickListener(mOnClickListener);
+            //Log.e("onBindViewHolder", "onBindViewHolder");
         }
 
+        @Override
+        public int getItemViewType(int position) {
+//            Log.e("viewholder", String.valueOf(mValues.get(position).getSender()));
+//            Log.e("viewholder", String.valueOf((mValues.get(position).getSender()).equals("test") ));
+            int viewType = 1; //Default is 1
+            if ((mValues.get(position).getSender()).equals("test")) {
+
+                viewType = 0; //if zero, it will be a header view
+            }
+            return viewType;
+        }
         @Override
         public int getItemCount() {
             return mValues.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
-
-            ViewHolder(View view) {
+            public TextView mIdView;
+            public TextView mContentView;
+            ViewHolder(View view, int viewType) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.my_chat_message);
-                mContentView = (TextView) view.findViewById(R.id.my_chat_message);
+                if (viewType == 0) { //their_message
+                    mIdView = (TextView) view.findViewById(R.id.their_chat_name);
+                    mContentView = (TextView) view.findViewById(R.id.their_chat_message);
+                } else if (viewType == 1) {
+                    mIdView = (TextView) view.findViewById(R.id.my_chat_message);
+                    mContentView = (TextView) view.findViewById(R.id.my_chat_message);
+                }
             }
         }
     }
