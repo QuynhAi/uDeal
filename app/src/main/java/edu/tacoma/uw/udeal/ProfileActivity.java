@@ -3,40 +3,39 @@ package edu.tacoma.uw.udeal;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-
-
-public class MainActivity extends AppCompatActivity {
-
-    private Fragment homefragment;
+public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_profile);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+        Menu menu = bottomNav.getMenu();
+        MenuItem menuItem = menu.getItem(4);
+        menuItem.setChecked(true);
 
         //I added this if statement to keep the selected fragment when rotating the device
         if (savedInstanceState == null) {
-            homefragment = new Home();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    homefragment).commit();
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    homefragment).commit();
+                    new Person()).commit();
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                homefragment).commit();
+        Fragment personfragment = new Person();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, personfragment).commit();
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        Fragment homefragment = new Home();
-//        fragmentTransaction.add(R.id.fragment_container, homefragment);
+//        Fragment personfragment = new Person();
+//        fragmentTransaction.add(R.id.fragment_container, personfragment);
 //        fragmentTransaction.commit();
     }
 
@@ -46,22 +45,22 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
+                            Intent h = new Intent(ProfileActivity.this, MainActivity.class);
+                            startActivity(h);
                             break;
                         case R.id.nav_camera:
-                            Intent p = new Intent(MainActivity.this, PostActivity.class);
+                            Intent p = new Intent(ProfileActivity.this, PostActivity.class);
                             startActivity(p);
                             break;
                         case R.id.nav_inbox:
-                            Intent i = new Intent(MainActivity.this, MessageInboxActivity.class);
+                            Intent i = new Intent(ProfileActivity.this, MessageInboxActivity.class);
                             startActivity(i);
                             break;
                         case R.id.nav_cart:
-                            Intent c = new Intent(MainActivity.this, CartActivity.class);
+                            Intent c = new Intent(ProfileActivity.this, CartActivity.class);
                             startActivity(c);
                             break;
                         case R.id.nav_person:
-                            Intent np = new Intent(MainActivity.this, ProfileActivity.class);
-                            startActivity(np);
                             break;
                     }
                     return false;

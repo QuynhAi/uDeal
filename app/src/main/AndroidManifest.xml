@@ -3,22 +3,26 @@
     package="edu.tacoma.uw.udeal">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".CartActivity" />
+        <activity android:name=".MessageInboxActivity" />
+        <activity android:name=".PostActivity" />
         <activity
             android:name="inbox.InboxListActivity"
-            android:label="@string/title_inbox_list">
-        </activity>
-
+            android:label="@string/title_inbox_list" />
         <activity
             android:name="inbox.InboxDetailActivity"
             android:label="@string/title_inbox_detail"
@@ -27,11 +31,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="inbox.InboxListActivity" />
         </activity>
-
-
-        <activity android:name=".Login" android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".AddNewUser" android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".InboxScreen" />
+        <activity
+            android:name=".Login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddNewUser"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Home" />
         <activity
             android:name=".SplashScreen"

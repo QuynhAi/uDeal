@@ -1,42 +1,45 @@
 package edu.tacoma.uw.udeal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import inbox.InboxListActivity;
 
-
-public class MainActivity extends AppCompatActivity {
-
-    private Fragment homefragment;
+public class MessageInboxActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_message_inbox);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+        Menu menu = bottomNav.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+        menuItem.setChecked(true);
 
         //I added this if statement to keep the selected fragment when rotating the device
         if (savedInstanceState == null) {
-            homefragment = new Home();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    homefragment).commit();
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    homefragment).commit();
+                    new InboxListActivity()).commit();
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                homefragment).commit();
+        Fragment inboxFragment = new InboxListActivity();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, inboxFragment).commit();
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        Fragment homefragment = new Home();
-//        fragmentTransaction.add(R.id.fragment_container, homefragment);
+//        Fragment inboxfragment = new InboxListActivity();
+//        fragmentTransaction.add(R.id.fragment_container, inboxfragment);
 //        fragmentTransaction.commit();
     }
 
@@ -46,21 +49,21 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
+                            Intent h = new Intent(MessageInboxActivity.this, MainActivity.class);
+                            startActivity(h);
                             break;
                         case R.id.nav_camera:
-                            Intent p = new Intent(MainActivity.this, PostActivity.class);
+                            Intent p = new Intent(MessageInboxActivity.this, PostActivity.class);
                             startActivity(p);
                             break;
                         case R.id.nav_inbox:
-                            Intent i = new Intent(MainActivity.this, MessageInboxActivity.class);
-                            startActivity(i);
                             break;
                         case R.id.nav_cart:
-                            Intent c = new Intent(MainActivity.this, CartActivity.class);
+                            Intent c = new Intent(MessageInboxActivity.this, CartActivity.class);
                             startActivity(c);
                             break;
                         case R.id.nav_person:
-                            Intent np = new Intent(MainActivity.this, ProfileActivity.class);
+                            Intent np = new Intent(MessageInboxActivity.this, ProfileActivity.class);
                             startActivity(np);
                             break;
                     }
