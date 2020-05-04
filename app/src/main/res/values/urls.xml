@@ -2,4 +2,5 @@
 <resources>
     <string name="register">http://nguyen97-services-backend.herokuapp.com/register</string>
     <string name="login">http://nguyen97-services-backend.herokuapp.com/login</string>
+    <string name="message">http://nguyen97-services-backend.herokuapp.com/message</string>
 </resources>

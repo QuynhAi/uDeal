@@ -166,7 +166,9 @@ public class InboxListActivity extends Fragment {
         protected String doInBackground(String... urls) {
             String response = "";
             HttpURLConnection urlConnection = null;
+
             for (String url : urls) {
+                Log.e("urConnection", String.valueOf(url));
                 try {
                     URL urlObject = new URL(url);
                     urlConnection = (HttpURLConnection) urlObject.openConnection();
