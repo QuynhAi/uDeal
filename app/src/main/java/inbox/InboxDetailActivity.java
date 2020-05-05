@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,6 @@ import java.util.List;
 
 import edu.tacoma.uw.udeal.Login;
 import edu.tacoma.uw.udeal.R;
-import inbox.dummy.DummyContent;
 import model.Message;
 import model.UserInbox;
 
@@ -59,6 +59,10 @@ public class InboxDetailActivity extends AppCompatActivity {
     private JSONObject mArguments;
     private List<Message> messageList;
 
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +74,15 @@ public class InboxDetailActivity extends AppCompatActivity {
             setTitle(mItem.getUserName());
         }
         //Log.e("testing 123  ", String.valueOf(mItem));
+
+//        StringBuilder url = new StringBuilder(getString(R.string.message));
+//        // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
+//        url.append("?sender=");
+//        url.append("Ai");
+//        url.append("&recipient=");
+//        url.append(mItem.getUserName());
+//        new MessageTaskGet().execute(url.toString());
+
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
@@ -79,7 +92,7 @@ public class InboxDetailActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 String msg = messageTextField.getText().toString();
-                Log.e("sendBtn", msg);
+                //Log.e("sendBtn", msg);
                 if (msg.equals("")){
                     return;
                 } else {
@@ -102,7 +115,6 @@ public class InboxDetailActivity extends AppCompatActivity {
 
     @Override
     public void onResume(){
-        super.onResume();
         StringBuilder url = new StringBuilder(getString(R.string.message));
         // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
         url.append("?sender=");
@@ -110,6 +122,19 @@ public class InboxDetailActivity extends AppCompatActivity {
         url.append("&recipient=");
         url.append(mItem.getUserName());
         new MessageTaskGet().execute(url.toString());
+//        handler.postDelayed(runnable = new Runnable() {
+//            public void run() {
+//                handler.postDelayed(runnable, delay);
+//                StringBuilder url = new StringBuilder(getString(R.string.message));
+//                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
+//                url.append("?sender=");
+//                url.append("Ai");
+//                url.append("&recipient=");
+//                url.append(mItem.getUserName());
+//                new MessageTaskGet().execute(url.toString());
+//            }
+//        }, delay);
+        super.onResume();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -117,7 +142,7 @@ public class InboxDetailActivity extends AppCompatActivity {
             recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, messageList));
         }
     }
-    public static class SimpleItemRecyclerViewAdapter
+    private class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final InboxDetailActivity mParentActivity;
@@ -148,7 +173,7 @@ public class InboxDetailActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            if ((mValues.get(position).getSender()).equals("test") ){
+            if ((mValues.get(position).getSender()).equals(mItem.getUserName()) ){
                 holder.mIdView.setText(mValues.get(position).getSender());
                 holder.mContentView.setText(mValues.get(position).getMessage());
             } else {
@@ -161,11 +186,11 @@ public class InboxDetailActivity extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
 //            Log.e("viewholder", String.valueOf(mValues.get(position).getSender()));
-//            Log.e("viewholder", String.valueOf((mValues.get(position).getSender()).equals("test") ));
+//            Log.e("viewholder", String.valueOf((mValues.get(position).getSender()).getClass().getName()));
+//            Log.e("viewholder", String.valueOf((mValues.get(position).getSender()) =="test"));
             int viewType = 1; //Default is 1
-            if ((mValues.get(position).getSender()).equals("test")) {
-
-                viewType = 0; //if zero, it will be a header view
+            if ((mValues.get(position).getSender()).equals(mItem.getUserName())) {
+                viewType = 0; //if zero, their_message layout
             }
             return viewType;
         }
@@ -196,7 +221,7 @@ public class InboxDetailActivity extends AppCompatActivity {
                 String response = "";
                 HttpURLConnection urlConnection = null;
                 for (String url : urls) {
-                    Log.e("urConnection", String.valueOf(url));
+                    //Log.e("urConnection", String.valueOf(url));
                     try {
                         URL urlObject = new URL(url);
                         urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -260,7 +285,7 @@ public class InboxDetailActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
             for (String url : urls) {
-                Log.e("urConnection", String.valueOf(url));
+                //Log.e("urConnection", String.valueOf(url));
                 try {
                     URL urlObject = new URL(url);
                     urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -298,7 +323,7 @@ public class InboxDetailActivity extends AppCompatActivity {
                     //Log.e("InboxDetailActivity", String.valueOf(jsonObject));
                     if (jsonObject.getBoolean("success") == true) {
                         messageList = Message.parseMessageJson(jsonObject.getString("message"));
-                        Log.e("task", String.valueOf(messageList));
+                        //Log.e("task", String.valueOf(messageList));
                         if (!messageList.isEmpty()) {
                             setupRecyclerView((RecyclerView) recyclerView);
                         }
