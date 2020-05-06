@@ -12,17 +12,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inbox_detail_container"
-        android:name="inbox.InboxListFragment"
         android:layout_width="match_parent"
-        android:layout_height="734dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="inbox.InboxListActivity"
-        tools:listitem="@layout/my_message" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
@@ -53,7 +50,7 @@
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-<!--<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
 <!--    xmlns:tools="http://schemas.android.com/tools"-->
 <!--    android:layout_width="match_parent"-->
@@ -62,58 +59,57 @@
 <!--    tools:context="inbox.InboxDetailActivity"-->
 <!--    tools:ignore="MergeRootFrame">-->
 
+<!--    <androidx.coordinatorlayout.widget.CoordinatorLayout-->
+<!--        android:id="@+id/coordinatorLayout"-->
+<!--        android:layout_width="413dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:fitsSystemWindows="true"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/linearLayout"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:context="inbox.InboxDetailActivity"-->
+<!--        tools:ignore="MergeRootFrame">-->
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/constraintLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
 
 <!--        <androidx.recyclerview.widget.RecyclerView-->
 <!--            android:id="@+id/inbox_detail_container"-->
-<!--            android:name="inbox.InboxListFragment"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="686dp"-->
-<!--            android:layout_marginBottom="3dp"-->
-<!--            app:layoutManager="LinearLayoutManager"-->
-<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            tools:context="inbox.InboxListActivity"-->
-<!--            tools:listitem="@layout/my_message" />-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/linearLayout2"-->
 <!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="45dp"-->
-<!--            android:background="@color/colorAccent"-->
-<!--            android:gravity="bottom"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent">-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:layoutManager="LinearLayoutManager"-->
+<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
-<!--            <EditText-->
-<!--                android:id="@+id/myMessageTextField"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="2"-->
-<!--                android:ems="10"-->
-<!--                android:hint="Write a message"-->
-<!--                android:inputType="text"-->
-<!--                android:paddingHorizontal="10dp"-->
-<!--                android:visibility="visible" />-->
+<!--    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/sendButton"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginHorizontal="10dp"-->
-<!--                android:background="@drawable/ic_send_black_24dp"-->
-<!--                android:padding="20dp"-->
-<!--                android:scaleType="fitCenter"-->
-<!--                android:visibility="visible" />-->
-<!--        </LinearLayout>-->
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linearLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:background="@color/colorAccent"-->
+<!--        android:fitsSystemWindows="false"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent">-->
 
-<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+<!--        <EditText-->
+<!--            android:id="@+id/myMessageTextField"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="2"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/write_a_message"-->
+<!--            android:inputType="text"-->
+<!--            android:paddingHorizontal="10dp" />-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/sendButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:background="@drawable/ic_send_black_24dp"-->
+<!--            android:padding="20dp"-->
+<!--            android:scaleType="fitCenter" />-->
+<!--    </LinearLayout>-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
