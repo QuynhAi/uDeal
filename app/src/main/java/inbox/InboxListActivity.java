@@ -75,7 +75,7 @@ public class InboxListActivity extends Fragment {
     public void onResume(){
         super.onResume();
         if(mUserList == null){
-            new UserInboxTask().execute(getString(R.string.members));
+            new UserInboxTask().execute(getString(R.string.register));
         }
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -202,7 +202,7 @@ public class InboxListActivity extends Fragment {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("names"));
+                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("member"));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
                     }
