@@ -66,6 +66,9 @@ public class InboxListActivity extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(mUserList == null){
+            new UserInboxTask().execute(getString(R.string.register));
+        }
     }
 
     @Override
