@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -31,12 +34,15 @@ public class Home extends Fragment {
 
     private ImageView myImageView;
     private JSONArray values;
+    private View myView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().setTitle("Home");
         View view = inflater.inflate(R.layout.activity_home, container, false);
+        myView = view;
         myImageView = (ImageView) view.findViewById(R.id.displayphoto);
+        loadPreferences();
         return view;
     }
 
@@ -49,6 +55,17 @@ public class Home extends Fragment {
           //  Log.d("myTag", "imageview is null");
         //    new ImageTask().execute(urlTextFields.toString());
       //  }
+    }
+
+    private void loadPreferences() {
+
+        SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                Context.MODE_PRIVATE);
+
+        // Get value
+        String temp = settings.getString(getString(R.string.username), "");
+        TextView tempTextView = myView.findViewById(R.id.username_display);
+        tempTextView.setText("Hello" + temp);
     }
 
     private class ImageTask extends AsyncTask<String, Void, String> {
