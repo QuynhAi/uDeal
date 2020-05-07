@@ -67,7 +67,7 @@ public class InboxListActivity extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(mUserList == null){
-            new UserInboxTask().execute(getString(R.string.register));
+            new UserInboxTask().execute(getString(R.string.register_temp));
         }
     }
 
@@ -75,7 +75,7 @@ public class InboxListActivity extends Fragment {
     public void onResume(){
         super.onResume();
         if(mUserList == null){
-            new UserInboxTask().execute(getString(R.string.register));
+            new UserInboxTask().execute(getString(R.string.register_temp));
         }
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="members">https://udeal-app-services-backend.herokuapp.com/members</string>
-    <!--
+
     <string name="register">https://udeal-app-services-backend.herokuapp.com/register</string>
     <string name="login">https://udeal-app-services-backend.herokuapp.com/login</string>
-    -->
+
     <string name="additem">https://udeal-app-services-backend.herokuapp.com/additem</string>
     <string name="addphoto">https://udeal-app-services-backend.herokuapp.com/addphoto</string>
     <string name="upload">https://udeal-app-services-backend.herokuapp.com/upload</string>
     <string name="download">https://udeal-app-services-backend.herokuapp.com/download</string>
     <string name="storage">https://udeal-app.s3.us-west-2.amazonaws.com/</string>
-
-    <string name="register">http://nguyen97-services-backend.herokuapp.com/register</string>
-    <string name="login">http://nguyen97-services-backend.herokuapp.com/login</string>
-    <string name="message">http://nguyen97-services-backend.herokuapp.com/message</string>
+<!-- Delete below once backend has been integrated together. -->
+    <string name="register_temp">http://nguyen97-services-backend.herokuapp.com/register</string>
+    <string name="login_temp">http://nguyen97-services-backend.herokuapp.com/login</string>
+    <string name="message_temp">http://nguyen97-services-backend.herokuapp.com/message</string>
 </resources>

@@ -99,7 +99,7 @@ public class InboxDetailActivity extends AppCompatActivity {
                     //Construct a JSONObject to build a formatted message to send.
                     mArguments = new JSONObject();
                     try {
-                        StringBuilder url = new StringBuilder(getString(R.string.message));
+                        StringBuilder url = new StringBuilder(getString(R.string.message_temp));
                         mArguments.put(Message.SENDER, "Ai");
                         mArguments.put(Message.RECIPIENT, mItem.getUserName());
                         mArguments.put(Message.CONTENT, msg);
@@ -115,7 +115,7 @@ public class InboxDetailActivity extends AppCompatActivity {
 
     @Override
     public void onResume(){
-        StringBuilder url = new StringBuilder(getString(R.string.message));
+        StringBuilder url = new StringBuilder(getString(R.string.message_temp));
         // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
         url.append("?sender=");
         url.append("Ai");
@@ -263,7 +263,7 @@ public class InboxDetailActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success") == true) {
                     //Log.e("task messageTaskPost", String.valueOf(messageList));
                     messageTextField.setText("");
-                    StringBuilder url = new StringBuilder(getString(R.string.message));
+                    StringBuilder url = new StringBuilder(getString(R.string.message_temp));
                     url.append("?sender=");
                     url.append("Ai");
                     url.append("&recipient=");
