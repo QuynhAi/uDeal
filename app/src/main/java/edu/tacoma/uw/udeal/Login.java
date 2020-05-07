@@ -2,7 +2,9 @@ package edu.tacoma.uw.udeal;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +35,8 @@ public class Login extends AppCompatActivity {
     private String TAG = "Login";
     public static String CURRENT_USER;
 
+    private SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +44,19 @@ public class Login extends AppCompatActivity {
 
         emailEdit = (EditText) findViewById(R.id.email);
         passwordEdit = (EditText) findViewById(R.id.password);
+
+        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                , Context.MODE_PRIVATE);
+        if(!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN), false)) {
+           // getSupportFragmentManager().beginTransaction()
+           //         .add(R.id.sign_in_fragment_id, new LoginFragment())
+            //        .commit();
+        } else {
+            // Go to main activity if we have already logged in
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
 
         Button loginButton = (Button)findViewById(R.id.loginButton);
@@ -71,10 +88,14 @@ public class Login extends AppCompatActivity {
             mArguments.put(UserLogin.EMAIL, userLogin.getEmail());
             mArguments.put(UserLogin.PASSWORD, userLogin.getPassword());
             new LoginAsyncTask().execute(url.toString());
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putString(getString(R.string.username), userLogin.getEmail());
+            editor.commit();
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();
         }
     }
+
     private class LoginAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -115,6 +136,10 @@ public class Login extends AppCompatActivity {
                 JSONObject resultObject = new JSONObject(result);
                 if(resultObject.getBoolean("success") == true){
                     Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
+                    mSharedPreferences
+                            .edit()
+                            .putBoolean(getString(R.string.LOGGEDIN), true)
+                            .commit();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     startActivity(intent);
                 } else {
