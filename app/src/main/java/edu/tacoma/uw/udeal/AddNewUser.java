@@ -115,8 +115,8 @@ public class AddNewUser extends AppCompatActivity {
             try{
                 JSONObject resultObject = new JSONObject(result);
                 if(resultObject.getBoolean("success") == true){
-                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddNewUser.this, MainActivity.class);
+                    Toast.makeText(getApplicationContext(), "Registration successful. Please login with your newly registered account.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(AddNewUser.this, Login.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Account already exists or missing information", Toast.LENGTH_SHORT).show();
