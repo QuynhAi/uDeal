@@ -63,9 +63,11 @@ public class Home extends Fragment {
                 Context.MODE_PRIVATE);
 
         // Get value
-        String temp = settings.getString(getString(R.string.username), "");
+  //      String temp = settings.getString(getString(R.string.username), "");
+
         TextView tempTextView = myView.findViewById(R.id.username_display);
-        tempTextView.setText("Hello" + temp);
+//        tempTextView.setText("Hello" + temp);
+        tempTextView.setText("Hello" + settings.getInt(getString(R.string.member_id), 0));
     }
 
     private class ImageTask extends AsyncTask<String, Void, String> {

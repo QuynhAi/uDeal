@@ -61,6 +61,9 @@ public class ProfileActivity extends AppCompatActivity {
             sharedPreferences.edit().remove(getString(R.string.username))
                     .commit();
 
+            sharedPreferences.edit().remove(getString(R.string.member_id))
+                    .commit();
+
             Intent i = new Intent(this, Login.class);
             startActivity(i);
             finish();
