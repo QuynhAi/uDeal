@@ -12,6 +12,7 @@
     <string name="storage">https://udeal-app.s3.us-west-2.amazonaws.com/</string>
     <string name="get_specific_user">https://udeal-app-services-backend.herokuapp.com/members/specific?emailAddr=</string>
     <string name="get_all_items">https://udeal-app-services-backend.herokuapp.com/photos/all</string>
+    <string name="load_limited">https://udeal-app-services-backend.herokuapp.com/photos/limited</string>
 <!-- Delete below once backend has been integrated together. -->
     <string name="register_temp">http://nguyen97-services-backend.herokuapp.com/register</string>
     <string name="login_temp">http://nguyen97-services-backend.herokuapp.com/login</string>

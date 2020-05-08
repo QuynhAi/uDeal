@@ -9,8 +9,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:name="edu.tacoma.uw.udeal.ItemListFragment"
-        android:layout_width="377dp"
-        android:layout_height="700dp"
+        android:layout_width="378dp"
+        android:layout_height="667dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"

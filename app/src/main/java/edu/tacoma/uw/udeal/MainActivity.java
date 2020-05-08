@@ -88,11 +88,24 @@ public class MainActivity extends AppCompatActivity {
 
     public SimpleItemRecyclerViewAdapter mAdapter;
 
+    private static int LOAD_LIMIT = 3;
+
+    private static int INITIAL_LOAD = 3;
+
+    private int loadCount;
+
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+    private LinearLayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadCount = 0;
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -102,12 +115,33 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         assert mRecyclerView != null;
         initialRecyclerView((RecyclerView) mRecyclerView);
-        new DisplayItemsAsyncTask().execute(getString(R.string.get_all_items));
+        new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0);
     }
 
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
         mAdapter = new SimpleItemRecyclerViewAdapter(this, mItemList);
         mRecyclerView.setAdapter(mAdapter);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount);
+                          //  loading = true;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -213,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     for(int i = 0; i < myJSONArray.length(); i++) {
                         mItemList.add(ItemDisplay.parseItemJson(myJSONArray.getJSONObject(i), i, mAdapter ));
                         mAdapter.notifyItemInserted(mItemList.size() - 1);
-
+                        loading = true;
                     }
                 }
             } catch (JSONException e) {
