@@ -16,5 +16,6 @@
     <string name="LOGIN_PREFS">edu.tacoma.uw.udeal.PREFS</string>
     <string name="LOGGEDIN">loggedin</string>
     <string name="action_logout">Sign Out</string>
+    <string name="email">Email</string>
     <string name="username">Username</string>
 </resources>

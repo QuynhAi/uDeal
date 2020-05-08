@@ -34,6 +34,7 @@ public class Login extends AppCompatActivity {
     private JSONObject mArguments;
     private String TAG = "Login";
     public static String CURRENT_USER;
+    private String inputtedEmail = "";
 
     private SharedPreferences mSharedPreferences;
 
@@ -87,10 +88,8 @@ public class Login extends AppCompatActivity {
         try {
             mArguments.put(UserLogin.EMAIL, userLogin.getEmail());
             mArguments.put(UserLogin.PASSWORD, userLogin.getPassword());
+            inputtedEmail = userLogin.getEmail();
             new LoginAsyncTask().execute(url.toString());
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putString(getString(R.string.username), userLogin.getEmail());
-            editor.commit();
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();
         }
@@ -140,8 +139,9 @@ public class Login extends AppCompatActivity {
                             .edit()
                             .putBoolean(getString(R.string.LOGGEDIN), true)
                             .commit();
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    startActivity(intent);
+                    StringBuilder getUserInfoURL = new StringBuilder(getString(R.string.get_specific_user));
+                    getUserInfoURL.append(inputtedEmail);
+                    new GetUserInfoAsyncTask().execute(getUserInfoURL.toString());
                 } else {
                     Toast.makeText(getApplicationContext(), "Credentials did not match or missing information ", Toast.LENGTH_SHORT).show();
                     //Log.e(TAG, resultObject.getString("error"));
@@ -150,6 +150,62 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
             }
 
+        }
+    }
+
+    private class GetUserInfoAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to get user information, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to get user information: " + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success")) {
+                    String username = jsonObject.getJSONArray("names").getJSONObject(0).getString("username");
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString(getString(R.string.email), inputtedEmail);
+                    editor.putString(getString(R.string.username), username);
+                    editor.commit();
+                    Intent intent = new Intent(Login.this, MainActivity.class);
+                    startActivity(intent);
+                }
+
+            } catch (JSONException e) {
+                Log.d("myTag","FAILURE");
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 
