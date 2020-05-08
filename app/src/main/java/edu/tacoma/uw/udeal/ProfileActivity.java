@@ -55,6 +55,12 @@ public class ProfileActivity extends AppCompatActivity {
             sharedPreferences.edit().putBoolean(getString(R.string.LOGGEDIN), false)
                     .commit();
 
+            sharedPreferences.edit().remove(getString(R.string.email))
+                    .commit();
+
+            sharedPreferences.edit().remove(getString(R.string.username))
+                    .commit();
+
             Intent i = new Intent(this, Login.class);
             startActivity(i);
             finish();
