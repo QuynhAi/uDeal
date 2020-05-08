@@ -35,7 +35,7 @@ public class ItemDisplay implements Serializable {
     private int myIndex;
     private transient MainActivity.SimpleItemRecyclerViewAdapter myAdapter;
     private transient Bitmap myBitmap;
-    private byte[] myBitmapArray;
+    private byte[] myBitmapArray = {};
 
     public static final String ITEM_ID = "item_id";
     public static final String MEMBER_ID = "member_id";
@@ -54,7 +54,7 @@ public class ItemDisplay implements Serializable {
         this.myItemID = myItemID;
         this.myMemberID = myMemberID;
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
-        new ImageTask().execute(this.myURL);
+        //new ImageTask().execute(this.myURL);
         this.myTitle = myTitle;
         this.myLocation = myLocation;
         this.myDescription = myDescription;
