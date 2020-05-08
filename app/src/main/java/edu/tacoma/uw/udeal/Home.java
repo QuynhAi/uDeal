@@ -1,13 +1,19 @@
 package edu.tacoma.uw.udeal;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,47 +34,187 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+
+import inbox.InboxListActivity;
+import model.ItemDisplay;
 
 
 public class Home extends Fragment {
 
-    private ImageView myImageView;
-    private JSONArray values;
-    private View myView;
+    private boolean mTwoPane;
+
+    private List<ItemDisplay> mItemList;
+
+    private Bitmap tempBitmap;
+
+    private RecyclerView mRecyclerView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().setTitle("Home");
         View view = inflater.inflate(R.layout.activity_home, container, false);
-        myView = view;
-        myImageView = (ImageView) view.findViewById(R.id.displayphoto);
-        loadPreferences();
+
+        mRecyclerView = getActivity().findViewById(R.id.recyclerView);
+        // set layout as linear layout
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if (getActivity().findViewById(R.id.item_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+
+        assert mRecyclerView != null;
+        setupRecyclerView((RecyclerView) mRecyclerView);
+
         return view;
     }
 
     @Override
     public void onResume() {
-        StringBuilder urlTextFields = new StringBuilder(getString(R.string.download));
-        urlTextFields.append("?myfilename=f93fda4f-5cfc-4faf-8744-c2fdfb8d7e74.jpg");
         super.onResume();
-        //if (myImageView == null) {
-          //  Log.d("myTag", "imageview is null");
-        //    new ImageTask().execute(urlTextFields.toString());
-      //  }
+        if (mItemList == null) {
+            new DisplayItemsAsyncTask().execute(getString(R.string.get_all_items));
+        }
     }
 
-    private void loadPreferences() {
 
-        SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
-                Context.MODE_PRIVATE);
-
-        // Get value
-  //      String temp = settings.getString(getString(R.string.username), "");
-
-        TextView tempTextView = myView.findViewById(R.id.username_display);
-//        tempTextView.setText("Hello" + temp);
-        tempTextView.setText("Hello" + settings.getInt(getString(R.string.member_id), 0));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (mItemList != null) {
+            mRecyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mItemList, mTwoPane));
+        }
     }
+
+    public class SimpleItemRecyclerViewAdapter
+            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+
+        private final Home mParentActivity;
+        private final List<ItemDisplay> mValues;
+        private final boolean mTwoPane;
+        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ItemDisplay item = (ItemDisplay) view.getTag();
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putSerializable(ItemDisplayDetailFragment.ARG_ITEM_ID, item);
+                    ItemDisplayDetailFragment fragment = new ItemDisplayDetailFragment();
+                    fragment.setArguments(arguments);
+                    mParentActivity.getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.item_detail_container, fragment)
+                            .commit();
+                } else {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, ItemDisplayDetailActivity.class);
+                    intent.putExtra(ItemDisplayDetailFragment.ARG_ITEM_ID, item);
+
+                    context.startActivity(intent);
+                }
+            }
+        };
+
+        SimpleItemRecyclerViewAdapter(Home parent,
+                                      List<ItemDisplay> items,
+                                      boolean twoPane) {
+            mValues = items;
+            mParentActivity = parent;
+            mTwoPane = twoPane;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recyclerview_item, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final ViewHolder holder, int position) {
+            holder.mIdView.setText(mValues.get(position).getMyTitle());
+            holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
+            new ImageTask().execute(mValues.get(position).getMyURL());
+
+            holder.itemView.setTag(mValues.get(position));
+            holder.itemView.setOnClickListener(mOnClickListener);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mValues.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            final TextView mIdView;
+            final TextView mContentView;
+            final ImageView mImageView;
+
+
+            ViewHolder(View view) {
+                super(view);
+                mIdView = (TextView) view.findViewById(R.id.textViewTitle);
+                mContentView = (TextView) view.findViewById(R.id.textViewPrice);
+                mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
+            }
+        }
+    }
+
+    private class DisplayItemsAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to get item information, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getActivity(), "Unable to get items information: " + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success")) {
+               //     mItemList = ItemDisplay.parseItemJson(jsonObject.getJSONArray("names"));
+
+                    if (!mItemList.isEmpty()) {
+                        setupRecyclerView((RecyclerView) mRecyclerView);
+                    }
+                }
+            } catch (JSONException e) {
+                Log.d("myTag", "FAILURE");
+                Toast.makeText(getActivity(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 
     private class ImageTask extends AsyncTask<String, Void, String> {
         @Override
@@ -100,47 +246,28 @@ public class Home extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        public void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
-                Toast.makeText(getActivity().getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
-                        .show();
+                Log.d("myTag", "Error displaying image");
                 return;
             }
             try {
-                Log.d("myTag","WE SUCCESSFULLY ESTABLISHED URL CONNECTION");
                 JSONObject jsonObject = new JSONObject(s);
-                Log.d("myTag", jsonObject.toString());
                 if (jsonObject.getBoolean("success")) {
-                    Log.d("myTag","We are inside the success feature");
-                    values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
                     Bitmap bitmap = null;
-                    byte[] tmp= new byte[values.length()];
-                    for(int i=0;i< values.length(); i++){
-                        tmp[i]=(byte)(((int) values.get(i)) & 0xFF);
+                    byte[] tmp = new byte[values.length()];
+                    for (int i = 0; i < values.length(); i++) {
+                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
                     }
                     bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                    myImageView.setImageBitmap(bitmap);
-              /*      Log.d("myTag","We have gotten the values");
-                    Log.d("myTag",values.toString());
-                    byte[] data = values.toString().getBytes("UTF-8");
-                    Log.d("myTag", "WE HAVE SUCCESSFULLY GOTTEN THE BITES");
-                    Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    if(bmp == null) {
-                        Log.d("myTag", "BMP IS NULL");
-                    }
-                    myImageView.setImageBitmap(bmp);
-                    Log.d("myTag", "IMAGE IS SET"); */
-                //    if (!mCourseList.isEmpty()) {
-                //        setupRecyclerView((RecyclerView) mRecyclerView);
-               //     }
+                    // mImageView.setImageBitmap(bitmap);
                 }
 
             } catch (JSONException e) {
-                Log.d("myTag","FAILURE");
-                Toast.makeText(getActivity().getApplicationContext(), "JSON Error: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                Log.d("myTag", "FAILURE");
             }
         }
     }
-
 }
+
