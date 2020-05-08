@@ -193,9 +193,11 @@ public class Login extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success")) {
                     String username = jsonObject.getJSONArray("names").getJSONObject(0).getString("username");
+                    int userid = jsonObject.getJSONArray("names").getJSONObject(0).getInt("member_id");
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putString(getString(R.string.email), inputtedEmail);
                     editor.putString(getString(R.string.username), username);
+                    editor.putInt(getString(R.string.member_id), userid);
                     editor.commit();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     startActivity(intent);

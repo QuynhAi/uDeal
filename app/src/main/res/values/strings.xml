@@ -18,4 +18,5 @@
     <string name="action_logout">Sign Out</string>
     <string name="email">Email</string>
     <string name="username">Username</string>
+    <string name="member_id">User ID</string>
 </resources>

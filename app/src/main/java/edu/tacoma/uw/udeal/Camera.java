@@ -1,7 +1,9 @@
 package edu.tacoma.uw.udeal;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -110,7 +112,10 @@ public class Camera extends Fragment {
         postItem = (Button) view.findViewById(R.id.post);
         postItem.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                int id = 3; // TODO: REPLACE THIS WITH USER ID OF CURRENT USER
+                SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                        Context.MODE_PRIVATE);
+                int theUserID = settings.getInt(getString(R.string.username), 0);
+                int id = theUserID;
                 String title = mytitle.getText().toString();
                 double price = Double.parseDouble( myprice.getText().toString()); // TODO: FIND BETTER WAY TO CONVERT TO DOUBLE
                 String desc = mydescription.getText().toString();
