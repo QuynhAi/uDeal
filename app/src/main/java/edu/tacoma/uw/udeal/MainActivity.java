@@ -245,7 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success")) {
                     JSONArray myJSONArray = jsonObject.getJSONArray("names");
                     for(int i = 0; i < myJSONArray.length(); i++) {
-                        mItemList.add(ItemDisplay.parseItemJson(myJSONArray.getJSONObject(i), i, mAdapter ));
+                        int temp = mItemList.size();
+                        mItemList.add(ItemDisplay.parseItemJson(myJSONArray.getJSONObject(i), temp, mAdapter ));
                         mAdapter.notifyItemInserted(mItemList.size() - 1);
                         loading = true;
                     }
