@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -179,6 +180,19 @@ public class MainActivity extends AppCompatActivity {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
             holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
+            holder.mLikeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!holder.isPressed) {
+                        holder.isPressed = true;
+                        holder.mLikeImage.setImageResource(R.drawable.heart_icon);
+                    } else {
+                        holder.isPressed = false;
+                        holder.mLikeImage.setImageResource(R.drawable.heart_icon_pressed);
+                    }
+
+                }
+            });
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -193,13 +207,17 @@ public class MainActivity extends AppCompatActivity {
             final TextView mIdView;
             final TextView mContentView;
             final ImageView mImageView;
+            final ImageView mLikeImage;
+            boolean isPressed;
 
 
             ViewHolder(View view) {
                 super(view);
+                isPressed = true;
                 mIdView = (TextView) view.findViewById(R.id.textViewTitle);
                 mContentView = (TextView) view.findViewById(R.id.textViewPrice);
                 mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
+                mLikeImage = (ImageView) view.findViewById(R.id.heartImage);
             }
         }
     }
