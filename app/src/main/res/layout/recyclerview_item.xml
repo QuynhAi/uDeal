@@ -4,37 +4,48 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="#fff"
-    app:cardCornerRadius="3dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="3dp"
-    app:contentPadding="5dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:text="Title"
-            android:textColor="#000"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"/>
+
         <ImageView
             android:id="@+id/imageViewImage"
             android:layout_height="200dp"
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:background="@drawable/ic_chat_bubble_black_24dp"/>
+            android:background="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="152dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Title"
+            android:textColor="#000"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/textViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:text="This will be the price"
-            android:textSize="20sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textSize="20sp" />
 
+        <ImageView
+            android:id="@+id/heartImage"
+            android:layout_width="26dp"
+            android:layout_height="25dp"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@+id/textViewPrice"
+            android:background="@drawable/heart_icon" />
 
     </LinearLayout>
 
