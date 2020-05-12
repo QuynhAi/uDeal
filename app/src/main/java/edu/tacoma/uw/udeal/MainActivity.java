@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import inbox.MessageInboxActivity;
 
 
 public class MainActivity extends AppCompatActivity {

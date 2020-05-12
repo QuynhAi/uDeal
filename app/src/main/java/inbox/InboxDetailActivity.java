@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +45,7 @@ import model.Message;
 import model.UserInbox;
 
 /**
- * An activity representing a single Inbox detail screen. This
- * activity is only used on narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link InboxListActivity}.
+
  */
 public class InboxDetailActivity extends AppCompatActivity {
     public static final String ARG_ITEM_ID = "item_id";
@@ -58,6 +56,7 @@ public class InboxDetailActivity extends AppCompatActivity {
     private View recyclerView;
     private JSONObject mArguments;
     private List<Message> messageList;
+    private SimpleItemRecyclerViewAdapter adapter;
 
     Handler handler = new Handler();
     Runnable runnable;
@@ -73,6 +72,7 @@ public class InboxDetailActivity extends AppCompatActivity {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
             setTitle(mItem.getUserName());
         }
+
         //Log.e("testing 123  ", String.valueOf(mItem));
 
 //        StringBuilder url = new StringBuilder(getString(R.string.message));
@@ -83,8 +83,6 @@ public class InboxDetailActivity extends AppCompatActivity {
 //        url.append(mItem.getUserName());
 //        new MessageTaskGet().execute(url.toString());
 
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
 
         sendBtn = (ImageButton)findViewById(R.id.sendButton);
         messageTextField = (EditText)findViewById(R.id.myMessageTextField);
@@ -104,6 +102,7 @@ public class InboxDetailActivity extends AppCompatActivity {
                         mArguments.put(Message.RECIPIENT, mItem.getUserName());
                         mArguments.put(Message.CONTENT, msg);
                         new MessageTaskPost().execute(url.toString());
+
                     } catch (JSONException e) {
                         Toast.makeText(getApplicationContext(), "Error with JSON creation: " + e.getMessage() , Toast.LENGTH_SHORT).show();
                     }
@@ -111,6 +110,8 @@ public class InboxDetailActivity extends AppCompatActivity {
             }
         });
 
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
     }
 
     @Override
@@ -122,24 +123,25 @@ public class InboxDetailActivity extends AppCompatActivity {
         url.append("&recipient=");
         url.append(mItem.getUserName());
         new MessageTaskGet().execute(url.toString());
-//        handler.postDelayed(runnable = new Runnable() {
-//            public void run() {
-//                handler.postDelayed(runnable, delay);
-//                StringBuilder url = new StringBuilder(getString(R.string.message));
-//                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
-//                url.append("?sender=");
-//                url.append("Ai");
-//                url.append("&recipient=");
-//                url.append(mItem.getUserName());
-//                new MessageTaskGet().execute(url.toString());
-//            }
-//        }, delay);
+        handler.postDelayed(runnable = new Runnable() {
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                StringBuilder url = new StringBuilder(getString(R.string.message));
+                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
+                url.append("?sender=");
+                url.append("Ai");
+                url.append("&recipient=");
+                url.append(mItem.getUserName());
+                new MessageTaskGet().execute(url.toString());
+            }
+        }, delay);
         super.onResume();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         if (messageList != null){
-            recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, messageList));
+            adapter = new SimpleItemRecyclerViewAdapter(this, messageList);
+            recyclerView.setAdapter(adapter);
         }
     }
     private class SimpleItemRecyclerViewAdapter
@@ -185,9 +187,6 @@ public class InboxDetailActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-//            Log.e("viewholder", String.valueOf(mValues.get(position).getSender()));
-//            Log.e("viewholder", String.valueOf((mValues.get(position).getSender()).getClass().getName()));
-//            Log.e("viewholder", String.valueOf((mValues.get(position).getSender()) =="test"));
             int viewType = 1; //Default is 1
             if ((mValues.get(position).getSender()).equals(mItem.getUserName())) {
                 viewType = 0; //if zero, their_message layout
@@ -198,7 +197,9 @@ public class InboxDetailActivity extends AppCompatActivity {
         public int getItemCount() {
             return mValues.size();
         }
-
+        public void addItem(Message msg){
+            notifyDataSetChanged();
+        }
         class ViewHolder extends RecyclerView.ViewHolder {
             public TextView mIdView;
             public TextView mContentView;
@@ -263,12 +264,11 @@ public class InboxDetailActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success") == true) {
                     //Log.e("task messageTaskPost", String.valueOf(messageList));
                     messageTextField.setText("");
-                    StringBuilder url = new StringBuilder(getString(R.string.message));
-                    url.append("?sender=");
-                    url.append("Ai");
-                    url.append("&recipient=");
-                    url.append(mItem.getUserName());
-                    new MessageTaskGet().execute(url.toString());
+                    //Log.e("mArguments", String.valueOf(mArguments.get(Message.SENDER)));
+                    messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
+                            mArguments.get(Message.RECIPIENT).toString(),
+                            mArguments.get(Message.CONTENT).toString(), "0"));
+                    adapter.notifyDataSetChanged();
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),

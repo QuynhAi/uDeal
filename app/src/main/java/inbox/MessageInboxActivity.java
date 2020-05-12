@@ -1,28 +1,28 @@
 package inbox;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import edu.tacoma.uw.udeal.R;
-
-import model.UserInbox;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -31,63 +31,60 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-/**
- * An activity representing a list of Inboxes. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link InboxDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
-public class InboxListActivity extends Fragment {
+import edu.tacoma.uw.udeal.CartActivity;
+import edu.tacoma.uw.udeal.MainActivity;
+import edu.tacoma.uw.udeal.PostActivity;
+import edu.tacoma.uw.udeal.ProfileActivity;
+import edu.tacoma.uw.udeal.R;
+import model.UserInbox;
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
+public class MessageInboxActivity extends AppCompatActivity {
     private boolean mTwoPane;
     private List<UserInbox> mUserList;
     private RecyclerView mRecyclerView;
     private int mColumnCount = 1;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_inbox_list, container, false);
-        getActivity().setTitle("Inbox");
-
-        mRecyclerView = view.findViewById(R.id.inbox_list);
-        assert mRecyclerView != null;
-        setupRecyclerView((RecyclerView) mRecyclerView);
-        if (getActivity().findViewById(R.id.inbox_detail_container) != null) {
-            mTwoPane = true;
-        }
-        return view;
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_message_inbox);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        Menu menu = bottomNav.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+        menuItem.setChecked(true);
         if(mUserList == null){
             new UserInboxTask().execute(getString(R.string.register));
         }
+        mRecyclerView = findViewById(R.id.fragment_container);
+        assert mRecyclerView != null;
+        setupRecyclerView((RecyclerView) mRecyclerView);
+        if (findViewById(R.id.inbox_detail_container) != null) {
+            mTwoPane = true;
+        }
     }
 
-    @Override
+
+
+
+
     public void onResume(){
         super.onResume();
         if(mUserList == null){
-            new UserInboxTask().execute(getString(R.string.register));
+            new MessageInboxActivity.UserInboxTask().execute(getString(R.string.register));
         }
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         if (mUserList != null){
-            recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mUserList, mTwoPane));
+            recyclerView.setAdapter(new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList, mTwoPane));
         }
     }
 
     public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+            extends RecyclerView.Adapter<MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final InboxListActivity mParentActivity;
+        private final MessageInboxActivity mParentActivity;
         private final List<UserInbox> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -104,7 +101,7 @@ public class InboxListActivity extends Fragment {
 //                            .replace(R.id.inbox_detail_container, fragment)
 //                            .commit();
 
-                   // Testing
+                    // Testing
                     Context context = view.getContext();
                     Intent intent = new Intent(context, InboxDetailActivity.class);
                     intent.putExtra(InboxDetailActivity.ARG_ITEM_ID, item);
@@ -118,7 +115,7 @@ public class InboxListActivity extends Fragment {
             }
         };
 
-        SimpleItemRecyclerViewAdapter(InboxListActivity parent,
+        SimpleItemRecyclerViewAdapter(MessageInboxActivity parent,
                                       List<UserInbox> items,
                                       boolean twoPane) {
             mValues = items;
@@ -127,14 +124,14 @@ public class InboxListActivity extends Fragment {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.inbox_list_content, parent, false);
-            return new ViewHolder(view);
+            return new MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getUserName());
             holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
@@ -162,7 +159,6 @@ public class InboxListActivity extends Fragment {
             }
         }
     }
-
 
     private class UserInboxTask extends AsyncTask<String, Void, String> {
         @Override
@@ -195,7 +191,7 @@ public class InboxListActivity extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
-                Toast.makeText(getContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
@@ -208,9 +204,36 @@ public class InboxListActivity extends Fragment {
                     }
                 }
             } catch (JSONException e) {
-                Toast.makeText(getContext(), "JSON Error: " + e.getMessage(),
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
                         Toast.LENGTH_SHORT).show();
             }
         }
     }
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.nav_home:
+                            Intent h = new Intent(MessageInboxActivity.this, MainActivity.class);
+                            startActivity(h);
+                            break;
+                        case R.id.nav_camera:
+                            Intent p = new Intent(MessageInboxActivity.this, PostActivity.class);
+                            startActivity(p);
+                            break;
+                        case R.id.nav_inbox:
+                            break;
+                        case R.id.nav_cart:
+                            Intent c = new Intent(MessageInboxActivity.this, CartActivity.class);
+                            startActivity(c);
+                            break;
+                        case R.id.nav_person:
+                            Intent np = new Intent(MessageInboxActivity.this, ProfileActivity.class);
+                            startActivity(np);
+                            break;
+                    }
+                    return false;
+                }
+            };
 }
