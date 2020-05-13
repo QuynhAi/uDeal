@@ -9,17 +9,34 @@
     tools:context="inbox.ChatActivity"
     tools:ignore="MergeRootFrame">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/inbox_detail_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="50dp"
+                app:layoutManager="LinearLayoutManager"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fillViewport="true" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/inbox_detail_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        app:layoutManager="LinearLayoutManager"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:id="@+id/nestedScrollView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        >-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/inbox_detail_container"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginBottom="50dp"-->
+<!--            app:layoutManager="LinearLayoutManager"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:fillViewport="true"-->
+<!--            android:nestedScrollingEnabled="false"-->
+<!--            />-->
+<!--    </androidx.core.widget.NestedScrollView>-->
+
 
     <LinearLayout
         android:id="@+id/linearLayout"

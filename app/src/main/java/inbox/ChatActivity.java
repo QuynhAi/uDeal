@@ -94,6 +94,7 @@ public class ChatActivity extends AppCompatActivity {
 
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
     }
 
     @Override
@@ -104,18 +105,18 @@ public class ChatActivity extends AppCompatActivity {
         url.append("&recipient=");
         url.append(mItem.getOtherUserName());
         new MessageTaskGet().execute(url.toString());
-//        handler.postDelayed(runnable = new Runnable() {
-//            public void run() {
-//                handler.postDelayed(runnable, delay);
-//                StringBuilder url = new StringBuilder(getString(R.string.message));
-//                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
-//                url.append("?sender=");
-//                url.append(Login.CURRENT_USER_NAME);
-//                url.append("&recipient=");
-//                url.append(mItem.getOtherUserName());
-//                new MessageTaskGet().execute(url.toString());
-//            }
-//        }, delay);
+        handler.postDelayed(runnable = new Runnable() {
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                StringBuilder url = new StringBuilder(getString(R.string.message));
+                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
+                url.append("?sender=");
+                url.append(current);
+                url.append("&recipient=");
+                url.append(mItem.getOtherUserName());
+                new MessageTaskGet().execute(url.toString());
+            }
+        }, delay);
         super.onResume();
     }
 
@@ -123,6 +124,7 @@ public class ChatActivity extends AppCompatActivity {
         if (messageList != null){
             adapter = new SimpleItemRecyclerViewAdapter(this, messageList);
             recyclerView.setAdapter(adapter);
+            ((RecyclerView) recyclerView).scrollToPosition(messageList.size()-1);
         }
     }
     private class SimpleItemRecyclerViewAdapter
