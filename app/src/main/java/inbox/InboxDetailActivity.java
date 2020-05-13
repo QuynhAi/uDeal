@@ -72,18 +72,6 @@ public class InboxDetailActivity extends AppCompatActivity {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
             setTitle(mItem.getUserName());
         }
-
-        //Log.e("testing 123  ", String.valueOf(mItem));
-
-//        StringBuilder url = new StringBuilder(getString(R.string.message));
-//        // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
-//        url.append("?sender=");
-//        url.append("Ai");
-//        url.append("&recipient=");
-//        url.append(mItem.getUserName());
-//        new MessageTaskGet().execute(url.toString());
-
-
         sendBtn = (ImageButton)findViewById(R.id.sendButton);
         messageTextField = (EditText)findViewById(R.id.myMessageTextField);
         sendBtn.setOnClickListener(new View.OnClickListener(){
@@ -335,32 +323,3 @@ public class InboxDetailActivity extends AppCompatActivity {
             }
     }
 }
-
-
-
-
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == android.R.id.home) {
-//
-//            navigateUpTo(new Intent(this, InboxListActivity.class));
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-//        if (savedInstanceState == null) {
-//            Bundle arguments = new Bundle();
-//
-//            if(getIntent().getSerializableExtra(InboxDetailFragment.ARG_ITEM_ID) != null){
-//                arguments.putSerializable(InboxDetailFragment.ARG_ITEM_ID,
-//                        getIntent().getSerializableExtra(InboxDetailFragment.ARG_ITEM_ID));
-//                InboxDetailFragment fragment = new InboxDetailFragment();
-//                fragment.setArguments(arguments);
-//                getSupportFragmentManager().beginTransaction()
-//                        .add(R.id.inbox_detail_container, fragment)
-//                        .commit();
-//            }
-//        }

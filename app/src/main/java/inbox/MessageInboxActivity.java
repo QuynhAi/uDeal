@@ -54,9 +54,9 @@ public class MessageInboxActivity extends AppCompatActivity {
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
-        if(mUserList == null){
-            new UserInboxTask().execute(getString(R.string.register));
-        }
+//        if(mUserList == null){
+//            new UserInboxTask().execute(getString(R.string.register));
+//        }
         mRecyclerView = findViewById(R.id.fragment_container);
         assert mRecyclerView != null;
         setupRecyclerView((RecyclerView) mRecyclerView);
@@ -64,10 +64,6 @@ public class MessageInboxActivity extends AppCompatActivity {
             mTwoPane = true;
         }
     }
-
-
-
-
 
     public void onResume(){
         super.onResume();
