@@ -63,12 +63,21 @@ public class MessageInboxActivity extends AppCompatActivity {
         if (findViewById(R.id.inbox_detail_container) != null) {
             mTwoPane = true;
         }
+        return view;
     }
+    // @Override
+    // public void onCreate(Bundle savedInstanceState) {
+    //     super.onCreate(savedInstanceState);
+    //     if(mUserList == null){
+    //         new UserInboxTask().execute(getString(R.string.register_temp));
+    //     }
+    // }
 
     public void onResume(){
         super.onResume();
         if(mUserList == null){
             new MessageInboxActivity.UserInboxTask().execute(getString(R.string.register));
+            //new UserInboxTask().execute(getString(R.string.register_temp));
         }
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
