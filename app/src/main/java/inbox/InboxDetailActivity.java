@@ -2,6 +2,7 @@ package inbox;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -57,6 +58,8 @@ public class InboxDetailActivity extends AppCompatActivity {
     private JSONObject mArguments;
     private List<Message> messageList;
     private SimpleItemRecyclerViewAdapter adapter;
+    private String current;
+    private boolean mTwoPane;
 
     Handler handler = new Handler();
     Runnable runnable;
@@ -72,6 +75,10 @@ public class InboxDetailActivity extends AppCompatActivity {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
             setTitle(mItem.getOtherUserName());
         }
+
+        //current = Login.CURRENT_USER;
+        SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+        current = settings.getString(getString(R.string.username), "");
         sendBtn = (ImageButton)findViewById(R.id.sendButton);
         messageTextField = (EditText)findViewById(R.id.myMessageTextField);
         sendBtn.setOnClickListener(new View.OnClickListener(){
@@ -86,9 +93,10 @@ public class InboxDetailActivity extends AppCompatActivity {
                     mArguments = new JSONObject();
                     try {
                         StringBuilder url = new StringBuilder(getString(R.string.message));
-                        mArguments.put(Message.SENDER, Login.CURRENT_USER);
-                        Log.e("mArguments", String.valueOf(Login.CURRENT_USER));
+                        mArguments.put(Message.SENDER, current);
+                        Log.e("mArguments", String.valueOf(current));
                         mArguments.put(Message.RECIPIENT, mItem.getOtherUserName());
+                        Log.e("mArguments", String.valueOf(mItem.getOtherUserName()));
                         mArguments.put(Message.CONTENT, msg);
                         new MessageTaskPost().execute(url.toString());
 
@@ -101,13 +109,16 @@ public class InboxDetailActivity extends AppCompatActivity {
 
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+        if (findViewById(R.id.inbox_detail_container) != null) {
+            mTwoPane = true;
+        }
     }
 
     @Override
     public void onResume(){
         StringBuilder url = new StringBuilder(getString(R.string.message));
         url.append("?sender=");
-        url.append(Login.CURRENT_USER);
+        url.append(current);
         url.append("&recipient=");
         url.append(mItem.getOtherUserName());
         new MessageTaskGet().execute(url.toString());
@@ -253,10 +264,20 @@ public class InboxDetailActivity extends AppCompatActivity {
                     //Log.e("task messageTaskPost", String.valueOf(messageList));
                     messageTextField.setText("");
                     //Log.e("mArguments", String.valueOf(mArguments.get(Message.SENDER)));
-                    messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
-                            mArguments.get(Message.RECIPIENT).toString(),
-                            mArguments.get(Message.CONTENT).toString(), "0"));
-                    adapter.notifyDataSetChanged();
+                    if(!messageList.isEmpty()){
+                        Log.e("messageList", String.valueOf(messageList));
+                        messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
+                                mArguments.get(Message.RECIPIENT).toString(),
+                                mArguments.get(Message.CONTENT).toString(), "0"));
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
+                                mArguments.get(Message.RECIPIENT).toString(),
+                                mArguments.get(Message.CONTENT).toString(), "0"));
+                        setupRecyclerView((RecyclerView) recyclerView);
+                        adapter.notifyDataSetChanged();
+                    }
+
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),

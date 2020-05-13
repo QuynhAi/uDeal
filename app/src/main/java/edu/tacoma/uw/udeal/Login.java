@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Currency;
+
 import model.UserLogin;
 
 public class Login extends AppCompatActivity {
@@ -65,7 +67,9 @@ public class Login extends AppCompatActivity {
             public void onClick(View v){
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                CURRENT_USER = email;
+                if(CURRENT_USER == null){
+                    CURRENT_USER = email;
+                }
                 UserLogin userLogin = new UserLogin(email, password);
                 loginMethod(userLogin);
 
