@@ -32,7 +32,6 @@ public class Person extends Fragment {
     private static final int TAKE_PHOTO = 0;
     private TextView myName;
     private TextView myLocation;
-    private TextView myInvite;
 
     @Nullable
     @Override
