@@ -63,7 +63,6 @@ public class MessageInboxActivity extends AppCompatActivity {
         if (findViewById(R.id.inbox_detail_container) != null) {
             mTwoPane = true;
         }
-        return view;
     }
     // @Override
     // public void onCreate(Bundle savedInstanceState) {
@@ -76,8 +75,8 @@ public class MessageInboxActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         if(mUserList == null){
-            new MessageInboxActivity.UserInboxTask().execute(getString(R.string.register));
-            //new UserInboxTask().execute(getString(R.string.register_temp));
+            //new MessageInboxActivity.UserInboxTask().execute(getString(R.string.register));
+            new UserInboxTask().execute(getString(R.string.members));
         }
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -138,7 +137,7 @@ public class MessageInboxActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
-            holder.name.setText(mValues.get(position).getUserName());
+            holder.name.setText(mValues.get(position).getOtherUserName());
             holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
             holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
 
@@ -203,7 +202,7 @@ public class MessageInboxActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("member"));
+                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("names"));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
                     }

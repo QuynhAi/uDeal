@@ -70,7 +70,7 @@ public class InboxDetailActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.inbox_detail_container);
         if (savedInstanceState == null) {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
-            setTitle(mItem.getUserName());
+            setTitle(mItem.getOtherUserName());
         }
         sendBtn = (ImageButton)findViewById(R.id.sendButton);
         messageTextField = (EditText)findViewById(R.id.myMessageTextField);
@@ -85,9 +85,10 @@ public class InboxDetailActivity extends AppCompatActivity {
                     //Construct a JSONObject to build a formatted message to send.
                     mArguments = new JSONObject();
                     try {
-                        StringBuilder url = new StringBuilder(getString(R.string.message_temp));
-                        mArguments.put(Message.SENDER, "Ai");
-                        mArguments.put(Message.RECIPIENT, mItem.getUserName());
+                        StringBuilder url = new StringBuilder(getString(R.string.message));
+                        mArguments.put(Message.SENDER, Login.CURRENT_USER);
+                        Log.e("mArguments", String.valueOf(Login.CURRENT_USER));
+                        mArguments.put(Message.RECIPIENT, mItem.getOtherUserName());
                         mArguments.put(Message.CONTENT, msg);
                         new MessageTaskPost().execute(url.toString());
 
@@ -104,25 +105,24 @@ public class InboxDetailActivity extends AppCompatActivity {
 
     @Override
     public void onResume(){
-        StringBuilder url = new StringBuilder(getString(R.string.message_temp));
-        // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
+        StringBuilder url = new StringBuilder(getString(R.string.message));
         url.append("?sender=");
-        url.append("Ai");
+        url.append(Login.CURRENT_USER);
         url.append("&recipient=");
-        url.append(mItem.getUserName());
+        url.append(mItem.getOtherUserName());
         new MessageTaskGet().execute(url.toString());
-        handler.postDelayed(runnable = new Runnable() {
-            public void run() {
-                handler.postDelayed(runnable, delay);
-                StringBuilder url = new StringBuilder(getString(R.string.message));
-                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
-                url.append("?sender=");
-                url.append("Ai");
-                url.append("&recipient=");
-                url.append(mItem.getUserName());
-                new MessageTaskGet().execute(url.toString());
-            }
-        }, delay);
+//        handler.postDelayed(runnable = new Runnable() {
+//            public void run() {
+//                handler.postDelayed(runnable, delay);
+//                StringBuilder url = new StringBuilder(getString(R.string.message));
+//                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
+//                url.append("?sender=");
+//                url.append(Login.CURRENT_USER_NAME);
+//                url.append("&recipient=");
+//                url.append(mItem.getOtherUserName());
+//                new MessageTaskGet().execute(url.toString());
+//            }
+//        }, delay);
         super.onResume();
     }
 
@@ -163,7 +163,7 @@ public class InboxDetailActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            if ((mValues.get(position).getSender()).equals(mItem.getUserName()) ){
+            if ((mValues.get(position).getSender()).equals(mItem.getOtherUserName()) ){
                 holder.mIdView.setText(mValues.get(position).getSender());
                 holder.mContentView.setText(mValues.get(position).getMessage());
             } else {
@@ -176,7 +176,7 @@ public class InboxDetailActivity extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             int viewType = 1; //Default is 1
-            if ((mValues.get(position).getSender()).equals(mItem.getUserName())) {
+            if ((mValues.get(position).getSender()).equals(mItem.getOtherUserName())) {
                 viewType = 0; //if zero, their_message layout
             }
             return viewType;
