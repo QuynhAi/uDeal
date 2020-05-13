@@ -64,13 +64,6 @@ public class MessageInboxActivity extends AppCompatActivity {
             mTwoPane = true;
         }
     }
-    // @Override
-    // public void onCreate(Bundle savedInstanceState) {
-    //     super.onCreate(savedInstanceState);
-    //     if(mUserList == null){
-    //         new UserInboxTask().execute(getString(R.string.register_temp));
-    //     }
-    // }
 
     public void onResume(){
         super.onResume();
@@ -85,7 +78,7 @@ public class MessageInboxActivity extends AppCompatActivity {
         }
     }
 
-    public static class SimpleItemRecyclerViewAdapter
+    private class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final MessageInboxActivity mParentActivity;
@@ -107,20 +100,19 @@ public class MessageInboxActivity extends AppCompatActivity {
 
                     // Testing
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, InboxDetailActivity.class);
-                    intent.putExtra(InboxDetailActivity.ARG_ITEM_ID, item);
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
                     context.startActivity(intent);
                 } else {
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, InboxDetailActivity.class);
-                    intent.putExtra(InboxDetailActivity.ARG_ITEM_ID, item);
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
                     context.startActivity(intent);
                 }
             }
         };
 
-        SimpleItemRecyclerViewAdapter(MessageInboxActivity parent,
-                                      List<UserInbox> items,
+        SimpleItemRecyclerViewAdapter(MessageInboxActivity parent, List<UserInbox> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;
@@ -128,14 +120,14 @@ public class MessageInboxActivity extends AppCompatActivity {
         }
 
         @Override
-        public MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.inbox_list_content, parent, false);
-            return new MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder(view);
+            return new SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getOtherUserName());
             holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
