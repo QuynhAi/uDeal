@@ -72,7 +72,7 @@ public class ItemDisplayDetailFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.item_detail_id)).setText(mItemDisplay.getMyCategory());
             ((TextView) rootView.findViewById(R.id.item_detail_short_desc)).setText(mItemDisplay.getMyLocation());
             ((TextView) rootView.findViewById(R.id.item_detail_long_desc)).setText(mItemDisplay.getMyDescription());
-            ((TextView) rootView.findViewById(R.id.item_detail_prereqs)).setText(mItemDisplay.getMyDatePosted());
+            ((TextView) rootView.findViewById(R.id.item_detail_prereqs)).setText("Posted by " + mItemDisplay.getMyUsername());
         }
 
         return rootView;

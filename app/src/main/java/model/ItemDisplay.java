@@ -36,6 +36,7 @@ public class ItemDisplay implements Serializable {
     private transient MainActivity.SimpleItemRecyclerViewAdapter myAdapter;
     private transient Bitmap myBitmap;
     private byte[] myBitmapArray = {};
+    private String myUsername;
 
     public static final String ITEM_ID = "item_id";
     public static final String MEMBER_ID = "member_id";
@@ -47,10 +48,12 @@ public class ItemDisplay implements Serializable {
     public static final String PRICE = "price";
     public static final String LISTED = "listed";
     public static final String DATE_POSTED ="date_posted";
+    public static final String USERNAME = "username";
 
     public ItemDisplay(int myItemID, int myMemberID, String myURL, String myTitle, String myLocation,
                        String myDescription, String myCategory, double myPrice, boolean myListed,
-                       String myDatePosted, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter) {
+                       String myDatePosted, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter,
+                       String myUsername) {
         this.myItemID = myItemID;
         this.myMemberID = myMemberID;
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
@@ -65,6 +68,7 @@ public class ItemDisplay implements Serializable {
         this.myDatePosted = myDatePosted;
         this.myIndex = myIndex;
         this.myAdapter = myAdapter;
+        this.myUsername = myUsername;
     }
 
     public int getMyItemID() {
@@ -155,6 +159,14 @@ public class ItemDisplay implements Serializable {
         return myBitmapArray;
     }
 
+    public String getMyUsername() {
+        return myUsername;
+    }
+
+    public void setMyUsername(String myUsername) {
+        this.myUsername = myUsername;
+    }
+
     public static ItemDisplay parseItemJson(JSONObject itemJSON, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter) throws JSONException {
         JSONObject obj = itemJSON;
         ItemDisplay item = new ItemDisplay(
@@ -169,7 +181,8 @@ public class ItemDisplay implements Serializable {
                 obj.getBoolean(ItemDisplay.LISTED),
                 obj.getString(ItemDisplay.DATE_POSTED),
                 myIndex,
-                myAdapter);
+                myAdapter,
+                obj.getString(ItemDisplay.USERNAME));
         return item;
     }
 
