@@ -3,8 +3,6 @@ package edu.tacoma.uw.udeal;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import inbox.MessageInboxActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -43,7 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_toolbar, menu);
+        getMenuInflater().inflate(R.menu.menu_main,menu);
         return true;
     }
 
@@ -54,6 +54,24 @@ public class ProfileActivity extends AppCompatActivity {
             ft.replace(R.id.fragment_container, new InviteFriends()).addToBackStack(null).commit();
         } else if (item.getItemId() == R.id.settings){
 
+        } else if (item.getItemId() == R.id.action_logout) {
+            SharedPreferences sharedPreferences =
+                    getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+            sharedPreferences.edit().putBoolean(getString(R.string.LOGGEDIN), false)
+                    .commit();
+
+            sharedPreferences.edit().remove(getString(R.string.email))
+                    .commit();
+
+            sharedPreferences.edit().remove(getString(R.string.username))
+                    .commit();
+
+            sharedPreferences.edit().remove(getString(R.string.member_id))
+                    .commit();
+
+            Intent i = new Intent(this, Login.class);
+            startActivity(i);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

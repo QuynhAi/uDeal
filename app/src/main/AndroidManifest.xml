@@ -7,7 +7,9 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,20 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ItemDisplayDetailActivity"></activity>
+        <activity android:name=".ProfileActivity" />
         <activity android:name=".CartActivity" />
-        <activity android:name=".MessageInboxActivity" />
+        <activity android:name="inbox.MessageInboxActivity" />
         <activity android:name=".PostActivity" />
-        <activity
-            android:name="inbox.InboxListActivity"
-            android:label="@string/title_inbox_list" />
+
         <activity
             android:name="inbox.InboxDetailActivity"
             android:label="@string/title_inbox_detail"
-            android:parentActivityName="inbox.InboxListActivity">
+            android:parentActivityName="inbox.MessageInboxActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="inbox.InboxListActivity" />
+                android:value="inbox.MessageInboxActivity" />
         </activity>
         <activity
             android:name=".Login"

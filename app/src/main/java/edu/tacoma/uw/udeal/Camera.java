@@ -1,7 +1,9 @@
 package edu.tacoma.uw.udeal;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,7 +72,7 @@ public class Camera extends Fragment {
     public File compressedFile;
     private Bitmap tempPhotoStorage;
     private String imageUploadName;
-
+    private Item addThisItem;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,16 +112,18 @@ public class Camera extends Fragment {
         postItem = (Button) view.findViewById(R.id.post);
         postItem.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                int id = 3; // TODO: REPLACE THIS WITH USER ID OF CURRENT USER
+                SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                        Context.MODE_PRIVATE);
+                int theUserID = settings.getInt(getString(R.string.member_id), 0);
+                int id = theUserID;
                 String title = mytitle.getText().toString();
-                double price = Double.parseDouble( myprice.getText().toString()); // TODO: FIND BETTER WAY TO CONVERT TO DOUBLE
+                double price = Double.parseDouble( myprice.getText().toString());
                 String desc = mydescription.getText().toString();
                 String loc = "Bellevue, WA"; // TODO: REPLACE THIS WITH LOCATION IN FIELD
-                String cat = "Automobiles"; // TODO: REPLACE THIS WITH CATEGORY FROM DROPDOWN MENU
-                // TODO: POSSIBLY INCLUDE TIMESTAMP COLUMN IN DATABASE WHEN ITEM WAS ADDED
+                String cat = "Office Supplies"; // TODO: REPLACE THIS WITH CATEGORY FROM DROPDOWN MENU
                 Item item = new Item(id, title, loc, desc, cat, price);
+                addThisItem = item;
                 onAddItem(item);
-                onAddImage(item);
             }
         });
 
@@ -189,7 +193,7 @@ public class Camera extends Fragment {
         }
     }
 
-    public void onAddImage(Item item) {
+    public void onAddImage(Item item, int theID) {
         // Handle unique key of image (put in database)
         StringBuilder urlURL = new StringBuilder(getString(R.string.addphoto));
         mArguments2 = new JSONObject();
@@ -199,7 +203,7 @@ public class Camera extends Fragment {
             mArguments2.put(Item.MEMBER_ID, item.getmMemberID());
             // TODO: CHANGE THIS TO GET ITEM ID. Possibly put this in the AddItem class once
             // TODO: it is done uploading, so you can then retrieve the item ID to execute this
-            mArguments2.put(Item.ITEM_ID, 8);
+            mArguments2.put(Item.ITEM_ID, theID);
             mArguments2.put(MY_URL_TAG, tempPhotoID);
             new AddPhotoAsyncTask().execute(urlURL.toString());
         } catch (JSONException e) {
@@ -274,6 +278,8 @@ public class Camera extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
+                    int insertedID = resultObject.getJSONArray("names").getJSONObject(0).getInt("item_id");
+                    onAddImage(addThisItem, insertedID);
                     Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
                     //  Intent intent = new Intent(AddNewUser.this, MainActivity.class);
                     //  startActivity(intent);
