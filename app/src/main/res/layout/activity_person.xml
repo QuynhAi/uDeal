@@ -15,7 +15,10 @@ tools:context=".Person">
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <include layout="@layout/profile_feedback_content" />
+    <include
+        layout="@layout/profile_feedback_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
 
 

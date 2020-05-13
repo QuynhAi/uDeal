@@ -1,18 +1,25 @@
 package edu.tacoma.uw.udeal;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,7 +38,9 @@ public class Person extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().setTitle("My Account");
+
         View view = inflater.inflate(R.layout.activity_person, container, false);
+
         myProfileImage = (ImageView) view.findViewById(R.id.profile_pic);
 
         // Take picture button to open up the camera
@@ -48,19 +57,11 @@ public class Person extends Fragment {
         // Get the text from inputs
         myName = (TextView) view.findViewById(R.id.profile_name);
         myLocation = (TextView) view.findViewById(R.id.profile_location);
-        myInvite = (TextView) view.findViewById(R.id.invitetext);
 
-        //Set invite to open new fragment when clicked
-        myInvite.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                // Begin the transaction
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.fragment_container, new InviteFriends()).commit();
-
-            }
-        });
 
         return view;
     }
+
+
+
 }
