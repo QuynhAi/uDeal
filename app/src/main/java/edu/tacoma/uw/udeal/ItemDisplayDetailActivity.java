@@ -1,8 +1,11 @@
 package edu.tacoma.uw.udeal;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -14,7 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import org.json.JSONObject;
+
+import model.ItemDisplay;
+
 
 /**
  * An activity representing a single Item detail screen. This
@@ -25,6 +34,13 @@ import org.json.JSONObject;
 public class ItemDisplayDetailActivity extends AppCompatActivity {
 
     private JSONObject mItemJSON;
+
+    public static final String ARG_ITEM_ID = "item_id";
+
+    /**
+     * The dummy content this fragment is presenting.
+     */
+    private ItemDisplay mItemDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +66,27 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            if(getIntent().getSerializableExtra(ItemDisplayDetailFragment.ARG_ITEM_ID) != null) {
-                arguments.putSerializable(ItemDisplayDetailFragment.ARG_ITEM_ID,
-                        getIntent().getSerializableExtra(ItemDisplayDetailFragment.ARG_ITEM_ID));
-                ItemDisplayDetailFragment fragment = new ItemDisplayDetailFragment();
-                fragment.setArguments(arguments);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.item_detail_container, fragment)
-                        .commit();
+            if(getIntent().getSerializableExtra(ARG_ITEM_ID) != null) {
+                arguments.putSerializable(ARG_ITEM_ID,
+                        getIntent().getSerializableExtra(ARG_ITEM_ID));
+                if (arguments.containsKey(ARG_ITEM_ID)) {
+                    mItemDisplay = (ItemDisplay) arguments.getSerializable(ARG_ITEM_ID);
+
+                    CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                    if (appBarLayout != null) {
+                        appBarLayout.setTitle(mItemDisplay.getMyTitle());
+                    }
+                }
             }
+        }
+
+        if (mItemDisplay != null) {
+            byte[] tmp = mItemDisplay.getMyBitmapArray();
+            ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
+            ((TextView) findViewById(R.id.item_detail_id)).setText(mItemDisplay.getMyCategory());
+            ((TextView) findViewById(R.id.item_detail_short_desc)).setText(mItemDisplay.getMyLocation());
+            ((TextView) findViewById(R.id.item_detail_long_desc)).setText(mItemDisplay.getMyDescription());
+            ((TextView) findViewById(R.id.item_detail_prereqs)).setText("Posted by chicken " + mItemDisplay.getMyUsername());
         }
     }
 
@@ -72,7 +100,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, Home.class));
+            navigateUpTo(new Intent(this, MainActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

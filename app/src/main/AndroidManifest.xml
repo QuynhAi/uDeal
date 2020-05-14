@@ -38,7 +38,6 @@
         <activity
             android:name=".AddNewUser"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Home" />
         <activity
             android:name=".SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">

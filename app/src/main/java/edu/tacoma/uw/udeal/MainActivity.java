@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 ItemDisplay item = (ItemDisplay) view.getTag();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ItemDisplayDetailActivity.class);
-                intent.putExtra(ItemDisplayDetailFragment.ARG_ITEM_ID, item);
+                intent.putExtra(ItemDisplayDetailActivity.ARG_ITEM_ID, item);
 
                 context.startActivity(intent);
             }
