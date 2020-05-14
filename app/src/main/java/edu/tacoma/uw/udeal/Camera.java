@@ -65,6 +65,8 @@ public class Camera extends Fragment {
     private EditText mytitle;
     private EditText myprice;
     private EditText mydescription;
+    private EditText mylocation;
+    private Spinner mycategory;
     private static final int PICK_FROM_GALLERY = 1;
     private static final int TAKE_PHOTO = 0;
     private ImageView myImageView;
@@ -129,7 +131,7 @@ public class Camera extends Fragment {
                 if (currentCategory != position){
                     categoryString = items[position];
                 } else {
-                    ((TextView) view).setTextColor(R.color.colorPrimary);
+                    ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
 
@@ -142,6 +144,8 @@ public class Camera extends Fragment {
         mytitle = (EditText) view.findViewById(R.id.title);
         myprice = (EditText) view.findViewById(R.id.price);
         mydescription = (EditText) view.findViewById(R.id.description);
+        mylocation = (EditText) view.findViewById(R.id.location);
+        mycategory = (Spinner) view.findViewById(R.id.spinner);
         postItem = (Button) view.findViewById(R.id.post);
         postItem.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -152,8 +156,8 @@ public class Camera extends Fragment {
                 String title = mytitle.getText().toString();
                 double price = Double.parseDouble( myprice.getText().toString());
                 String desc = mydescription.getText().toString();
-                String loc = "Bellevue, WA"; // TODO: REPLACE THIS WITH LOCATION IN FIELD
-                String cat = "Office Supplies"; // TODO: REPLACE THIS WITH CATEGORY FROM DROPDOWN MENU
+                String loc = mylocation.getText().toString();
+                String cat = mycategory.getSelectedItem().toString();
                 Item item = new Item(id, title, loc, desc, cat, price);
                 addThisItem = item;
                 onAddItem(item);
