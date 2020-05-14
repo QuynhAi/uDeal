@@ -43,7 +43,7 @@
         <activity android:name="inbox.MessageInboxActivity" />
         <activity android:name=".PostActivity" />
         <activity
-            android:name="inbox.InboxDetailActivity"
+            android:name="inbox.ChatActivity"
             android:label="@string/title_inbox_detail"
             android:parentActivityName="inbox.MessageInboxActivity">
             <meta-data

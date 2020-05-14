@@ -15,13 +15,15 @@ public class UserInbox implements Serializable {
     private String username;
     private String profilePicture;
     private String itemPicture;
+    private String currentUserName;
 
-
+    public static final String CURRENT_USER_NAME = "currentUserName";
     public static final String USER_NAME = "username";
     public static final String PROFILE_PICTURE = "profile";
     public static final String ITEM_PICTURE = "item";
 
-    public UserInbox(String username, String profilePicture, String itemPicture) {
+    public UserInbox(String currentUserName, String username, String profilePicture, String itemPicture) {
+        this.currentUserName = currentUserName;
         this.itemPicture = itemPicture;
         this.profilePicture = profilePicture;
         this.username = username;
@@ -32,7 +34,7 @@ public class UserInbox implements Serializable {
             JSONArray arr = new JSONArray(userInboxJson);
             for (int i = 0; i< arr.length(); i++){
                 JSONObject obj = arr.getJSONObject(i);
-                UserInbox userInbox = new UserInbox(obj.getString(UserInbox.USER_NAME),
+                UserInbox userInbox = new UserInbox(obj.getString(UserInbox.USER_NAME), obj.getString(UserInbox.USER_NAME),
                         obj.getString(UserInbox.USER_NAME), obj.getString(UserInbox.USER_NAME));
                 userInboxList.add(userInbox);
 
@@ -40,7 +42,7 @@ public class UserInbox implements Serializable {
         }
         return userInboxList;
     }
-
+    public String getCurrentUserName(){return currentUserName;}
     public String getOtherUserName() {
         return username;
     }
