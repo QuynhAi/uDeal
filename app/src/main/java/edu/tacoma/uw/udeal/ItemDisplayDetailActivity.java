@@ -1,6 +1,5 @@
 package edu.tacoma.uw.udeal;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,20 +20,15 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.FragmentActivity;
 
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.json.JSONObject;
 
 import inbox.ChatActivity;
 import java.io.IOException;
@@ -49,19 +43,14 @@ import model.UserInbox;
  * An activity representing a single Item detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link
+ * in a
  */
 public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    private JSONObject mItemJSON;
 
     private GoogleMap mMap;
 
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
     private ItemDisplay mItemDisplay;
 
     @Override
@@ -92,8 +81,6 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
 
 
         if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
             Bundle arguments = new Bundle();
             if(getIntent().getSerializableExtra(ARG_ITEM_ID) != null) {
                 arguments.putSerializable(ARG_ITEM_ID,
@@ -136,12 +123,6 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
             navigateUpTo(new Intent(this, MainActivity.class));
             return true;
         }
@@ -152,7 +133,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * we just add a marker near the item location
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -176,7 +157,6 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             }
         }
 
-        // Add a marker in Sydney and move the camera
         LatLng coordinates = myCoordinates.get(0);
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
         mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
