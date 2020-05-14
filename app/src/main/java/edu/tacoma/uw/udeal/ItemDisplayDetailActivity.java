@@ -80,7 +80,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 // temporary, change to
                 UserInbox item = new UserInbox(current, mItemDisplay.getMyUsername(),
                         mItemDisplay.getMyUsername(), mItemDisplay.getMyUsername());
-                Log.e("ItemDisplayDetailActivity", String.valueOf(item.getOtherUserName()));
+                Log.e("ItemDisplayDetailActivi", String.valueOf(item.getOtherUserName()));
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
