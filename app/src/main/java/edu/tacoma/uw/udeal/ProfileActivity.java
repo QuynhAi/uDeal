@@ -86,19 +86,27 @@ public class ProfileActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             Intent h = new Intent(ProfileActivity.this, MainActivity.class);
+                            h.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(h);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_camera:
                             Intent p = new Intent(ProfileActivity.this, PostActivity.class);
+                            p.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(p);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_inbox:
                             Intent i = new Intent(ProfileActivity.this, MessageInboxActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(i);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_cart:
                             Intent c = new Intent(ProfileActivity.this, CartActivity.class);
+                            c.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(c);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_person:
                             break;

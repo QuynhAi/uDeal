@@ -46,21 +46,29 @@ public class CartActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             Intent h = new Intent(CartActivity.this, MainActivity.class);
+                            h.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(h);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_camera:
                             Intent p = new Intent(CartActivity.this, PostActivity.class);
+                            p.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(p);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_inbox:
                             Intent i = new Intent(CartActivity.this, MessageInboxActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(i);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_cart:
                             break;
                         case R.id.nav_person:
                             Intent np = new Intent(CartActivity.this, ProfileActivity.class);
+                            np.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(np);
+                            overridePendingTransition(0,0);
                             break;
                     }
                     return false;

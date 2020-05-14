@@ -251,19 +251,27 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.nav_camera:
                             Intent p = new Intent(MainActivity.this, PostActivity.class);
+                            p.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(p);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_inbox:
                             Intent i = new Intent(MainActivity.this, MessageInboxActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(i);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_cart:
                             Intent c = new Intent(MainActivity.this, CartActivity.class);
+                            c.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(c);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_person:
                             Intent np = new Intent(MainActivity.this, ProfileActivity.class);
+                            np.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(np);
+                            overridePendingTransition(0,0);
                             break;
                     }
                     return false;

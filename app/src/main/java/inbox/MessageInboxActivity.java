@@ -220,21 +220,29 @@ public class MessageInboxActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             Intent h = new Intent(MessageInboxActivity.this, MainActivity.class);
+                            h.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(h);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_camera:
                             Intent p = new Intent(MessageInboxActivity.this, PostActivity.class);
+                            p.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(p);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_inbox:
                             break;
                         case R.id.nav_cart:
                             Intent c = new Intent(MessageInboxActivity.this, CartActivity.class);
+                            c.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(c);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_person:
                             Intent np = new Intent(MessageInboxActivity.this, ProfileActivity.class);
+                            np.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(np);
+                            overridePendingTransition(0,0);
                             break;
                     }
                     return false;

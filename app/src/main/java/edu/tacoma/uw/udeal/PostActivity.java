@@ -51,21 +51,29 @@ public class PostActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             Intent h = new Intent(PostActivity.this, MainActivity.class);
+                            h.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(h);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_camera:
                             break;
                         case R.id.nav_inbox:
                             Intent i = new Intent(PostActivity.this, MessageInboxActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(i);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_cart:
                             Intent c = new Intent(PostActivity.this, CartActivity.class);
+                            c.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(c);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_person:
                             Intent np = new Intent(PostActivity.this, ProfileActivity.class);
+                            np.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(np);
+                            overridePendingTransition(0,0);
                             break;
                     }
                     return false;
