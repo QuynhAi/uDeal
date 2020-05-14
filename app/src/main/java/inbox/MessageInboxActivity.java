@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class MessageInboxActivity extends AppCompatActivity {
     private List<UserInbox> mUserList;
     private RecyclerView mRecyclerView;
     private int mColumnCount = 1;
-
+    private String current;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,9 @@ public class MessageInboxActivity extends AppCompatActivity {
 //        if(mUserList == null){
 //            new UserInboxTask().execute(getString(R.string.register));
 //        }
+
+        SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+        current = settings.getString(getString(R.string.username), "");
         mRecyclerView = findViewById(R.id.fragment_container);
         assert mRecyclerView != null;
         setupRecyclerView((RecyclerView) mRecyclerView);

@@ -141,7 +141,6 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            //
             View view;
             ViewHolder viewHolder;
             switch (viewType){
