@@ -135,7 +135,7 @@ public class MessageInboxActivity extends AppCompatActivity {
             //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getOtherUserName());
             holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
-            holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
+            //holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);

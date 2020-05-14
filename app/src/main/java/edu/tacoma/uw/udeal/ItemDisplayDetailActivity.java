@@ -1,7 +1,9 @@
 package edu.tacoma.uw.udeal;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
@@ -11,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +25,9 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import inbox.ChatActivity;
 import model.ItemDisplay;
+import model.UserInbox;
 
 
 /**
@@ -51,8 +56,18 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Sending a message to the seller", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+                String current = settings.getString(getString(R.string.username), "");
+                // temporary, change to
+                UserInbox item = new UserInbox(current, mItemDisplay.getMyUsername(),
+                        mItemDisplay.getMyUsername(), mItemDisplay.getMyUsername());
+                Log.e("ItemDisplayDetailActivity", String.valueOf(item.getOtherUserName()));
+                Context context = view.getContext();
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
+                context.startActivity(intent);
             }
         });
 
@@ -111,5 +126,9 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 
 }
