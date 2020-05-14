@@ -1,9 +1,12 @@
 package model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +15,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.tacoma.uw.udeal.MainActivity;
+import edu.tacoma.uw.udeal.R;
 
 public class ItemDisplay implements Serializable {
 
@@ -37,6 +42,9 @@ public class ItemDisplay implements Serializable {
     private transient Bitmap myBitmap;
     private byte[] myBitmapArray = {};
     private String myUsername;
+    private boolean myLiked;
+    private JSONObject mArguments;
+    private int myLikerID;
 
     public static final String ITEM_ID = "item_id";
     public static final String MEMBER_ID = "member_id";
@@ -49,14 +57,18 @@ public class ItemDisplay implements Serializable {
     public static final String LISTED = "listed";
     public static final String DATE_POSTED ="date_posted";
     public static final String USERNAME = "username";
+    public static final String LIKED = "liked";
+    public static final String LIKED_ITEM_ID = "liked_item_id";
+    public static final String LIKER_ID = "liker_id";
 
     public ItemDisplay(int myItemID, int myMemberID, String myURL, String myTitle, String myLocation,
                        String myDescription, String myCategory, double myPrice, boolean myListed,
                        String myDatePosted, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter,
-                       String myUsername) {
+                       String myUsername, boolean myLiked, int myLikerID) {
         this.myItemID = myItemID;
         this.myMemberID = myMemberID;
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
+        // TODO: UNCOMMENT BELOW FOR SUBMISSION
       //  new ImageTask().execute(this.myURL);
         Log.d("myTag", "This is one instance of loading the image");
         this.myTitle = myTitle;
@@ -69,6 +81,8 @@ public class ItemDisplay implements Serializable {
         this.myIndex = myIndex;
         this.myAdapter = myAdapter;
         this.myUsername = myUsername;
+        this.myLiked = myLiked;
+        this.myLikerID = myLikerID;
     }
 
     public int getMyItemID() {
@@ -167,7 +181,46 @@ public class ItemDisplay implements Serializable {
         this.myUsername = myUsername;
     }
 
-    public static ItemDisplay parseItemJson(JSONObject itemJSON, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter) throws JSONException {
+    public int getMyLikerID() {
+        return myLikerID;
+    }
+
+    public void setMyLikerID(int myLikerID) {
+        this.myLikerID = myLikerID;
+    }
+
+    public boolean getmyLiked() {
+        return myLiked;
+    }
+
+    public void setMyLiked(boolean myLiked) {
+        this.myLiked = myLiked;
+        if(this.myLiked) {
+            StringBuilder urlURL = new StringBuilder("https://udeal-app-services-backend.herokuapp.com/addlikes");
+            mArguments = new JSONObject();
+            try {
+                mArguments.put(ItemDisplay.LIKED_ITEM_ID, myItemID);
+                mArguments.put(ItemDisplay.LIKER_ID, myLikerID);
+                mArguments.put(ItemDisplay.LIKED, this.myLiked);
+                new LikedAsyncTask().execute(urlURL.toString());
+            } catch(JSONException e) {
+                Log.d("myTag", "INSERTION LIKE: Error in JSON creation");
+            }
+        } else {
+            StringBuilder urlURL = new StringBuilder("https://udeal-app-services-backend.herokuapp.com/deleteLike");
+            mArguments = new JSONObject();
+            try {
+                mArguments.put(ItemDisplay.LIKED_ITEM_ID, myItemID);
+                mArguments.put(ItemDisplay.LIKER_ID, myLikerID);
+                new DeleteAsyncTask().execute(urlURL.toString());
+            } catch(JSONException e) {
+                Log.d("myTag", "DELETION LIKE: Error in JSON creation");
+            }
+        }
+        myAdapter.notifyItemChanged(myIndex);
+    }
+
+    public static ItemDisplay parseItemJson(JSONObject itemJSON, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter, int myID) throws JSONException {
         JSONObject obj = itemJSON;
         ItemDisplay item = new ItemDisplay(
                 obj.getInt(ItemDisplay.ITEM_ID),
@@ -182,7 +235,9 @@ public class ItemDisplay implements Serializable {
                 obj.getString(ItemDisplay.DATE_POSTED),
                 myIndex,
                 myAdapter,
-                obj.getString(ItemDisplay.USERNAME));
+                obj.getString(ItemDisplay.USERNAME),
+                obj.getBoolean(ItemDisplay.LIKED),
+                myID);
         return item;
     }
 
@@ -240,6 +295,108 @@ public class ItemDisplay implements Serializable {
             } catch (JSONException e) {
                 Log.d("myTag", "FAILURE");
             }
+        }
+    }
+
+    private class DeleteAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("DELETE");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+                    Log.i("myTag", mArguments.toString());
+                    wr.write(mArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to add the like to postgres sql, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONObject resultObject = new JSONObject(result);
+                if (resultObject.getBoolean("success") == true) {
+                    Log.d("myTag", "Success on post execute adding like to DB");
+                } else {
+                    Log.d("myTag", "Error on post execute adding like to DB");
+                }
+            } catch (JSONException e) {
+                Log.d("myTag", "Catch JSON Exception e: " + e.getMessage());
+            }
+
+        }
+    }
+
+    private class LikedAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+                    Log.i("myTag", mArguments.toString());
+                    wr.write(mArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to add the like to postgres sql, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONObject resultObject = new JSONObject(result);
+                if (resultObject.getBoolean("success") == true) {
+                    Log.d("myTag", "Success on post execute adding like to DB");
+                } else {
+                    Log.d("myTag", "Error on post execute adding like to DB");
+                }
+            } catch (JSONException e) {
+                Log.d("myTag", "Catch JSON Exception e: " + e.getMessage());
+            }
+
         }
     }
 

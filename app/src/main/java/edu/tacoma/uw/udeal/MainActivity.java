@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -76,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         assert mRecyclerView != null;
         initialRecyclerView((RecyclerView) mRecyclerView);
-        new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0);
+        SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+        int theID = settings.getInt(getString(R.string.member_id), 0);
+        new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID);
     }
 
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -96,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
                             Log.v("...", "Last Item Wow !");
-                            new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount);
+                            SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                            int theID = settings.getInt(getString(R.string.member_id), 0);
+                            new DisplayItemsAsyncTask()
+                                    .execute(getString(R.string.load_limited) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount + "&theLikerID=" + theID);
                           //  loading = true;
                         }
                     }
@@ -140,20 +146,19 @@ public class MainActivity extends AppCompatActivity {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
             holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
+            final ItemDisplay temp = mValues.get(position);
             holder.mLikeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!holder.isPressed) {
-                        holder.isPressed = true;
-                        holder.mLikeImage.setImageResource(R.drawable.heart_icon);
-                    } else {
-                        holder.isPressed = false;
-                        holder.mLikeImage.setImageResource(R.drawable.heart_icon_pressed);
-                    }
-
+                    temp.setMyLiked(!temp.getmyLiked());
                 }
             });
+            if(mValues.get(position).getmyLiked()) {
+                holder.mLikeImage.setImageResource(R.drawable.heart_icon_pressed);
 
+            } else {
+                holder.mLikeImage.setImageResource(R.drawable.heart_icon);
+            }
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -168,12 +173,10 @@ public class MainActivity extends AppCompatActivity {
             final TextView mContentView;
             final ImageView mImageView;
             final ImageView mLikeImage;
-            boolean isPressed;
 
 
             ViewHolder(View view) {
                 super(view);
-                isPressed = true;
                 mIdView = (TextView) view.findViewById(R.id.textViewTitle);
                 mContentView = (TextView) view.findViewById(R.id.textViewPrice);
                 mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
@@ -224,7 +227,9 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray myJSONArray = jsonObject.getJSONArray("names");
                     for(int i = 0; i < myJSONArray.length(); i++) {
                         int temp = mItemList.size();
-                        mItemList.add(ItemDisplay.parseItemJson(myJSONArray.getJSONObject(i), temp, mAdapter ));
+                        SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                        int theID = settings.getInt(getString(R.string.member_id), 0);
+                        mItemList.add(ItemDisplay.parseItemJson(myJSONArray.getJSONObject(i), temp, mAdapter, theID));
                         mAdapter.notifyItemInserted(mItemList.size() - 1);
                         loading = true;
                     }
