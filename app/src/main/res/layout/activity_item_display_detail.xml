@@ -56,6 +56,14 @@
                 android:padding="16dp"
                 android:textIsSelectable="true" />
             <TextView
+                android:id="@+id/item_category"
+                android:text="Item Category"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textIsSelectable="true" />
+            <TextView
                 android:id="@+id/item_price"
                 android:text="$999.99"
                 style="?android:attr/textAppearanceMedium"

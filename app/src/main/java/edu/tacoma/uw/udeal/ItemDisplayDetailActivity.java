@@ -112,6 +112,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             byte[] tmp = mItemDisplay.getMyBitmapArray();
             ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
+            ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
             ((TextView) findViewById(R.id.item_location)).setText(mItemDisplay.getMyLocation());
             ((TextView) findViewById(R.id.item_seller)).setText("Seller: " + mItemDisplay.getMyUsername());
