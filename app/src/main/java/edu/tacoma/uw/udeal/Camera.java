@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,9 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -73,6 +78,9 @@ public class Camera extends Fragment {
     private Bitmap tempPhotoStorage;
     private String imageUploadName;
     private Item addThisItem;
+    private Spinner dropdown;
+    private int currentCategory;
+    private String categoryString;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -105,6 +113,31 @@ public class Camera extends Fragment {
             }
         });
 
+        //Spinner for the dropdown menu
+        dropdown = view.findViewById(R.id.spinner);
+        final String[] items = new String[]{"Select a category", "Appliances", "Auto Parts", "Books and Magazines", "Cars and Trucks",
+                "Cell Phones", "Clothing and Shoes",  "Computer Equipment", "Electronics", "Furniture", "General", "Home and Garden",
+                "Musical Instruments", "Photography", "Sports and Outdoors", "Tickets", "Tools and Machinery"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+        dropdown.setAdapter(adapter);
+
+        currentCategory = 0;
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (currentCategory != position){
+                    categoryString = items[position];
+                } else {
+                    ((TextView) view).setTextColor(R.color.colorPrimary);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         // Get the text from inputs
         mytitle = (EditText) view.findViewById(R.id.title);
         myprice = (EditText) view.findViewById(R.id.price);
