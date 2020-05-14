@@ -3,8 +3,18 @@ package edu.tacoma.uw.udeal;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -15,12 +25,17 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.FragmentActivity;
 
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.ItemDisplay;
 
@@ -31,9 +46,11 @@ import model.ItemDisplay;
  * item details are presented side-by-side with a list of items
  * in a {@link
  */
-public class ItemDisplayDetailActivity extends AppCompatActivity {
+public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private JSONObject mItemJSON;
+
+    private GoogleMap mMap;
 
     public static final String ARG_ITEM_ID = "item_id";
 
@@ -77,6 +94,10 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
             }
         }
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
@@ -110,6 +131,41 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        List<LatLng> myCoordinates = new ArrayList<>();
+        if(Geocoder.isPresent()) {
+            try{
+                String location = mItemDisplay.getMyLocation();
+                Geocoder gc = new Geocoder(this);
+                List<Address> addresses = gc.getFromLocationName(location, 1);
+                for(Address a : addresses) {
+                    if(a.hasLatitude() && a.hasLongitude()) {
+                        myCoordinates.add(new LatLng(a.getLatitude(), a.getLongitude()));
+                    }
+                }
+            } catch (IOException e) {
+
+            }
+        }
+
+        // Add a marker in Sydney and move the camera
+        LatLng coordinates = myCoordinates.get(0);
+        mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
+        mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
     }
 
 }
