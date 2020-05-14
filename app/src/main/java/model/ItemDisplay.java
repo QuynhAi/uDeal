@@ -43,7 +43,7 @@ public class ItemDisplay implements Serializable {
     private byte[] myBitmapArray = {};
     private String myUsername;
     private boolean myLiked;
-    private JSONObject mArguments;
+    private transient JSONObject mArguments;
     private int myLikerID;
 
     public static final String ITEM_ID = "item_id";
@@ -69,7 +69,7 @@ public class ItemDisplay implements Serializable {
         this.myMemberID = myMemberID;
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
         // TODO: UNCOMMENT BELOW FOR SUBMISSION
-      //  new ImageTask().execute(this.myURL);
+        //new ImageTask().execute(this.myURL);
         Log.d("myTag", "This is one instance of loading the image");
         this.myTitle = myTitle;
         this.myLocation = myLocation;
