@@ -10,14 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InviteFriends extends Fragment {
-
+public class SettingsFrag extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,9 +25,9 @@ public class InviteFriends extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle("Invite Friends");
+        getActivity().setTitle("Settings");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.invite_friends, container, false);
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     //method overrides to hide the menu buttons for this fragment
@@ -46,7 +43,6 @@ public class InviteFriends extends Fragment {
 
         MenuItem login = menu.findItem(R.id.action_logout);
         if(login!=null)
-            login.setVisible(false);
+        login.setVisible(true);
     }
-
 }

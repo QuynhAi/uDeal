@@ -54,7 +54,8 @@ public class ProfileActivity extends AppCompatActivity {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_container, new InviteFriends()).addToBackStack(null).commit();
         } else if (item.getItemId() == R.id.settings){
-
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, new SettingsFrag()).addToBackStack(null).commit();
         } else if (item.getItemId() == R.id.action_logout) {
             SharedPreferences sharedPreferences =
                     getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);

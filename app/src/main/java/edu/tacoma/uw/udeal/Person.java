@@ -33,6 +33,12 @@ public class Person extends Fragment {
     private TextView myName;
     private TextView myLocation;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,6 +67,12 @@ public class Person extends Fragment {
         return view;
     }
 
-
+    //method overrides to hide the menu buttons for this fragment
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem invite=menu.findItem(R.id.action_logout);
+        if(invite!=null)
+            invite.setVisible(false);
+    }
 
 }
