@@ -56,11 +56,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
+
 
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
@@ -80,13 +77,22 @@ public class ItemDisplayDetailActivity extends AppCompatActivity {
             }
         }
 
+        // Show the Up button in the action bar.
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("");
+        }
+
         if (mItemDisplay != null) {
             byte[] tmp = mItemDisplay.getMyBitmapArray();
             ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
-            ((TextView) findViewById(R.id.item_detail_id)).setText(mItemDisplay.getMyCategory());
-            ((TextView) findViewById(R.id.item_detail_short_desc)).setText(mItemDisplay.getMyLocation());
-            ((TextView) findViewById(R.id.item_detail_long_desc)).setText(mItemDisplay.getMyDescription());
-            ((TextView) findViewById(R.id.item_detail_prereqs)).setText("Posted by chicken " + mItemDisplay.getMyUsername());
+            ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
+            ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
+            ((TextView) findViewById(R.id.item_location)).setText(mItemDisplay.getMyLocation());
+            ((TextView) findViewById(R.id.item_seller)).setText("Seller: " + mItemDisplay.getMyUsername());
+            ((TextView) findViewById(R.id.item_description)).setText("Description: " + mItemDisplay.getMyDescription());
         }
     }
 
