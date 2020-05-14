@@ -3,6 +3,7 @@ package edu.tacoma.uw.udeal;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
@@ -43,13 +44,19 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
+        getMenuInflater().inflate(R.menu.top_toolbar,menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_logout) {
+        if (item.getItemId() == R.id.invite) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, new InviteFriends()).addToBackStack(null).commit();
+        } else if (item.getItemId() == R.id.settings){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, new SettingsFrag()).addToBackStack(null).commit();
+        } else if (item.getItemId() == R.id.action_logout) {
             SharedPreferences sharedPreferences =
                     getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
             sharedPreferences.edit().putBoolean(getString(R.string.LOGGEDIN), false)
@@ -65,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
                     .commit();
 
             Intent i = new Intent(this, Login.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
         }
@@ -78,19 +86,27 @@ public class ProfileActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             Intent h = new Intent(ProfileActivity.this, MainActivity.class);
+                            h.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(h);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_camera:
                             Intent p = new Intent(ProfileActivity.this, PostActivity.class);
+                            p.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(p);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_inbox:
                             Intent i = new Intent(ProfileActivity.this, MessageInboxActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(i);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_cart:
                             Intent c = new Intent(ProfileActivity.this, CartActivity.class);
+                            c.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(c);
+                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_person:
                             break;
