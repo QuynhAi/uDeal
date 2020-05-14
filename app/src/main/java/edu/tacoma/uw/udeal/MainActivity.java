@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        setTitle("Home");
+        setTitle("uDeal");
         mItemList = new ArrayList<>();
         mRecyclerView = findViewById(R.id.recyclerView);
         assert mRecyclerView != null;

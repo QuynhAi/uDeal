@@ -19,7 +19,6 @@ import inbox.MessageInboxActivity;
 
 public class CartActivity extends AppCompatActivity {
 
-    private TabAdapter adapter;
     private TabLayout tabLayout;
 //    private ViewPager viewPager;
 
@@ -27,6 +26,7 @@ public class CartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("My Items");
         setContentView(R.layout.activity_cartstart);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
