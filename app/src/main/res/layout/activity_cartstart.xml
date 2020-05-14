@@ -7,12 +7,29 @@
     android:layout_height="match_parent"
     tools:context=".CartActivity">
 
+    <!--    <androidx.viewpager.widget.ViewPager-->
+<!--        android:id="@+id/viewPager"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        app:tabGravity="fill"
+        app:tabTextColor="@color/colorWhite"
+        app:tabBackground="@color/colorPrimary"
+        app:tabIndicatorColor="@color/colorAccent">
+
+    </com.google.android.material.tabs.TabLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_toolbar"/>
+        android:layout_height="625dp"
+        android:layout_above="@id/bottom_toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_toolbar"
