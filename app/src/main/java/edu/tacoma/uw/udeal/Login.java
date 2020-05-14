@@ -206,6 +206,7 @@ public class Login extends AppCompatActivity {
                     editor.commit();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 }
 
             } catch (JSONException e) {
