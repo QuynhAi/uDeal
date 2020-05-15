@@ -220,11 +220,16 @@ public class BuyingFrag extends Fragment {
                     JSONArray myJSONArray = jsonObject.getJSONArray("names");
                     for(int i = 0; i < myJSONArray.length(); i++) {
                         int temp = mItemList.size();
-                        SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                        int theID = settings.getInt(getString(R.string.member_id), 0);
-                        mItemList.add(ItemDisplayBuyingFrag.parseItemJson(myJSONArray.getJSONObject(i), temp, mAdapter, theID));
-                        mAdapter.notifyItemInserted(mItemList.size() - 1);
-                        loading = true;
+                        if(getActivity() != null) {
+                            Log.d("myLog", "onPostExecute: Success");
+                            SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                            int theID = settings.getInt(getString(R.string.member_id), 0);
+                            mItemList.add(ItemDisplayBuyingFrag.parseItemJson(myJSONArray.getJSONObject(i), temp, mAdapter, theID));
+                            mAdapter.notifyItemInserted(mItemList.size() - 1);
+                            loading = true;
+                        } else {
+                            Log.d("myLog", "onPostExecute: Get Activity is NULL");
+                        }
                     }
                 }
             } catch (JSONException e) {
