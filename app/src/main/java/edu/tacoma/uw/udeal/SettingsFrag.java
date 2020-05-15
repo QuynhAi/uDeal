@@ -12,7 +12,10 @@ import android.view.ViewGroup;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A fragment for the settings of the application.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
  */
 public class SettingsFrag extends Fragment {
 
@@ -26,11 +29,14 @@ public class SettingsFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getActivity().setTitle("Settings");
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
-    //method overrides to hide the menu buttons for this fragment
+    /**
+     * Handles the hiding of the menu items.
+     *
+     * @param menu The menu for this fragment
+     */
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem invite=menu.findItem(R.id.invite);
