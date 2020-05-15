@@ -14,13 +14,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ProgressBar
+            android:id="@+id/pBar"
+            android:layout_height="200dp"
+            android:layout_width="match_parent"/>
+
         <ImageView
             android:id="@+id/imageViewImage"
             android:layout_height="200dp"
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:background="@drawable/ic_launcher_background"/>
+            android:background="@drawable/ic_launcher_background"
+            android:visibility="gone"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

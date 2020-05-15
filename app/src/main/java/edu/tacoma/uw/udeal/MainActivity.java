@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,6 +146,13 @@ public class MainActivity extends AppCompatActivity {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
             //holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
+            if(mValues.get(position).getMyBitmap() != null) {
+                holder.mImageView.setVisibility(holder.mImageView.VISIBLE);
+                holder.mPBar.setVisibility(holder.mPBar.GONE);
+            } else {
+                holder.mImageView.setVisibility(holder.mImageView.GONE);
+                holder.mPBar.setVisibility(holder.mPBar.VISIBLE);
+            }
             final ItemDisplay temp = mValues.get(position);
             holder.mLikeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -172,10 +180,12 @@ public class MainActivity extends AppCompatActivity {
            //final TextView mContentView;
             final ImageView mImageView;
             final ImageView mLikeImage;
+            final ProgressBar mPBar;
 
 
             ViewHolder(View view) {
                 super(view);
+                mPBar = (ProgressBar) view.findViewById(R.id.pBar);
                 mIdView = (TextView) view.findViewById(R.id.textViewTitle);
                // mContentView = (TextView) view.findViewById(R.id.textViewPrice);
                 mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
