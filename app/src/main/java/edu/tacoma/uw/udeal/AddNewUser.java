@@ -22,19 +22,44 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import model.UserRegister;
 
-
+/**
+ * This activity handles the addition of a new user.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class AddNewUser extends AppCompatActivity {
+
+    /** The first name edit text. */
     private EditText firstNameEdit;
+
+    /** The last name edit text. */
     private EditText lastNameEdit;
+
+    /** The username edit text. */
     private EditText usernameEdit;
+
+    /** The email edit text. */
     private EditText emailEdit;
+
+    /** The password edit text. */
     private EditText passwordEdit;
 
+    /** The JSON object for the arguments. */
     private JSONObject  mArguments;
+
+    /** The add new user tag. */
     private String TAG = "addNewUser";
+
+    /** The register button. */
     private Button registerBtn;
-    private boolean success = false;
-    //private final onAddUser mListener;
+
+    /**
+     * Initalizes all of the edit text fields and sets up the on click
+     * listener of the button.
+     *
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +70,6 @@ public class AddNewUser extends AppCompatActivity {
         usernameEdit = (EditText) findViewById(R.id.username);
         emailEdit = (EditText) findViewById(R.id.email);
         passwordEdit = (EditText) findViewById(R.id.password);
-
 
         registerBtn = (Button)findViewById(R.id.registerButton);
         registerBtn.setOnClickListener(new View.OnClickListener(){
@@ -60,6 +84,12 @@ public class AddNewUser extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Method that adds the user. Calls an async task and passes the appropriate arguments.
+     *
+     * @param user The user that is registering
+     */
     public void onAddUser(UserRegister user) {
         StringBuilder url = new StringBuilder(getString(R.string.register));
         mArguments = new JSONObject();
@@ -75,8 +105,19 @@ public class AddNewUser extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Async task that adds the user to the database.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class AddUserAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Performs the async task to register the user in the database.
+         *
+         * @param urls The url endpoint for the registration
+         * @return The response from the async task
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -110,6 +151,13 @@ public class AddNewUser extends AppCompatActivity {
             }
             return response;
         }
+
+        /**
+         * If registration is successful, user is redirected to the login activity. If the account
+         * already exists are information is mission, toast is displayed on screen.
+         *
+         * @param result The result from the async task
+         */
         @Override
         protected void onPostExecute(String result){
             try{
@@ -120,12 +168,10 @@ public class AddNewUser extends AppCompatActivity {
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Account already exists or missing information", Toast.LENGTH_SHORT).show();
-                    //Log.e(TAG, resultObject.getString("error"));
                 }
             }catch(JSONException e){
                 Toast.makeText(getApplicationContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 }
