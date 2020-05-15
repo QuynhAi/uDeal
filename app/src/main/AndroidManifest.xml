@@ -38,6 +38,8 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".ItemDisplayDetailActivity" />
+        <activity android:name=".ItemDisplaySellingDetailActivity" />
+        <activity android:name=".ItemDisplayBuyingDetailActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".CartActivity" />
         <activity android:name="inbox.MessageInboxActivity" />
