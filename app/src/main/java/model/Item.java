@@ -12,19 +12,19 @@ import java.io.Serializable;
 public class Item implements Serializable {
 
     /** Used to retrieve item ID. */
-    private static final String ITEM_ID = "item_id";
+    public static final String ITEM_ID = "item_id";
     /** Used to retrieve member ID. */
-    private static final String MEMBER_ID = "member_id";
+    public static final String MEMBER_ID = "member_id";
     /** Used to retrieve the title. */
-    private static final String TITLE = "title";
+    public static final String TITLE = "title";
     /** Used to retrieve the location. */
-    private static final String LOCATION = "location";
+    public static final String LOCATION = "location";
     /** Used to retrieve the description. */
-    private static final String DESCRIPTION = "description";
+    public static final String DESCRIPTION = "description";
     /** Used to retrieve the category. */
-    private static final String CATEGORY = "category";
+    public static final String CATEGORY = "category";
     /** Used to retrieve the price. */
-    private static final String PRICE = "price";
+    public static final String PRICE = "price";
 
     /** The item ID. */
     private int mItemID;
