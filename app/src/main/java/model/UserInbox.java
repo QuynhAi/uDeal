@@ -1,7 +1,5 @@
 package model;
 
-import android.widget.EditText;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,24 +8,61 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents the user inbox.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class UserInbox implements Serializable {
 
-    private String username;
-    private String profilePicture;
-    private String itemPicture;
-    private String currentUserName;
-
+    /** The current username string. */
     public static final String CURRENT_USER_NAME = "currentUserName";
+
+    /** The current username string. */
     public static final String USER_NAME = "username";
+
+    /** The profile picture string. */
     public static final String PROFILE_PICTURE = "profile";
+
+    /** The item picture string. */
     public static final String ITEM_PICTURE = "item";
 
+    /** The username. */
+    private String username;
+
+    /** The profile picture. */
+    private String profilePicture;
+
+    /** The item picture. */
+    private String itemPicture;
+
+    /** The current username. */
+    private String currentUserName;
+
+
+    /**
+     * Initializes the fields in the user inbox.
+     *
+     * @param currentUserName The current user name
+     * @param username The username
+     * @param profilePicture The profile picture
+     * @param itemPicture The item picture
+     */
     public UserInbox(String currentUserName, String username, String profilePicture, String itemPicture) {
         this.currentUserName = currentUserName;
         this.itemPicture = itemPicture;
         this.profilePicture = profilePicture;
         this.username = username;
     }
+
+    /**
+     * Parses the string that has the user inbox information.
+     *
+     * @param userInboxJson The user inbox JSON string
+     * @return The list of user inboxes
+     * @throws JSONException if the JSONObject cannot be created
+     */
     public static List<UserInbox> parseUserInboxJson(String userInboxJson) throws JSONException{
         List<UserInbox> userInboxList = new ArrayList<>();
         if(userInboxJson != null){
@@ -42,51 +77,41 @@ public class UserInbox implements Serializable {
         }
         return userInboxList;
     }
-    public String getCurrentUserName(){return currentUserName;}
+
+    /**
+     * Gets the current user name.
+     *
+     * @return The current username.
+     */
+    public String getCurrentUserName(){
+        return currentUserName;
+    }
+
+    /**
+     * Gets the other username.
+     *
+     * @return The other username.
+     */
     public String getOtherUserName() {
         return username;
     }
-    public String getProfilePicture(){return profilePicture;}
-    public String getItemPicture(){return itemPicture;}
+
+    /**
+     * Gets the profile picture.
+     *
+     * @return The profile picture.
+     */
+    public String getProfilePicture(){
+        return profilePicture;
+    }
+
+    /**
+     * Gets the item picture.
+     *
+     * @return The item picture.
+     */
+    public String getItemPicture(){
+        return itemPicture;
+    }
 
 }
-
-//public class UserInbox implements Serializable {
-//    private String currentUserName;
-//    private String otherUserName;
-//    private String profilePicture;
-//    private String itemPicture;
-//
-//    public static final String CURRENT_USER_NAME = "current_user_name";
-//    public static final String OTHER_USER_NAME = "other_user_name";
-//    public static final String PROFILE_PICTURE = "profile";
-//    public static final String ITEM_PICTURE = "item";
-//
-//    public UserInbox(String current, String username, String profilePicture, String itemPicture) {
-//        this.currentUserName = current;
-//        this.itemPicture = itemPicture;
-//        this.profilePicture = profilePicture;
-//        this.otherUserName = username;
-//    }
-//    public static List<UserInbox> parseUserInboxJson(String userInboxJson) throws JSONException{
-//        List<UserInbox> userInboxList = new ArrayList<>();
-//        if(userInboxJson != null){
-//            JSONArray arr = new JSONArray(userInboxJson);
-//            for (int i = 0; i< arr.length(); i++){
-//                JSONObject obj = arr.getJSONObject(i);
-//                UserInbox userInbox = new UserInbox(obj.getString(UserInbox.CURRENT_USER_NAME), obj.getString(UserInbox.OTHER_USER_NAME),
-//                        obj.getString(UserInbox.PROFILE_PICTURE), obj.getString(UserInbox.ITEM_PICTURE));
-//                userInboxList.add(userInbox);
-//
-//            }
-//        }
-//        return userInboxList;
-//    }
-//    public String getCurrentUserName(){return currentUserName;}
-//    public String getOtherUserName() {
-//        return otherUserName;
-//    }
-//    public String getProfilePicture(){return profilePicture;}
-//    public String getItemPicture(){return itemPicture;}
-//
-//}

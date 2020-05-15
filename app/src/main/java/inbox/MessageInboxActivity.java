@@ -39,12 +39,33 @@ import edu.tacoma.uw.udeal.ProfileActivity;
 import edu.tacoma.uw.udeal.R;
 import model.UserInbox;
 
+/**
+ * The activity inbox activity represents the message inbox.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class MessageInboxActivity extends AppCompatActivity {
+    /** The two pane boolean. */
     private boolean mTwoPane;
+
+    /** The list of the user inbox. */
     private List<UserInbox> mUserList;
+
+    /** The recycler view. */
     private RecyclerView mRecyclerView;
+
+    /** The column count. */
     private int mColumnCount = 1;
+
+    /** The current string. */
     private String current;
+
+    /**
+     * Sets up the messages.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +77,6 @@ public class MessageInboxActivity extends AppCompatActivity {
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
-//        if(mUserList == null){
-//            new UserInboxTask().execute(getString(R.string.register));
-//        }
 
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
         current = settings.getString(getString(R.string.username), "");
@@ -70,6 +88,7 @@ public class MessageInboxActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     public void onResume(){
         super.onResume();
         if(mUserList == null){
@@ -77,33 +96,42 @@ public class MessageInboxActivity extends AppCompatActivity {
             new UserInboxTask().execute(getString(R.string.members));
         }
     }
+
+    /**
+     * Sets up the recycler view.
+     *
+     * @param recyclerView The recycler view.
+     */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         if (mUserList != null){
             recyclerView.setAdapter(new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList, mTwoPane));
         }
     }
 
+    /**
+     * This is the recycler view adapter.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
+        /** The parent activity. */
         private final MessageInboxActivity mParentActivity;
+
+        /** The list of user inboxes. */
         private final List<UserInbox> mValues;
+
+        /** The two pane boolean. */
         private final boolean mTwoPane;
+
+        /** The view on click listener. */
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 UserInbox item = (UserInbox) view.getTag();
                 if (mTwoPane) {
-//                    Original
-//                    Bundle arguments = new Bundle();
-//                    arguments.putSerializable(InboxDetailFragment.ARG_ITEM_ID, item);
-//                    InboxDetailFragment fragment = new InboxDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    mParentActivity.getFragmentManager().beginTransaction()
-//                            .replace(R.id.inbox_detail_container, fragment)
-//                            .commit();
-
-                    // Testing
                     Context context = view.getContext();
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
@@ -117,6 +145,13 @@ public class MessageInboxActivity extends AppCompatActivity {
             }
         };
 
+        /**
+         * Initalizes the chat activity and the list of messages.
+         *
+         * @param parent The parent activity
+         * @param items The list of user inboxes
+         * @param twoPane Boolean two pane
+         */
         SimpleItemRecyclerViewAdapter(MessageInboxActivity parent, List<UserInbox> items,
                                       boolean twoPane) {
             mValues = items;
@@ -147,11 +182,24 @@ public class MessageInboxActivity extends AppCompatActivity {
             return mValues.size();
         }
 
+        /**
+         * The View Holder for the recycler view.
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
+            /** The image view. */
             final ImageView profile;
+
+            /** The name text view. */
             final TextView name;
+
+            /** The item image view. */
             final ImageView item_image;
 
+            /**
+             * Initializes the view holder.
+             *
+             * @param view The view
+             */
             ViewHolder(View view) {
                 super(view);
                 profile = (ImageView) view.findViewById(R.id.inbox_profile);
@@ -161,7 +209,19 @@ public class MessageInboxActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Async task that retrieves the user inbox.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class UserInboxTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the user inbox.
+         *
+         * @param urls The URL endpoint
+         * @return The response from the async task
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -189,6 +249,11 @@ public class MessageInboxActivity extends AppCompatActivity {
             return response;
         }
 
+        /**
+         * If successful, we set up the recycler view.
+         *
+         * @param s The response from the async task
+         */
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
@@ -210,6 +275,8 @@ public class MessageInboxActivity extends AppCompatActivity {
             }
         }
     }
+
+    /** The bottom navigation view for the application. */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
