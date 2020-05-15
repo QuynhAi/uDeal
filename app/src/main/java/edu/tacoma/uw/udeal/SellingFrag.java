@@ -36,34 +36,55 @@ import model.ItemDisplaySellingFrag;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * The Selling fragment that is displayed when the user navigates to the shopping
+ * cart tab. This is the first fragment that is shown when the tab is clicked.
+ * This holds the recycler view of items that the user can scroll through.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
  */
 public class SellingFrag extends Fragment {
 
-    private List<ItemDisplaySellingFrag> mItemList;
-
-    private RecyclerView mRecyclerView;
-
-    public SellingFrag.SimpleItemRecyclerViewAdapter mAdapter;
-
+    /** The load limit for recycler view. */
     private static int LOAD_LIMIT = 3;
 
+    /** The number of items to load initially. */
     private static int INITIAL_LOAD = 3;
 
-    private int loadCount;
+    /** The list of item displays. */
+    private List<ItemDisplaySellingFrag> mItemList;
 
+    /** The recycler view for the items. */
+    private RecyclerView mRecyclerView;
+
+    /** The adapter for the recycler view. */
+    public SellingFrag.SimpleItemRecyclerViewAdapter mAdapter;
+
+    /** Boolean whether to load more items. */
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
+    /** Count of past visible items. */
+    private int pastVisiblesItems;
+
+    /** Count of visible items. */
+    private int visibleItemCount;
+
+    /** Count of total items. */
+    private int totalItemCount;
+
+    /** The linear layout manager for the recycler view. */
     private LinearLayoutManager mLayoutManager;
 
-
+    /**
+     * Sets up the recycler view and starts an async task to retrieve item information
+     * from the database.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_selling, container, false);
-
-        loadCount = 0;
 
         mItemList = new ArrayList<>();
         mRecyclerView = view.findViewById(R.id.recyclerView);
@@ -76,12 +97,24 @@ public class SellingFrag extends Fragment {
         return view;
     }
 
+    /**
+     * Initializes the recycler view.
+     *
+     * @param recyclerView The recycler view to be initalized
+     */
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
         mAdapter = new SellingFrag.SimpleItemRecyclerViewAdapter((CartActivity) getActivity(), mItemList);
         mRecyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Allows for infinite scrolling on the recycler view.
+             *
+             * @param recyclerView The recycler view
+             * @param dx The x coordinate
+             * @param dy The y coordinate
+             */
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) { //check for scroll down
@@ -97,7 +130,6 @@ public class SellingFrag extends Fragment {
                             int theID = settings.getInt(getString(R.string.member_id), 0);
                             new SellingFrag.DisplayItemsAsyncTask()
                                     .execute(getString(R.string.load_limited_myitems) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount + "&theSellerID=" + theID);
-                            //  loading = true;
                         }
                     }
                 }
@@ -105,23 +137,36 @@ public class SellingFrag extends Fragment {
         });
     }
 
+    /**
+     * The class that handles the recycler view adapter.
+     */
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final CartActivity mParentActivity;
         private final List<ItemDisplaySellingFrag> mValues;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            /**
+             * Displays the item when the item is clicked on the recycler view.
+             *
+             * @param view The view
+             */
             @Override
             public void onClick(View view) {
                 ItemDisplaySellingFrag item = (ItemDisplaySellingFrag) view.getTag();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ItemDisplaySellingDetailActivity.class);
                 intent.putExtra(ItemDisplaySellingDetailActivity.ARG_ITEM_ID, item);
-
                 context.startActivity(intent);
             }
         };
 
+        /**
+         * Sets up the recycler view adapter.
+         *
+         * @param parent The parent activity
+         * @param items The list of items
+         */
         SimpleItemRecyclerViewAdapter(CartActivity parent,
                                       List<ItemDisplaySellingFrag> items) {
             mValues = items;
@@ -135,10 +180,16 @@ public class SellingFrag extends Fragment {
             return new SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
+        /**
+         * Sets the appropriate text and image for the item. Also handles the heart icon and
+         * the progress bar display.
+         *
+         * @param holder The recycler view holder
+         * @param position The position of the item
+         */
         @Override
         public void onBindViewHolder(final SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
-            //holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
             if(mValues.get(position).getMyBitmap() != null) {
                 holder.mImageView.setVisibility(holder.mImageView.VISIBLE);
@@ -169,26 +220,44 @@ public class SellingFrag extends Fragment {
             return mValues.size();
         }
 
+        /**
+         * The ViewHolder for the recycler view.
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
+            /** The title text view. */
             final TextView mIdView;
-            //final TextView mContentView;
+            /** The image view. */
             final ImageView mImageView;
+            /** The heart icon image. */
             final ImageView mLikeImage;
+            /** The progress bar. */
             final ProgressBar mPBar;
 
-
+            /**
+             * Initializes fields accordingly with their correct ID.
+             *
+             * @param view The view
+             */
             ViewHolder(View view) {
                 super(view);
                 mPBar = (ProgressBar) view.findViewById(R.id.pBar);
                 mIdView = (TextView) view.findViewById(R.id.textViewTitle);
-                //mContentView = (TextView) view.findViewById(R.id.textViewPrice);
                 mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
                 mLikeImage = (ImageView) view.findViewById(R.id.heartImage);
             }
         }
     }
 
+    /**
+     * The async task to display items.
+     */
     private class DisplayItemsAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the information from the database.
+         *
+         * @param urls The URL to get the information from the database.
+         * @return The response from the connection
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -217,6 +286,13 @@ public class SellingFrag extends Fragment {
             return response;
         }
 
+        /**
+         * If successful, the infomation is retrieved and the information
+         * is proccessed.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
@@ -249,5 +325,4 @@ public class SellingFrag extends Fragment {
             }
         }
     }
-
 }

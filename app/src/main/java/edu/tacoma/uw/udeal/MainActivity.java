@@ -37,32 +37,55 @@ import java.util.List;
 
 import model.ItemDisplay;
 
+/**
+ * The MainActivity that greets the user upon launching the application.
+ * This holds the recycler view of items that the user can scroll through.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private List<ItemDisplay> mItemList;
-
-    private RecyclerView mRecyclerView;
-
-    public SimpleItemRecyclerViewAdapter mAdapter;
-
+    /** The load limit for recycler view. */
     private static int LOAD_LIMIT = 3;
 
+    /** The number of items to load initially. */
     private static int INITIAL_LOAD = 3;
 
-    private int loadCount;
+    /** The list of item displays. */
+    private List<ItemDisplay> mItemList;
 
+    /** The recycler view for the items. */
+    private RecyclerView mRecyclerView;
+
+    /** The adapter for the recycler view. */
+    public SimpleItemRecyclerViewAdapter mAdapter;
+
+    /** Boolean whether to load more items. */
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
+    /** Count of past visible items. */
+    private int pastVisiblesItems;
+
+    /** Count of visible items. */
+    private int visibleItemCount;
+
+    /** Count of total items. */
+    private int totalItemCount;
+
+    /** The linear layout manager for the recycler view. */
     private LinearLayoutManager mLayoutManager;
 
-
+    /**
+     * Sets up the recycler view and starts an async task to retrieve item information
+     * from the database.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        loadCount = 0;
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -82,6 +105,13 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Allows for infinite scrolling on the recycler view.
+             *
+             * @param recyclerView The recycler view
+             * @param dx The x coordinate
+             * @param dy The y coordinate
+             */
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) { //check for scroll down
@@ -104,23 +134,36 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * The class that handles the recycler view adapter.
+     */
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final MainActivity mParentActivity;
         private final List<ItemDisplay> mValues;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            /**
+             * Displays the item when the item is clicked on the recycler view.
+             *
+             * @param view The view
+             */
             @Override
             public void onClick(View view) {
                 ItemDisplay item = (ItemDisplay) view.getTag();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ItemDisplayDetailActivity.class);
                 intent.putExtra(ItemDisplayDetailActivity.ARG_ITEM_ID, item);
-
                 context.startActivity(intent);
             }
         };
 
+        /**
+         * Sets up the recycler view adapter.
+         *
+         * @param parent The parent activity
+         * @param items The list of items
+         */
         SimpleItemRecyclerViewAdapter(MainActivity parent,
                                       List<ItemDisplay> items) {
             mValues = items;
@@ -134,10 +177,16 @@ public class MainActivity extends AppCompatActivity {
             return new ViewHolder(view);
         }
 
+        /**
+         * Sets the appropriate text and image for the item. Also handles the heart icon and
+         * the progress bar display.
+         *
+         * @param holder The recycler view holder
+         * @param position The position of the item
+         */
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
-            //holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
             if(mValues.get(position).getMyBitmap() != null) {
                 holder.mImageView.setVisibility(holder.mImageView.VISIBLE);
@@ -168,13 +217,24 @@ public class MainActivity extends AppCompatActivity {
             return mValues.size();
         }
 
+        /**
+         * The ViewHolder for the recycler view.
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
+            /** The title text view. */
             final TextView mIdView;
+            /** The image view. */
             final ImageView mImageView;
+            /** The heart icon image. */
             final ImageView mLikeImage;
+            /** The progress bar. */
             final ProgressBar mPBar;
 
-
+            /**
+             * Initializes fields accordingly with their correct ID.
+             *
+             * @param view The view
+             */
             ViewHolder(View view) {
                 super(view);
                 mPBar = (ProgressBar) view.findViewById(R.id.pBar);
@@ -185,7 +245,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * The async task to display items.
+     */
     private class DisplayItemsAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the information from the database.
+         *
+         * @param urls The URL to get the information from the database.
+         * @return The response from the connection
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -214,6 +283,14 @@ public class MainActivity extends AppCompatActivity {
             return response;
         }
 
+
+        /**
+         * If successful, the infomation is retrieved and the information
+         * is proccessed.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
