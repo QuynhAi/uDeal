@@ -37,21 +37,48 @@ import model.Message;
 import model.UserInbox;
 
 /**
-
+ * The activity that represents that displays the chatting functionality of the app.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
  */
 public class ChatActivity extends AppCompatActivity {
+
+    /** The arg item id. */
     public static final String ARG_ITEM_ID = "item_id";
+
+    /** The user inbox item. */
     private UserInbox mItem;
+
+    /** The recycler view. */
     private View recyclerView;
+
+    /** The JSONObject for the async task. */
     private JSONObject mArguments;
+
+    /** The list of messages. */
     private List<Message> messageList;
+
+    /** The recycler view adapter. */
     private SimpleItemRecyclerViewAdapter adapter;
+
+    /** The current string. */
     private String current;
 
+    /** The handler for the activity. */
     private Handler handler = new Handler();
+
+    /** The runnable for the chat */
     private Runnable runnable;
+
+    /** The timer delay. */
     private int delay = 1000;
 
+    /**
+     * Sets up the recycler view for the chat and also calls an async task for the messages.
+     *
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +108,6 @@ public class ChatActivity extends AppCompatActivity {
                         mArguments.put(Message.SENDER, current);
                         mArguments.put(Message.RECIPIENT, mItem.getOtherUserName());
                         mArguments.put(Message.CONTENT, msg);
-//                        Log.e("mArguments", String.valueOf(current));
-//                        Log.e("mArguments", String.valueOf(mItem.getOtherUserName()));
                         new MessageTaskPost().execute(url.toString());
                         messageTextField.setText("");
                     } catch (JSONException e) {
@@ -97,6 +122,9 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Calls an async task to get the messages.
+     */
     @Override
     public void onResume(){
         StringBuilder url = new StringBuilder(getString(R.string.message));
@@ -120,6 +148,11 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    /**
+     * Sets up the recycler view.
+     *
+     * @param recyclerView The recycler view
+     */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         if (messageList != null){
             adapter = new SimpleItemRecyclerViewAdapter(this, messageList);
@@ -127,16 +160,31 @@ public class ChatActivity extends AppCompatActivity {
             ((RecyclerView) recyclerView).scrollToPosition(messageList.size()-1);
         }
     }
+
+    /**
+     * This is the recycler view adapter.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
+        /** The chat activity. */
         private final ChatActivity mParentActivity;
+
+        /** The list of messages. */
         private final List<Message> mValues;
+
+        /**
+         * Initalizes the chat activity and the list of messages.
+         *
+         * @param parent The parent activity
+         * @param items The list of messages
+         */
         SimpleItemRecyclerViewAdapter(ChatActivity parent, List<Message> items) {
             mValues = items;
             mParentActivity = parent;
-            //Log.e("SimpleItemRecyclerViewAdapter", "SimpleItemRecyclerViewAdapter");
-            //Log.e("inbox act", String.valueOf(items));
         }
 
         @Override
@@ -144,7 +192,7 @@ public class ChatActivity extends AppCompatActivity {
             View view;
             ViewHolder viewHolder;
             switch (viewType){
-                case 0: //
+                case 0:
                     view = LayoutInflater.from(parent.getContext()).inflate(R.layout.their_message, parent, false);
                     viewHolder = new ViewHolder(view, viewType);
                     return viewHolder;
@@ -164,7 +212,6 @@ public class ChatActivity extends AppCompatActivity {
                 holder.mContentView.setText(mValues.get(position).getMessage());
             }
             holder.itemView.setTag(mValues.get(position));
-            //Log.e("onBindViewHolder", "onBindViewHolder");
         }
 
         @Override
@@ -180,6 +227,12 @@ public class ChatActivity extends AppCompatActivity {
             return mValues.size();
         }
 
+        /**
+         * This is the recycler view holder.
+         *
+         * @author TCSS 450 Team 8
+         * @version 1.0
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
             public TextView mIdView;
             public TextView mContentView;
@@ -197,9 +250,18 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
-     * This class post a message between two users
+     * This class posts a message between two users.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
      */
     private class MessageTaskPost extends AsyncTask<String, Void, String> {
+        /**
+         * Posts the message between two users.
+         *
+         * @param urls The URL endpoint
+         * @return The response from the async task
+         */
         @Override
         protected String doInBackground(String... urls) {
                 String response = "";
@@ -231,10 +293,14 @@ public class ChatActivity extends AppCompatActivity {
                             urlConnection.disconnect();
                     }
                 }
-                //Log.e("task reponse", response);
                 return response;
         }
 
+        /**
+         * If successful, we get the messages and add it to the list.
+         *
+         * @param s The response from the async task
+         */
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
@@ -245,8 +311,6 @@ public class ChatActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    //Log.e("task messageTaskPost", String.valueOf(messageList));
-                    //Log.e("mArguments", String.valueOf(mArguments.get(Message.SENDER)));
                     if(!messageList.isEmpty()){
                         Log.e("messageList", String.valueOf(messageList));
                         messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
@@ -271,15 +335,23 @@ public class ChatActivity extends AppCompatActivity {
 
     /**
      * This class get all messages from two specific users
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
      */
     private class MessageTaskGet extends AsyncTask<String, Void, String> {
+        /**
+         * Retrives messages between two users.
+         *
+         * @param urls The URL endpoint
+         * @return The response from the async task
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
             HttpURLConnection urlConnection = null;
 
             for (String url : urls) {
-                //Log.e("urConnection", String.valueOf(url));
                 try {
                     URL urlObject = new URL(url);
                     urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -300,13 +372,16 @@ public class ChatActivity extends AppCompatActivity {
                         urlConnection.disconnect();
                 }
             }
-            //Log.e("task reponse get", response);
             return response;
         }
 
+        /**
+         * If successful, we get the messages between the two users and add it to the list.
+         *
+         * @param s The response from the async task
+         */
         @Override
         protected void onPostExecute(String s) {
-                //Log.e("ChatActivity", s);
                 if (s.startsWith("Unable to")) {
                     Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
                             .show();
@@ -314,10 +389,8 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 try {
                     JSONObject jsonObject = new JSONObject(s);
-                    //Log.e("ChatActivity", String.valueOf(jsonObject));
                     if (jsonObject.getBoolean("success") == true) {
                         messageList = Message.parseMessageJson(jsonObject.getString("message"));
-                        //Log.e("task", String.valueOf(messageList));
                         if (!messageList.isEmpty()) {
                             setupRecyclerView((RecyclerView) recyclerView);
                         }
