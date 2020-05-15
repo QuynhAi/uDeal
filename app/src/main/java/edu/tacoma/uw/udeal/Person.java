@@ -3,7 +3,6 @@ package edu.tacoma.uw.udeal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,26 +10,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-
+/**
+ * Fragment for display the user person.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class Person extends Fragment {
 
+    /** The profile image for the user. */
     private ImageView myProfileImage;
+
+    /** Button to take a picture. */
     private Button takePicture;
+
+    /** The take photo integer. */
     private static final int TAKE_PHOTO = 0;
+
+    /** The text view for the name. */
     private TextView myName;
+
+    /** The text view for the username. */
     private TextView myUsername;
 
     @Override
@@ -39,6 +45,14 @@ public class Person extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Creates the view and sets up the image capture ability for the user photo.
+     *
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The saved instance state
+     * @return The view
+     */
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,8 +66,6 @@ public class Person extends Fragment {
         takePicture = (Button) view.findViewById(R.id.add_profile_pic);
         takePicture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                //Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                //startActivity(intent);
                 Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePicture, TAKE_PHOTO);
             }
@@ -67,18 +79,18 @@ public class Person extends Fragment {
         String userName = settings.getString(getString(R.string.username), "");
         myUsername = (TextView) view.findViewById(R.id.profile_location);
         myUsername.setText("@" +  userName);
-
-
-
         return view;
     }
 
-    //method overrides to hide the menu buttons for this fragment
+    /**
+     * Handles the hiding of the menu items.
+     *
+     * @param menu The menu for this fragment
+     */
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem invite=menu.findItem(R.id.action_logout);
         if(invite!=null)
             invite.setVisible(false);
     }
-
 }
