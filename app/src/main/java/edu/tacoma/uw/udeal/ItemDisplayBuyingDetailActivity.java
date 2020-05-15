@@ -40,19 +40,29 @@ import model.UserInbox;
 
 
 /**
- * An activity representing a single Item detail screen. This
- * activity is only used on narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a
+ * An activity representing a single ItemDisplayBuyingFrag item. This is
+ * used for the "Liked Items" tab on the application.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
  */
 public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-
+    /** The item ID. */
     public static final String ARG_ITEM_ID = "item_id";
 
+    /** The Google map to be displayed. */
+    private GoogleMap mMap;
+
+    /** The ItemDisplayBuyingFrag object used for retrieving the information. */
     private ItemDisplayBuyingFrag mItemDisplay;
 
+    /**
+     * Creates the activity by setting text of the views and the image of the item.
+     * Sets up the Google Map with the correct location.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +87,6 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             }
         });
 
-
-
-
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             if(getIntent().getSerializableExtra(ARG_ITEM_ID) != null) {
@@ -100,7 +107,6 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
         if (actionBar != null) {
@@ -120,6 +126,12 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
         }
     }
 
+    /**
+     * Allows the back button to be displayed based on boolean value.
+     *
+     * @param item The menu item.
+     * @return Boolean value for options item selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -131,13 +143,13 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near the item location
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * Manipulates the map once available. This callback is triggered when the map is ready to be
+     * used. Adds a marker to the location of the item, and also displays a location radius
+     * around that maker. If Google Play services is not installed on the device, the user will be
+     * prompted to install it inside the SupportMapFragment. This method will only be triggered once
+     * the user has installed Google Play services and returned to the app.
+     *
+     * @param googleMap The GoogleMap to be displayed on the screen
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
