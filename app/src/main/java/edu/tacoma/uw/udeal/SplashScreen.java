@@ -20,7 +20,7 @@ public class SplashScreen extends AppCompatActivity {
     /**
      * Creates the splash screen then starts the login activity.
      *
-     * @param savedInstanceState The saved instance state. 
+     * @param savedInstanceState The saved instance state.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

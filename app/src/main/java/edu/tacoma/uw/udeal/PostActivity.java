@@ -14,9 +14,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import inbox.MessageInboxActivity;
 
+/**
+ * The activity that holds the fragment for posting an item.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class PostActivity extends AppCompatActivity {
 
+    /** The post fragment. */
     private Fragment postFragment;
+
+    /**
+     * Creates the activity and sets up the post fragment.
+     *
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +49,9 @@ public class PostActivity extends AppCompatActivity {
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, postFragment).commit();
         }
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        Fragment postfragment = new Camera();
-//        fragmentTransaction.add(R.id.fragment_container, postfragment);
-//        fragmentTransaction.commit();
     }
 
+    /** The bottom navigation view for the application. */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
