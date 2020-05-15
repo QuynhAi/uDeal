@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
-            holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
+            //holder.mContentView.setText(mValues.get(position).getMyPrice() + "");
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
             final ItemDisplay temp = mValues.get(position);
             holder.mLikeImage.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
-            final TextView mContentView;
+           //final TextView mContentView;
             final ImageView mImageView;
             final ImageView mLikeImage;
 
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             ViewHolder(View view) {
                 super(view);
                 mIdView = (TextView) view.findViewById(R.id.textViewTitle);
-                mContentView = (TextView) view.findViewById(R.id.textViewPrice);
+               // mContentView = (TextView) view.findViewById(R.id.textViewPrice);
                 mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
                 mLikeImage = (ImageView) view.findViewById(R.id.heartImage);
             }
