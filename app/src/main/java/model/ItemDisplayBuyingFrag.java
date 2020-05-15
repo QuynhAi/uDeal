@@ -1,12 +1,9 @@
 package model;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,49 +16,105 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 
 import edu.tacoma.uw.udeal.BuyingFrag;
-import edu.tacoma.uw.udeal.R;
 
+/**
+ * This class handles the item that will be displayed
+ * on the "Saved Items" tab of the application.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class ItemDisplayBuyingFrag implements Serializable {
 
-    private int myItemID;
-    private int myMemberID;
+    /** Used to retrieve item ID. */
+    private static final String ITEM_ID = "item_id";
+    /** Used to retrieve member ID. */
+    private static final String MEMBER_ID = "member_id";
+    /** Used to retrieve URL. */
+    private static final String URL = "url";
+    /** Used to retrieve the title. */
+    private static final String TITLE = "title";
+    /** Used to retrieve the location. */
+    private static final String LOCATION = "location";
+    /** Used to retrieve the description. */
+    private static final String DESCRIPTION = "description";
+    /** Used to retrieve the category. */
+    private static final String CATEGORY = "category";
+    /** Used to retrieve the price. */
+    private static final String PRICE = "price";
+    /** Used to retrieve the listed boolean. */
+    private static final String LISTED = "listed";
+    /** Used to retrieve the date posted. */
+    private static final String DATE_POSTED ="date_posted";
+    /** Used to retrieve the username. */
+    private static final String USERNAME = "username";
+    /** Used to retrieve the liked boolean. */
+    private static final String LIKED = "liked";
+    /** Used to retrieve the liked item id. */
+    private static final String LIKED_ITEM_ID = "liked_item_id";
+    /** Used to retrieve the liker id. */
+    private static final String LIKER_ID = "liker_id";
+
+    /** The URL for the photo. */
     private String myURL;
+    /** The title of the item. */
     private String myTitle;
+    /** The location of the item. */
     private String myLocation;
+    /** The description of the item. */
     private String myDescription;
+    /** The category of the item. */
     private String myCategory;
-    private double myPrice;
-    private boolean myListed;
+    /** The date the item was posted. */
     private String myDatePosted;
-    private int myIndex;
-    private transient BuyingFrag.SimpleItemRecyclerViewAdapter myAdapter;
-    private transient Bitmap myBitmap;
-    private byte[] myBitmapArray = {};
+    /** The username of the person who posted the item. */
     private String myUsername;
-    private boolean myLiked;
-    private transient JSONObject mArguments;
+    /** The ID of the item. */
+    private int myItemID;
+    /** The ID of the member. */
+    private int myMemberID;
+    /** The index that represents where item is located in recycler view. */
+    private int myIndex;
+    /** The ID of the person who liked the item. */
     private int myLikerID;
+    /** The price of the item. */
+    private double myPrice;
+    /** True if item is listed; false if item is not listed. */
+    private boolean myListed;
+    /** True if the current user liked this item; false otherwise. */
+    private boolean myLiked;
+    /** The bitmap array of the item. */
+    private byte[] myBitmapArray = {};
+    /** The arguments for the JSON object. */
+    private transient JSONObject mArguments;
+    /** The adapter for the recycler view. */
+    private transient BuyingFrag.SimpleItemRecyclerViewAdapter myAdapter;
+    /** The bitmap that represents the photo of the item. */
+    private transient Bitmap myBitmap;
 
-    public static final String ITEM_ID = "item_id";
-    public static final String MEMBER_ID = "member_id";
-    public static final String URL = "url";
-    public static final String TITLE = "title";
-    public static final String LOCATION = "location";
-    public static final String DESCRIPTION = "description";
-    public static final String CATEGORY = "category";
-    public static final String PRICE = "price";
-    public static final String LISTED = "listed";
-    public static final String DATE_POSTED ="date_posted";
-    public static final String USERNAME = "username";
-    public static final String LIKED = "liked";
-    public static final String LIKED_ITEM_ID = "liked_item_id";
-    public static final String LIKER_ID = "liker_id";
-
+    /**
+     * Initializes all fields and calls an async task to
+     * retrieve the photo from S3.
+     *
+     * @param myItemID The item ID
+     * @param myMemberID The member ID
+     * @param myURL The URL of the photo
+     * @param myTitle The title of the item
+     * @param myLocation The location of the item
+     * @param myDescription The description of the item
+     * @param myCategory The category of the item
+     * @param myPrice The price of the item
+     * @param myListed The boolean whether the is listed
+     * @param myDatePosted The date the item was posted
+     * @param myIndex The index of the item
+     * @param myAdapter The adapter for the item
+     * @param myUsername The username of the poster of the item
+     * @param myLiked The boolean whether or not this item is liked
+     * @param myLikerID The member ID of the liker
+     */
     public ItemDisplayBuyingFrag(int myItemID, int myMemberID, String myURL, String myTitle, String myLocation,
                                   String myDescription, String myCategory, double myPrice, boolean myListed,
                                   String myDatePosted, int myIndex, BuyingFrag.SimpleItemRecyclerViewAdapter myAdapter,
@@ -86,114 +139,256 @@ public class ItemDisplayBuyingFrag implements Serializable {
         this.myLikerID = myLikerID;
     }
 
+    /**
+     * Gets item ID.
+     *
+     * @return The item ID
+     */
     public int getMyItemID() {
         return myItemID;
     }
 
+    /**
+     * Sets the item ID.
+     *
+     * @param myItemID The item ID
+     */
     public void setMyItemID(int myItemID) {
         this.myItemID = myItemID;
     }
 
+    /**
+     * Gets the member ID.
+     *
+     * @return The member ID
+     */
     public int getMyMemberID() {
         return myMemberID;
     }
 
+    /**
+     * Sets the member ID.
+     *
+     * @param myMemberID The member ID
+     */
     public void setMyMemberID(int myMemberID) {
         this.myMemberID = myMemberID;
     }
 
+    /**
+     * Gets the URL.
+     *
+     * @return The URL
+     */
     public String getMyURL() {
         return myURL;
     }
 
+    /**
+     * Sets the URL.
+     *
+     * @param myURL The URL
+     */
     public void setMyURL(String myURL) {
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
     }
 
+    /**
+     * Gets the title.
+     *
+     * @return The title
+     */
     public String getMyTitle() {
         return myTitle;
     }
 
+    /**
+     * Sets the title.
+     *
+     * @param myTitle The title
+     */
     public void setMyTitle(String myTitle) {
         this.myTitle = myTitle;
     }
 
+    /**
+     * Gets the location.
+     *
+     * @return The location
+     */
     public String getMyLocation() {
         return myLocation;
     }
 
+    /**
+     * Sets the location.
+     *
+     * @param myLocation The location
+     */
     public void setMyLocation(String myLocation) {
         this.myLocation = myLocation;
     }
 
+    /**
+     * Gets the description.
+     *
+     * @return The description
+     */
     public String getMyDescription() {
         return myDescription;
     }
 
+    /**
+     * Sets the description
+     *
+     * @param myDescription The description
+     */
     public void setMyDescription(String myDescription) {
         this.myDescription = myDescription;
     }
 
+    /**
+     * Gets the category.
+     *
+     * @return The category
+     */
     public String getMyCategory() {
         return myCategory;
     }
 
+    /**
+     * Sets the category.
+     *
+     * @param myCategory The category
+     */
     public void setMyCategory(String myCategory) {
         this.myCategory = myCategory;
     }
 
+    /**
+     * Gets the price.
+     *
+     * @return The price
+     */
     public double getMyPrice() {
         return myPrice;
     }
 
+    /**
+     * Sets the price.
+     *
+     * @param myPrice The price
+     */
     public void setMyPrice(double myPrice) {
         this.myPrice = myPrice;
     }
 
+    /**
+     * Gets the listed boolean.
+     *
+     * @return True if the item is listed; false otherwise
+     */
     public boolean getMyListed() {
         return myListed;
     }
 
+    /**
+     * Sets the listed boolean.
+     *
+     * @param myListed The boolean whether the item is listed or not
+     */
     public void setMyListed(boolean myListed) {
         this.myListed = myListed;
     }
 
+    /**
+     * Gets the date posted of the item.
+     *
+     * @return The date the item was posted
+     */
     public String getMyDatePosted() {
         return myDatePosted;
     }
 
+    /**
+     * Sets the date posted of the item.
+     *
+     * @param myDatePosted The date the item was posted
+     */
     public void setMyDatePosted(String myDatePosted) {
         this.myDatePosted = myDatePosted;
     }
 
+    /**
+     * Gets the bitmap of the item.
+     *
+     * @return Bitmap of the item
+     */
     public Bitmap getMyBitmap() {
         return myBitmap;
     }
 
+    /**
+     * Gets the byte array for the bitmap of the item.
+     *
+     * @return The byte array for the bitmap
+     */
     public byte[] getMyBitmapArray() {
         return myBitmapArray;
     }
 
+    /**
+     * Gets the username.
+     *
+     * @return The username
+     */
     public String getMyUsername() {
         return myUsername;
     }
 
+    /**
+     * Sets the username.
+     *
+     * @param myUsername The username
+     */
     public void setMyUsername(String myUsername) {
         this.myUsername = myUsername;
     }
 
+    /**
+     * Gets the liker ID.
+     *
+     * @return The liker ID
+     */
     public int getMyLikerID() {
         return myLikerID;
     }
 
+    /**
+     * Sets the liker ID.
+     *
+     * @param myLikerID The liker ID
+     */
     public void setMyLikerID(int myLikerID) {
         this.myLikerID = myLikerID;
     }
 
+    /**
+     * Gets boolean whether or not this item is liked.
+     *
+     * @return The liked boolean
+     */
     public boolean getmyLiked() {
         return myLiked;
     }
 
+    /**
+     * Sets whether or not this item is lied. If it is liked, this method will call an async
+     * task to add this information to the 'Like' database. If it has been unliked, this method
+     * will can an async task to remove this information from the 'Like' database.
+     *
+     * @param myLiked True if the item is liked; false otherwise
+     */
     public void setMyLiked(boolean myLiked) {
         this.myLiked = myLiked;
         if(this.myLiked) {
@@ -221,6 +416,16 @@ public class ItemDisplayBuyingFrag implements Serializable {
         myAdapter.notifyItemChanged(myIndex);
     }
 
+    /**
+     * Parse the JSONObject and converts it into an ItemDisplayBuyingFrag object.
+     *
+     * @param itemJSON The JSONObject to be parsed
+     * @param myIndex The index where item is located in recycler view
+     * @param myAdapter The adapter for the recycler view
+     * @param myID The ID of the current user
+     * @return The ItemDisplayBuyingFrag object created from the JSONObject
+     * @throws JSONException If there is an issue parsing the JSONObject
+     */
     public static ItemDisplayBuyingFrag parseItemJson(JSONObject itemJSON, int myIndex, BuyingFrag.SimpleItemRecyclerViewAdapter myAdapter, int myID) throws JSONException {
         JSONObject obj = itemJSON;
         ItemDisplayBuyingFrag item = new ItemDisplayBuyingFrag(
@@ -242,7 +447,20 @@ public class ItemDisplayBuyingFrag implements Serializable {
         return item;
     }
 
+    /**
+     * This class handles the async task that retrives the image
+     * from S3.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class ImageTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the image from S3.
+         *
+         * @param urls The URL to review the image.
+         * @return The response from the connection
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -271,6 +489,13 @@ public class ItemDisplayBuyingFrag implements Serializable {
             return response;
         }
 
+        /**
+         * If successful, the bitmap of the item is updated. If unsuccessful,
+         * the method returns.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
         @Override
         public void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
@@ -299,7 +524,20 @@ public class ItemDisplayBuyingFrag implements Serializable {
         }
     }
 
+    /**
+     * This class handles the async task that deletes the liked
+     * information from the database.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class DeleteAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Deletes the liked information from the database.
+         *
+         * @param urls The URL to delete.
+         * @return The response from the connection
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -334,6 +572,12 @@ public class ItemDisplayBuyingFrag implements Serializable {
             return response;
         }
 
+        /**
+         * If successful, the database is updated.
+         *
+         * @param result The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
         @Override
         protected void onPostExecute(String result) {
             try {
@@ -350,7 +594,20 @@ public class ItemDisplayBuyingFrag implements Serializable {
         }
     }
 
+    /**
+     * This class handles the async task that adds the liked information
+     * to the database.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class LikedAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Adds the liked information to the database.
+         *
+         * @param urls The URL to add the liked information
+         * @return The response from the connection
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -385,6 +642,12 @@ public class ItemDisplayBuyingFrag implements Serializable {
             return response;
         }
 
+        /**
+         * If successful, the database is updated.
+         *
+         * @param result The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
         @Override
         protected void onPostExecute(String result) {
             try {
@@ -400,5 +663,4 @@ public class ItemDisplayBuyingFrag implements Serializable {
 
         }
     }
-
 }
