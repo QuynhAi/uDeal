@@ -16,8 +16,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import inbox.MessageInboxActivity;
 
+/**
+ * The activity that holds the fragment for the user profile.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class ProfileActivity extends AppCompatActivity {
 
+    /**
+     * Creates the activity and sets up the profile fragment.
+     *
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +46,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
         Fragment personfragment = new Person();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, personfragment).commit();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        Fragment personfragment = new Person();
-//        fragmentTransaction.add(R.id.fragment_container, personfragment);
-//        fragmentTransaction.commit();
     }
 
     @Override
@@ -48,6 +54,12 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Removes the shared preferences on logout and sets up the actions for the menu items.
+     *
+     * @param item The menu item
+     * @return Boolean value for options item selected
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.invite) {
@@ -79,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /** The bottom navigation view for the application. */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
