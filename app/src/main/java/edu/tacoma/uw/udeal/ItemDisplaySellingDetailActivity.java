@@ -169,7 +169,7 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
                     }
                 }
             } catch (IOException e) {
-
+                Log.d("myTag", "onMapReady: IO Exception");
             }
         }
 
@@ -178,5 +178,4 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
         mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
     }
-
 }

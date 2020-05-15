@@ -170,7 +170,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                     }
                 }
             } catch (IOException e) {
-
+                Log.d("myTag", "onMapReady: IO Exception");
             }
         }
 
@@ -179,5 +179,4 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
     }
-
 }
