@@ -1,18 +1,13 @@
 package edu.tacoma.uw.udeal;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -103,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                             int theID = settings.getInt(getString(R.string.member_id), 0);
                             new DisplayItemsAsyncTask()
                                     .execute(getString(R.string.load_limited) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount + "&theLikerID=" + theID);
-                          //  loading = true;
                         }
                     }
                 }
@@ -177,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
-           //final TextView mContentView;
             final ImageView mImageView;
             final ImageView mLikeImage;
             final ProgressBar mPBar;
@@ -187,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
                 super(view);
                 mPBar = (ProgressBar) view.findViewById(R.id.pBar);
                 mIdView = (TextView) view.findViewById(R.id.textViewTitle);
-               // mContentView = (TextView) view.findViewById(R.id.textViewPrice);
                 mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
                 mLikeImage = (ImageView) view.findViewById(R.id.heartImage);
             }
@@ -251,6 +242,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * The bottom navigation view for the application.
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
