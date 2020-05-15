@@ -10,11 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-
 /**
- * A simple {@link Fragment} subclass.
+ * This fragment handles inviting friends to the application.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
  */
 public class InviteFriends extends Fragment {
 
@@ -33,7 +33,11 @@ public class InviteFriends extends Fragment {
         return inflater.inflate(R.layout.invite_friends, container, false);
     }
 
-    //method overrides to hide the menu buttons for this fragment
+    /**
+     * Handles the hiding of the menu items.
+     *
+     * @param menu The menu for this fragment
+     */
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem invite=menu.findItem(R.id.invite);
@@ -48,5 +52,4 @@ public class InviteFriends extends Fragment {
         if(login!=null)
             login.setVisible(false);
     }
-
 }
