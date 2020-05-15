@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Item;
 import model.ItemDisplay;
 import model.UserInbox;
 
