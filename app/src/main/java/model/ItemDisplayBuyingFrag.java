@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 import edu.tacoma.uw.udeal.BuyingFrag;
 
 /**
@@ -383,7 +382,7 @@ public class ItemDisplayBuyingFrag implements Serializable {
     }
 
     /**
-     * Sets whether or not this item is lied. If it is liked, this method will call an async
+     * Sets whether or not this item is liked. If it is liked, this method will call an async
      * task to add this information to the 'Like' database. If it has been unliked, this method
      * will can an async task to remove this information from the 'Like' database.
      *
