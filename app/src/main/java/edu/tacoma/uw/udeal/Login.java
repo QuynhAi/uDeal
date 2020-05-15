@@ -20,26 +20,45 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Currency;
 
 import model.UserLogin;
 
+/**
+ * This activity handles the login for the application.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class Login extends AppCompatActivity {
 
+    /** The email edit text. */
     private EditText emailEdit;
+
+    /** The possword edit text. */
     private EditText passwordEdit;
+
+    /** The arguments for the async task. */
     private JSONObject mArguments;
+
+    /** The login tag. */
     private String TAG = "Login";
-    public static String CURRENT_USER;
+
+    /** The inputted email. */
     private String inputtedEmail = "";
 
+    /** The shared preferences for the application. */
     private SharedPreferences mSharedPreferences;
 
+    /**
+     * Sets up the view of the activity and the shared preferences to determine
+     * if the user has already logged in.
+     *
+     * @param savedInstanceState The instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +70,7 @@ public class Login extends AppCompatActivity {
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);
         if(!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN), false)) {
-           // getSupportFragmentManager().beginTransaction()
-           //         .add(R.id.sign_in_fragment_id, new LoginFragment())
-            //        .commit();
+            // Not yet logged in
         } else {
             // Go to main activity if we have already logged in
             Intent intent = new Intent(this, MainActivity.class);
@@ -61,15 +78,11 @@ public class Login extends AppCompatActivity {
             finish();
         }
 
-
         Button loginButton = (Button)findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                if(CURRENT_USER == null){
-                    CURRENT_USER = email;
-                }
                 UserLogin userLogin = new UserLogin(email, password);
                 loginMethod(userLogin);
 
@@ -85,6 +98,12 @@ public class Login extends AppCompatActivity {
         });
     }
 
+    /**
+     * Logins the user and calls an async task.
+     *
+     * @param userLogin The user login information
+     * @throws JSONException if the JSON cannot be created
+     */
     public void loginMethod(UserLogin userLogin) {
         StringBuilder url = new StringBuilder(getString(R.string.login));
         //Construct a JSONObject to build a formatted message to send.
@@ -99,7 +118,19 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    /**
+     * The login async task.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class LoginAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Performs the login operation.
+         *
+         * @param urls The URl to verify the login information
+         * @return The response from the task
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -133,6 +164,12 @@ public class Login extends AppCompatActivity {
             return response;
         }
 
+        /**
+         * If successful, we log in succesfullly and store the information
+         * in the shared preferences.
+         *
+         * @param result The result from the async task
+         */
         @Override
         protected void onPostExecute(String result){
             try{
@@ -148,7 +185,6 @@ public class Login extends AppCompatActivity {
                     new GetUserInfoAsyncTask().execute(getUserInfoURL.toString());
                 } else {
                     Toast.makeText(getApplicationContext(), "Credentials did not match or missing information ", Toast.LENGTH_SHORT).show();
-                    //Log.e(TAG, resultObject.getString("error"));
                 }
             }catch(JSONException e){
                 Toast.makeText(getApplicationContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
@@ -157,7 +193,19 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    /**
+     * The async task to get user information.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
     private class GetUserInfoAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Gets the user information.
+         *
+         * @param urls The URl to get the user information
+         * @return The response from the task
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -186,6 +234,12 @@ public class Login extends AppCompatActivity {
             return response;
         }
 
+        /**
+         * If successful, we get the user information and add the information to the shared
+         * preferences.
+         *
+         * @param s The result from the async task
+         */
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
@@ -197,7 +251,6 @@ public class Login extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success")) {
                     String username = jsonObject.getJSONArray("names").getJSONObject(0).getString("username");
-                    CURRENT_USER = username;
                     int userid = jsonObject.getJSONArray("names").getJSONObject(0).getInt("member_id");
                     String firstName = jsonObject.getJSONArray("names").getJSONObject(0).getString("first_name");
                     String lastName = jsonObject.getJSONArray("names").getJSONObject(0).getString("last_name");
@@ -220,5 +273,4 @@ public class Login extends AppCompatActivity {
             }
         }
     }
-
 }
