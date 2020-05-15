@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,13 +16,22 @@ import com.google.android.material.tabs.TabLayout;
 
 import inbox.MessageInboxActivity;
 
+/**
+ * The activity that holds the fragments for the liked items and posted items.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 public class CartActivity extends AppCompatActivity {
 
-    private TabAdapter adapter;
+    /** The tab layout for the activity. */
     private TabLayout tabLayout;
-//    private ViewPager viewPager;
 
-
+    /**
+     * Sets up the tabbed layout for the activity.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +47,6 @@ public class CartActivity extends AppCompatActivity {
         menuItem.setChecked(true);
 
         //Adding tabbed fragments to the activity
-//        viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         TabLayout.Tab sellTab = tabLayout.newTab();
         TabLayout.Tab buyTab = tabLayout.newTab();
@@ -87,13 +94,9 @@ public class CartActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SellingFrag())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        Fragment cartfragment = new Cart();
-//        fragmentTransaction.add(R.id.fragment_container, cartfragment);
-//        fragmentTransaction.commit();
     }
 
+    /** The bottom navigation view for the application. */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
