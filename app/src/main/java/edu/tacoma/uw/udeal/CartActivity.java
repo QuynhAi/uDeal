@@ -31,6 +31,8 @@ public class CartActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
+        setTitle("My Cart");
+
         //Adding bottom nav to the activity
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(3);
@@ -41,11 +43,12 @@ public class CartActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         TabLayout.Tab sellTab = tabLayout.newTab();
         TabLayout.Tab buyTab = tabLayout.newTab();
-        sellTab.setText("Selling");
-        buyTab.setText("Buying");
+        sellTab.setText("Posted Items");
+        buyTab.setText("Saved Items");
         tabLayout.addTab(sellTab, 0, true);
         tabLayout.addTab(buyTab, 1, false);
 
+        tabLayout.setTabTextColors(getResources().getColor(R.color.colorWhite), getResources().getColor(R.color.colorAccent));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
