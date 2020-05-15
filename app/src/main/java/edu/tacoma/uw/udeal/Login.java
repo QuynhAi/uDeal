@@ -199,10 +199,14 @@ public class Login extends AppCompatActivity {
                     String username = jsonObject.getJSONArray("names").getJSONObject(0).getString("username");
                     CURRENT_USER = username;
                     int userid = jsonObject.getJSONArray("names").getJSONObject(0).getInt("member_id");
+                    String firstName = jsonObject.getJSONArray("names").getJSONObject(0).getString("first_name");
+                    String lastName = jsonObject.getJSONArray("names").getJSONObject(0).getString("last_name");
+                    String fullName = firstName + " " + lastName;
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putString(getString(R.string.email), inputtedEmail);
                     editor.putString(getString(R.string.username), username);
                     editor.putInt(getString(R.string.member_id), userid);
+                    editor.putString(getString(R.string.fullname), fullName);
                     editor.commit();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     startActivity(intent);

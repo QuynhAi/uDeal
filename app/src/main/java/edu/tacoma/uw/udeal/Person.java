@@ -31,7 +31,7 @@ public class Person extends Fragment {
     private Button takePicture;
     private static final int TAKE_PHOTO = 0;
     private TextView myName;
-    private TextView myLocation;
+    private TextView myUsername;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,13 @@ public class Person extends Fragment {
 
         // Get the text from inputs
         myName = (TextView) view.findViewById(R.id.profile_name);
-        myLocation = (TextView) view.findViewById(R.id.profile_location);
+        SharedPreferences settings = getActivity().getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+        String fullName = settings.getString(getString(R.string.fullname), "");
+        myName.setText(fullName);
+        String userName = settings.getString(getString(R.string.username), "");
+        myUsername = (TextView) view.findViewById(R.id.profile_location);
+        myUsername.setText("@" +  userName);
+
 
 
         return view;
