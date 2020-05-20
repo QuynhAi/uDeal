@@ -86,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.inbox_detail_container);
         if (savedInstanceState == null) {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
-            setTitle(mItem.getOtherUserName());
+            setTitle(mItem.getSellerName());
         }
 
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
@@ -106,7 +106,7 @@ public class ChatActivity extends AppCompatActivity {
                     try {
                         StringBuilder url = new StringBuilder(getString(R.string.message));
                         mArguments.put(Message.SENDER, current);
-                        mArguments.put(Message.RECIPIENT, mItem.getOtherUserName());
+                        mArguments.put(Message.RECIPIENT, mItem.getSellerName());
                         mArguments.put(Message.CONTENT, msg);
                         new MessageTaskPost().execute(url.toString());
                         messageTextField.setText("");
@@ -131,7 +131,7 @@ public class ChatActivity extends AppCompatActivity {
         url.append("?sender=");
         url.append(current);
         url.append("&recipient=");
-        url.append(mItem.getOtherUserName());
+        url.append(mItem.getSellerName());
         new MessageTaskGet().execute(url.toString());
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
@@ -141,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                 url.append("?sender=");
                 url.append(current);
                 url.append("&recipient=");
-                url.append(mItem.getOtherUserName());
+                url.append(mItem.getSellerName());
                 new MessageTaskGet().execute(url.toString());
             }
         }, delay);
@@ -205,7 +205,7 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            if ((mValues.get(position).getSender()).equals(mItem.getOtherUserName()) ){
+            if ((mValues.get(position).getSender()).equals(mItem.getSellerName()) ){
                 holder.mIdView.setText(mValues.get(position).getSender());
                 holder.mContentView.setText(mValues.get(position).getMessage());
             } else {
@@ -217,7 +217,7 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             int viewType = 1; //Default is 1
-            if ((mValues.get(position).getSender()).equals(mItem.getOtherUserName())) {
+            if ((mValues.get(position).getSender()).equals(mItem.getSellerName())) {
                 viewType = 0; //if zero, their_message layout
             }
             return viewType;

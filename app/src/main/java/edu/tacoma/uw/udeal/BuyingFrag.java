@@ -191,6 +191,7 @@ public class BuyingFrag extends Fragment {
         public void onBindViewHolder(final BuyingFrag.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).getMyTitle());
             holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
+            //Log.e("testing", String.valueOf(mValues.get(position).getMyBitmap()));
             if(mValues.get(position).getMyBitmap() != null) {
                 holder.mImageView.setVisibility(holder.mImageView.VISIBLE);
                 holder.mPBar.setVisibility(holder.mPBar.GONE);

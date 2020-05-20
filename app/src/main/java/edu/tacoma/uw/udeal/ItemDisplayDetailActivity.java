@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,17 +26,31 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import inbox.ChatActivity;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import model.ItemDisplay;
+import model.Message;
 import model.UserInbox;
 
 
@@ -77,18 +92,23 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
                 String current = settings.getString(getString(R.string.username), "");
                 // temporary, change to
-                UserInbox item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                        mItemDisplay.getMyUsername(), mItemDisplay.getMyUsername());
-                Log.e("ItemDisplayDetailActivi", String.valueOf(item.getOtherUserName()));
+                UserInbox item = null;
+                try {
+                    item = new UserInbox(current, mItemDisplay.getMyUsername(),
+                            mItemDisplay.getMyURL(), mItemDisplay.getMyURL());
+                }catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                new UserInboxTaskPost().execute(getString(R.string.user_inbox));
+                Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
+
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
                 context.startActivity(intent);
             }
         });
-
-
-
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
@@ -120,6 +140,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         if (mItemDisplay != null) {
             byte[] tmp = mItemDisplay.getMyBitmapArray();
             ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
+            Log.e("ItemDisplayDetailAct", String.valueOf(BitmapFactory.decodeByteArray(tmp, 0, tmp.length)));
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
@@ -177,5 +198,93 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
         mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
+    }
+
+
+
+    /**
+     * This class posts a message between two users.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    public class UserInboxTaskPost extends AsyncTask<String, Void, String> {
+        /**
+         * Posts the message between two users.
+         *
+         * @param urls The URL endpoints
+         * @return The response from the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+            String current = settings.getString(getString(R.string.username), "");
+
+            JSONObject mArguments = new JSONObject();
+            try {
+                mArguments.put(UserInbox.CURRENT_USER_NAME, current);
+                mArguments.put(UserInbox.SELLER, mItemDisplay.getMyUsername());
+                mArguments.put(UserInbox.PROFILE_PICTURE, mItemDisplay.getMyURL()); // temporary
+                mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            for (String url : urls) {
+                //Log.e("urConnection", String.valueOf(url));
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+
+                    wr.write(mArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            Log.e("Response", String.valueOf(response));
+            return response;
+        }
+
+        /**
+         * If successful, we get the messages and add it to the list.
+         *
+         * @param s The response from the async task
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success") == true) {
+                    Toast.makeText(getApplicationContext(), "Success",
+                            Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

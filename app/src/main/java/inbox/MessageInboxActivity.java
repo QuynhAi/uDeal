@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import edu.tacoma.uw.udeal.CartActivity;
 import edu.tacoma.uw.udeal.MainActivity;
@@ -86,14 +87,22 @@ public class MessageInboxActivity extends AppCompatActivity {
         if (findViewById(R.id.inbox_detail_container) != null) {
             mTwoPane = true;
         }
+        if(mUserList == null){
+            StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
+            url.append("?currentuser=");
+            url.append(current);
+            new UserInboxTask().execute(url.toString());
+        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
         if(mUserList == null){
-            //new MessageInboxActivity.UserInboxTask().execute(getString(R.string.register));
-            new UserInboxTask().execute(getString(R.string.members));
+            StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
+            url.append("?currentuser=");
+            url.append(current);
+            new UserInboxTask().execute(url.toString());
         }
     }
 
@@ -169,10 +178,15 @@ public class MessageInboxActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
-            holder.name.setText(mValues.get(position).getOtherUserName());
+            holder.name.setText(mValues.get(position).getSellerName());
             holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
-            //holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
-
+            holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
+            //Log.e("onBind", String.valueOf(mValues.get(position).getMyBitmap()));
+            if(mValues.get(position).getMyBitmap() != null) {
+                holder.item_image.setVisibility(holder.item_image.VISIBLE);
+            } else {
+                holder.item_image.setVisibility(holder.item_image.GONE);
+            }
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -264,7 +278,7 @@ public class MessageInboxActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("names"));
+                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("users"));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
                     }
@@ -272,6 +286,8 @@ public class MessageInboxActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
                         Toast.LENGTH_SHORT).show();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
         }
     }

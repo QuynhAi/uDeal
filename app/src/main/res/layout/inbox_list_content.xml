@@ -24,11 +24,11 @@
 
     <ImageView
         android:id="@+id/inbox_item_view"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/ic_launcher_background"
         android:layout_margin="@dimen/text_margin"
-        android:layout_weight="1"
+        android:scaleType="centerCrop" />
 
-        app:srcCompat="@drawable/ic_launcher_background"
-        tools:ignore="VectorDrawableCompat" />
 </LinearLayout>

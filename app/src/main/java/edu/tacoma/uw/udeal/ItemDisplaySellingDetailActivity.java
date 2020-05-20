@@ -34,6 +34,7 @@ import inbox.ChatActivity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import model.ItemDisplaySellingFrag;
 import model.UserInbox;
@@ -77,9 +78,15 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
                 SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
                 String current = settings.getString(getString(R.string.username), "");
                 // temporary, change to
-                UserInbox item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                        mItemDisplay.getMyUsername(), mItemDisplay.getMyUsername());
-                Log.e("ItemDisplayDetailActivi", String.valueOf(item.getOtherUserName()));
+                UserInbox item = null;
+                try {
+                    item = new UserInbox(current, mItemDisplay.getMyUsername(),
+                            mItemDisplay.getMyURL(), mItemDisplay.getMyURL());
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);

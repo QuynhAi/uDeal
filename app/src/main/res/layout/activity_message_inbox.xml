@@ -18,6 +18,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
+        android:text='Please wait, loading...'
         tools:context="inbox.InboxListActivity"
         tools:listitem="@layout/inbox_list_content">
     </androidx.recyclerview.widget.RecyclerView>
