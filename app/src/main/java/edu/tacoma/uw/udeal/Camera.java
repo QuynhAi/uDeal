@@ -182,7 +182,9 @@ public class Camera extends Fragment {
                 if (currentCategory != position){
                     categoryString = items[position];
                 } else {
-                    ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
+                    //top is correct way but doesn't work. second way works
+//                    ((TextView) view).setTextColor(getResources().getColor(R.color.colorPrimary));
+                    ((TextView) view).setTextColor(R.color.colorPrimary);
                 }
             }
 
