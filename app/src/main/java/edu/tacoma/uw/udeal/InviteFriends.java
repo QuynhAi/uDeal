@@ -27,7 +27,6 @@ public class InviteFriends extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -46,29 +45,11 @@ public class InviteFriends extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),SettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
+                getActivity().overridePendingTransition(0,0);
             }
         });
         return view;
-    }
-
-    /**
-     * Handles the hiding of the menu items.
-     *
-     * @param menu The menu for this fragment
-     */
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem invite=menu.findItem(R.id.invite);
-        if(invite!=null)
-            invite.setVisible(false);
-
-        MenuItem settings=menu.findItem(R.id.settings);
-        if(settings!=null)
-            settings.setVisible(false);
-
-        MenuItem login = menu.findItem(R.id.action_logout);
-        if(login!=null)
-            login.setVisible(false);
     }
 }
