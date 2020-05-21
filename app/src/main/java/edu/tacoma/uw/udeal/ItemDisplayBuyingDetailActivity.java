@@ -66,7 +66,7 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_display_detail);
+        setContentView(R.layout.activity_item_display_buying_detail);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +136,7 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, MainActivity.class));
+            navigateUpTo(new Intent(this, CartActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
