@@ -34,7 +34,7 @@ public class UserInbox implements Serializable {
     public static final String SELLER = "seller";
 
     /** The profile picture string. */
-    public static final String PROFILE_PICTURE = "profileurl";
+    public static final String ITEM_NAME = "itemname";
 
     /** The item picture string. */
     public static final String ITEM_PICTURE = "itemurl";
@@ -42,8 +42,8 @@ public class UserInbox implements Serializable {
     /** The username. */
     private String seller;
 
-    /** The profile picture. */
-    private String profilePicture;
+    /** The item name */
+    private String itemName;
 
     /** The item picture. */
     private String itemPicture;
@@ -62,14 +62,14 @@ public class UserInbox implements Serializable {
      * Initializes the fields in the user inbox.
      * @param currentUserName The current user name
      * @param seller The seller user name
-     * @param profilePicture The profile picture
+     * @param itemName The profile picture
      * @param itemPicture The item picture
      */
-    public UserInbox(String currentUserName, String seller, String profilePicture, String itemPicture) throws ExecutionException, InterruptedException {
+    public UserInbox(String currentUserName, String seller, String itemName, String itemPicture) throws ExecutionException, InterruptedException {
         this.currentUserName = currentUserName;
         this.itemPicture = itemPicture;
         new ImageTask().execute(this.itemPicture).get();
-        this.profilePicture = profilePicture;
+        this.itemName = itemName;
         this.seller = seller;
         //Log.e("bitMap" , String.valueOf(myBitmap));
     }
@@ -89,7 +89,7 @@ public class UserInbox implements Serializable {
                 JSONObject obj = arr.getJSONObject(i);
 
                 UserInbox userInbox = new UserInbox(obj.getString(UserInbox.CURRENT_USER_NAME), obj.getString(UserInbox.SELLER),
-                        obj.getString(UserInbox.PROFILE_PICTURE), obj.getString(UserInbox.ITEM_PICTURE));
+                        obj.getString(UserInbox.ITEM_NAME), obj.getString(UserInbox.ITEM_PICTURE));
                 if (!userInboxList.contains(userInbox)){
                     userInboxList.add(userInbox);
                 }
@@ -122,8 +122,8 @@ public class UserInbox implements Serializable {
      *
      * @return The profile picture.
      */
-    public String getProfilePicture(){
-        return profilePicture;
+    public String getItemName(){
+        return itemName;
     }
 
     /**
@@ -192,24 +192,25 @@ public class UserInbox implements Serializable {
                         urlConnection.disconnect();
                 }
             }
-//            try {
-//                JSONObject jsonObject = new JSONObject(response);
-//                if (jsonObject.getBoolean("success")) {
-//                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
-//                    Bitmap bitmap = null;
-//                    byte[] tmp = new byte[values.length()];
-//                    for (int i = 0; i < values.length(); i++) {
-//                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
-//                    }
-//                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-//                    myBitmapArray = tmp;
-//                    myBitmap = bitmap;
-//                    //Log.e("myTag", String.valueOf(myBitmap));
-//                }
-//
-//            } catch (JSONException e) {
-//                Log.d("myTag", "FAILURE");
-//            }
+            // temporary
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getBoolean("success")) {
+                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+                    Bitmap bitmap = null;
+                    byte[] tmp = new byte[values.length()];
+                    for (int i = 0; i < values.length(); i++) {
+                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
+                    }
+                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+                    myBitmapArray = tmp;
+                    myBitmap = bitmap;
+                    //Log.e("myTag", String.valueOf(myBitmap));
+                }
+
+            } catch (JSONException e) {
+                Log.d("myTag", "FAILURE");
+            }
             return response;
         }
 
@@ -226,24 +227,24 @@ public class UserInbox implements Serializable {
                 Log.d("myTag", s);
                 return;
             }
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                if (jsonObject.getBoolean("success")) {
-                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
-                    Bitmap bitmap = null;
-                    byte[] tmp = new byte[values.length()];
-                    for (int i = 0; i < values.length(); i++) {
-                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
-                    }
-                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                    myBitmapArray = tmp;
-                    myBitmap = bitmap;
-                    Log.e("myTag", String.valueOf(myBitmap));
-                }
-
-            } catch (JSONException e) {
-                Log.d("myTag", "FAILURE");
-            }
+//            try {
+//                JSONObject jsonObject = new JSONObject(s);
+//                if (jsonObject.getBoolean("success")) {
+//                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+//                    Bitmap bitmap = null;
+//                    byte[] tmp = new byte[values.length()];
+//                    for (int i = 0; i < values.length(); i++) {
+//                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
+//                    }
+//                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+//                    myBitmapArray = tmp;
+//                    myBitmap = bitmap;
+//                    Log.e("myTag", String.valueOf(myBitmap));
+//                }
+//
+//            } catch (JSONException e) {
+//                Log.d("myTag", "FAILURE");
+//            }
         }
     }
 }

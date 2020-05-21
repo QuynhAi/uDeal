@@ -1,0 +1,9 @@
+<resources>
+    <string name="CREATE_COURSE_SQL">
+        CREATE TABLE IF NOT EXISTS Courses
+        (id TEXT PRIMARY KEY, shortDesc TEXT, longDesc TEXT, prereqs TEXT)
+    </string>
+    <string name="DROP_COURSE_SQL">
+        DROP TABLE IF EXISTS Courses
+    </string>
+</resources>

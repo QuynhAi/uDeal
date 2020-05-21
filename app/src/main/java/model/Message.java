@@ -26,6 +26,13 @@ public class Message {
     /** The time. */
     private String time;
 
+    /** The item. */
+    private String item;
+
+
+    /** The sender string. */
+    public static final String ITEMURL = "itemurl";
+
     /** The sender string. */
     public static final String SENDER = "sender";
 
@@ -46,7 +53,8 @@ public class Message {
      * @param message The message
      * @param time The time
      */
-    public Message(String sender, String receiver, String message, String time) {
+    public Message(String item, String sender, String receiver, String message, String time) {
+        this.item = item;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -95,7 +103,7 @@ public class Message {
             //Log.e("MESSAGE", String.valueOf(arr));
             for (int i = 0; i< arr.length(); i++){
                 JSONObject obj = arr.getJSONObject(i);
-                Message msg = new Message(obj.getString(Message.SENDER),
+                Message msg = new Message(obj.getString(Message.ITEMURL), obj.getString(Message.SENDER),
                         obj.getString(Message.RECIPIENT), obj.getString(Message.CONTENT), obj.getString(Message.TIME_STAMP));
                 msgList.add(msg);
 

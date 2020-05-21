@@ -179,7 +179,7 @@ public class MessageInboxActivity extends AppCompatActivity {
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getSellerName());
-            holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
+            holder.item_name.setText(mValues.get(position).getItemName());
             holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
             //Log.e("onBind", String.valueOf(mValues.get(position).getMyBitmap()));
             if(mValues.get(position).getMyBitmap() != null) {
@@ -200,8 +200,8 @@ public class MessageInboxActivity extends AppCompatActivity {
          * The View Holder for the recycler view.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            /** The image view. */
-            final ImageView profile;
+            /** The name text view. */
+            final TextView item_name;
 
             /** The name text view. */
             final TextView name;
@@ -216,7 +216,7 @@ public class MessageInboxActivity extends AppCompatActivity {
              */
             ViewHolder(View view) {
                 super(view);
-                profile = (ImageView) view.findViewById(R.id.inbox_profile);
+                item_name = (TextView) view.findViewById(R.id.item_name);
                 name = (TextView) view.findViewById(R.id.content);
                 item_image = (ImageView)view.findViewById(R.id.inbox_item_view);
             }

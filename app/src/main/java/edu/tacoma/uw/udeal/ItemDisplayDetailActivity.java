@@ -95,12 +95,20 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 UserInbox item = null;
                 try {
                     item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                            mItemDisplay.getMyURL(), mItemDisplay.getMyURL());
+                            mItemDisplay.getMyTitle(), mItemDisplay.getMyURL());
                 }catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-
-                new UserInboxTaskPost().execute(getString(R.string.user_inbox));
+                StringBuilder check = new StringBuilder(getString(R.string.user_inbox));
+                check.append("/check?currentuser=");
+                check.append(current);
+                check.append("&seller=");
+                check.append(mItemDisplay.getMyUsername());
+                check.append("&itemname=");
+                check.append(mItemDisplay.getMyTitle());
+                check.append("&itemurl=");
+                check.append(mItemDisplay.getMyURL());
+                new UserInboxTaskGet().execute(check.toString());
                 Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
 
                 Context context = view.getContext();
@@ -226,7 +234,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             try {
                 mArguments.put(UserInbox.CURRENT_USER_NAME, current);
                 mArguments.put(UserInbox.SELLER, mItemDisplay.getMyUsername());
-                mArguments.put(UserInbox.PROFILE_PICTURE, mItemDisplay.getMyURL()); // temporary
+                mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle()); // temporary
                 mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
 
             } catch (JSONException e) {
@@ -280,6 +288,72 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 if (jsonObject.getBoolean("success") == true) {
                     Toast.makeText(getApplicationContext(), "Success",
                             Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * This class get all messages from two specific users
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class UserInboxTaskGet extends AsyncTask<String, Void, String> {
+        /**
+         * Retrives messages between two users.
+         *
+         * @param urls The URL endpoint
+         * @return The response from the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to check, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * If successful, we get the messages between the two users and add it to the list.
+         *
+         * @param s The response from the async task
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success") == true) {
+                    new UserInboxTaskPost().execute(getString(R.string.user_inbox));
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
