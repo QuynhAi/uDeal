@@ -89,6 +89,8 @@ public class ItemDisplaySellingFrag implements Serializable {
     private byte[] myBitmapArray = {};
     /** The arguments for the JSON object. */
     private transient JSONObject mArguments;
+    /** The arguments for updating the listed boolean of the item. */
+    private transient JSONObject mListedArguments;
     /** The adapter for the recycler view. */
     private transient SellingFrag.SimpleItemRecyclerViewAdapter myAdapter;
     /** The bitmap that represents the photo of the item. */
@@ -297,6 +299,19 @@ public class ItemDisplaySellingFrag implements Serializable {
      */
     public void setMyListed(boolean myListed) {
         this.myListed = myListed;
+        String updateURL;
+        if(myListed) {
+            updateURL = "https://udeal-app-services-backend.herokuapp.com/relist";
+        } else {
+            updateURL = "https://udeal-app-services-backend.herokuapp.com/delist";
+        }
+        mListedArguments = new JSONObject();
+        try {
+            mListedArguments.put("itemID", myItemID);
+            new UpdateListedAsyncTask().execute(updateURL);
+        } catch(JSONException e) {
+            Log.d("myTag", "UPDATE MY LISTED: Error in JSON creation");
+        }
     }
 
     /**
@@ -662,4 +677,73 @@ public class ItemDisplaySellingFrag implements Serializable {
         }
     }
 
+    /**
+     * Async task that updates the listed boolean.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class UpdateListedAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Performs the async task to update the listed boolean.
+         *
+         * @param urls The url endpoint for the updating
+         * @return The response from the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("PUT");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+                    Log.i("myTag", mListedArguments.toString());
+                    wr.write(mListedArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to update the listed boolean, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * If listed update is successful, a toast is displayed saying it was successful. If the
+         * update is unsuccessful, the toast is displayed saying it was unsuccessful.
+         *
+         * @param result The result from the async task
+         */
+        @Override
+        protected void onPostExecute(String result){
+            try{
+                JSONObject resultObject = new JSONObject(result);
+                if(resultObject.getBoolean("success") == true){
+                    Log.d("myTag", "Sucessfully listed/delisted item");
+                } else {
+                    Log.d("myTag", "Not successful listed/delisted item");
+                }
+            }catch(JSONException e){
+                Log.d("myTag", "Error!");
+            }
+        }
+    }
 }
+
+
