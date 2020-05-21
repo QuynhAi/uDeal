@@ -21,4 +21,6 @@
     <string name="username">Username</string>
     <string name="member_id">User ID</string>
     <string name="fullname">Fullname</string>
+
+    <string name="search">Search...</string>
 </resources>
