@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,8 @@ public class MessageInboxActivity extends AppCompatActivity {
     /** The current string. */
     private String current;
 
+    SearchView searchView;
+
     /**
      * Sets up the messages.
      *
@@ -93,6 +96,20 @@ public class MessageInboxActivity extends AppCompatActivity {
             url.append(current);
             new UserInboxTask().execute(url.toString());
         }
+        searchView=(SearchView) findViewById(R.id.search_inbox);
+        searchView.setQueryHint("Search View");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getBaseContext(), query, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Toast.makeText(getBaseContext(), newText, Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
     }
 
     @Override
