@@ -16,4 +16,5 @@
     <string name="load_limited_myitems">https://udeal-app-services-backend.herokuapp.com/photos/limited/myitems</string>
     <string name="load_limited_specific">https://udeal-app-services-backend.herokuapp.com/photos/limited/specific</string>
     <string name="message">https://udeal-app-services-backend.herokuapp.com/message</string>
+    <string name="change_password">https://udeal-app-services-backend.herokuapp.com/register/password</string>
 </resources>
