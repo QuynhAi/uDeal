@@ -19,4 +19,6 @@
     <string name="change_password">https://udeal-app-services-backend.herokuapp.com/register/password</string>
     <string name="add_profile_photo">https://udeal-app-services-backend.herokuapp.com/register/profilephoto</string>
     <string name="get_profile_url">https://udeal-app-services-backend.herokuapp.com/register/profilephoto/specific?username=</string>
+    <string name="delist">https://udeal-app-services-backend.herokuapp.com/delist</string>
+    <string name="relist">https://udeal-app-services-backend.herokuapp.com/relist</string>
 </resources>
