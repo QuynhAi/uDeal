@@ -137,6 +137,14 @@ public class SellingFrag extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // TODO: When using phone back button, it goes back correctly but if you click again, it is not using
+        // TODO: the refreshed data. So if you toggle List off, and then use phone back button, then go back
+        // TODO: to same item, the changes are not reflected. We need to find a way to refresh the data.
+    }
+
     /**
      * The class that handles the recycler view adapter.
      */
