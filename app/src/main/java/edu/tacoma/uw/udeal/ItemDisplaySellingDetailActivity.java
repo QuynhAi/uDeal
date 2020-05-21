@@ -23,10 +23,12 @@ import com.google.android.material.snackbar.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -70,6 +72,18 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_display_selling_detail);
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
+
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             if(getIntent().getSerializableExtra(ARG_ITEM_ID) != null) {
@@ -86,38 +100,42 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
             }
         }
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("");
-        }
-
         Switch mSwitch = (Switch) findViewById((R.id.list_switch));
 
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton cb, boolean on) {
                 mItemDisplay.setMyListed(on);
-                if(on) {
-                    ((Switch) findViewById(R.id.list_switch)).setText("Your item is listed.");
+                if (on) {
+                    ((Switch) findViewById(R.id.list_switch)).setText("Status: Your item is posted and can be seen by other users.");
                 } else {
-                    ((Switch) findViewById(R.id.list_switch)).setText("Your item is not listed.");
+                    ((Switch) findViewById(R.id.list_switch)).setText("Status: Your item has been archived and cannot be seen by other users.");
                 }
             }
         });
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        ActionBar actionBar = getSupportActionBar();
+        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
+
+
+        Button replace = (Button) findViewById(R.id.replace);
+        Button edit = (Button) findViewById(R.id.edit);
+
         if (mItemDisplay != null) {
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(mItemDisplay.getMyTitle());
+            }
             byte[] tmp = mItemDisplay.getMyBitmapArray();
             ((Switch) findViewById(R.id.list_switch)).setChecked(mItemDisplay.getMyListed());
-            if(mItemDisplay.getMyListed())  {
-                mSwitch.setText("Your item is listed.");
+            if(mItemDisplay.getMyListed()) {
+                mSwitch.setText("Status: Your item is posted and can be seen by other users.");
             } else {
-                mSwitch.setText("Your item is not listed.");
+                mSwitch.setText("Status: Your item has been archived and cannot be seen by other users.");
             }
             ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
