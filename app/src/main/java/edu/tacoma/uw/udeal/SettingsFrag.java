@@ -80,6 +80,8 @@ public class SettingsFrag extends Fragment {
 
         updateProfilePhoto.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ProfilePictureFragment()).addToBackStack(null).commit();
             }
         });
 
