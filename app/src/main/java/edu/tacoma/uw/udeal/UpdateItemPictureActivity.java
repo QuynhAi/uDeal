@@ -441,6 +441,9 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
+                    Intent np = new Intent(getApplicationContext(), CartActivity.class);
+                    np.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(np);
                     Toast.makeText(getApplicationContext(), "Successfully uploaded image", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Error uploading image to server", Toast.LENGTH_SHORT).show();
