@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,6 +67,9 @@ public class MessageInboxActivity extends AppCompatActivity {
     private String current;
 
     SearchView searchView;
+
+    /** The bitmap that represents the photo of the item. */
+    private transient Bitmap myBitmap;
 
     /**
      * Sets up the messages.
@@ -194,16 +200,16 @@ public class MessageInboxActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
-            //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getSellerName());
             holder.item_name.setText(mValues.get(position).getItemName());
-            //Log.e("onBind", String.valueOf(mValues.get(position).getMyBitmap()));
             if(mValues.get(position).getMyBitmap() != null) {
                 holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
+                mValues.get(position).setMyBitmap(null);
                 holder.item_image.setVisibility(holder.item_image.VISIBLE);
             } else {
                 holder.item_image.setVisibility(holder.item_image.GONE);
             }
+            //Log.e("TESTing" , String.valueOf(mValues.get(position).getMyBitmap()));
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -345,4 +351,98 @@ public class MessageInboxActivity extends AppCompatActivity {
                     return false;
                 }
             };
+    /**
+     * This class handles the async task that retrives the image
+     * from S3.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class ImageTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the image from S3.
+         *
+         * @param urls The URL to review the image.
+         * @return The response from the connection
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            //Log.e("Are you here?" , "are you here?");
+            for (String url : urls) {
+                try {
+                    java.net.URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to download the image, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            // temporary
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getBoolean("success")) {
+                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+                    Bitmap bitmap = null;
+                    byte[] tmp = new byte[values.length()];
+                    for (int i = 0; i < values.length(); i++) {
+                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
+                    }
+                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+                    myBitmap = bitmap;
+                    //Log.e("myTag", String.valueOf(myBitmap));
+                }
+
+            } catch (JSONException e) {
+                Log.d("myTag", "FAILURE");
+            }
+            return response;
+        }
+
+        /**
+         * If successful, the bitmap of the item is updated. If unsuccessful,
+         * the method returns.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
+        @Override
+        public void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Log.d("myTag", s);
+                return;
+            }
+//            try {
+//                JSONObject jsonObject = new JSONObject(s);
+//                if (jsonObject.getBoolean("success")) {
+//                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+//                    Bitmap bitmap = null;
+//                    byte[] tmp = new byte[values.length()];
+//                    for (int i = 0; i < values.length(); i++) {
+//                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
+//                    }
+//                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+//                    myBitmapArray = tmp;
+//                    myBitmap = bitmap;
+//                    Log.e("myTag", String.valueOf(myBitmap));
+//                }
+//
+//            } catch (JSONException e) {
+//                Log.d("myTag", "FAILURE");
+//            }
+        }
+    }
 }

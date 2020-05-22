@@ -145,15 +145,9 @@ public class UserInbox implements Serializable {
         return myBitmap;
     }
 
-    /**
-     * Gets the byte array for the bitmap of the item.
-     *
-     * @return The byte array for the bitmap
-     */
-    public byte[] getMyBitmapArray() {
-        return myBitmapArray;
+    public void setMyBitmap(Bitmap bitmap) {
+        myBitmap = bitmap;
     }
-
     /**
      * This class handles the async task that retrives the image
      * from S3.
@@ -205,7 +199,6 @@ public class UserInbox implements Serializable {
                         tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
                     }
                     bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                    myBitmapArray = tmp;
                     myBitmap = bitmap;
                     //Log.e("myTag", String.valueOf(myBitmap));
                 }
