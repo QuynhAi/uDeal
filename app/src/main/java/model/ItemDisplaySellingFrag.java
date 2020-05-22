@@ -121,7 +121,8 @@ public class ItemDisplaySellingFrag implements Serializable {
         this.myItemID = myItemID;
         this.myMemberID = myMemberID;
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
-        //TODO: new ImageTask().execute(this.myURL);
+        //TODO:
+        new ImageTask().execute(this.myURL);
         Log.d("myTag", "This is one instance of loading the image");
         this.myTitle = myTitle;
         this.myLocation = myLocation;
