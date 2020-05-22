@@ -22,4 +22,5 @@
     <string name="delist">https://udeal-app-services-backend.herokuapp.com/delist</string>
     <string name="relist">https://udeal-app-services-backend.herokuapp.com/relist</string>
     <string name="update_item_photo">https://udeal-app-services-backend.herokuapp.com/updateitemphoto</string>
+    <string name="update_item_text">https://udeal-app-services-backend.herokuapp.com/updateitemtext</string>
 </resources>
