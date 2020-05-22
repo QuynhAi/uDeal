@@ -85,8 +85,6 @@ public class ItemDisplaySellingFrag implements Serializable {
     private boolean myListed;
     /** True if the current user liked this item; false otherwise. */
     private boolean myLiked;
-    /** The bitmap array of the item. */
-    private byte[] myBitmapArray = {};
     /** The arguments for the JSON object. */
     private transient JSONObject mArguments;
     /** The arguments for updating the listed boolean of the item. */
@@ -123,7 +121,7 @@ public class ItemDisplaySellingFrag implements Serializable {
         this.myItemID = myItemID;
         this.myMemberID = myMemberID;
         this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
-        //new ImageTask().execute(this.myURL);
+        //TODO: new ImageTask().execute(this.myURL);
         Log.d("myTag", "This is one instance of loading the image");
         this.myTitle = myTitle;
         this.myLocation = myLocation;
@@ -175,6 +173,10 @@ public class ItemDisplaySellingFrag implements Serializable {
         this.myMemberID = myMemberID;
     }
 
+    public void setMyBitmap(Bitmap m) {
+        myBitmap = m;
+    }
+
     /**
      * Gets the URL.
      *
@@ -218,6 +220,11 @@ public class ItemDisplaySellingFrag implements Serializable {
      */
     public String getMyLocation() {
         return myLocation;
+    }
+
+    public void resetBitmaps() {
+        myBitmap = null;
+        Log.d("myTag", "resetBitmaps: WE HAVE RESET BITMAPS");
     }
 
     /**
@@ -339,15 +346,6 @@ public class ItemDisplaySellingFrag implements Serializable {
      */
     public Bitmap getMyBitmap() {
         return myBitmap;
-    }
-
-    /**
-     * Gets the byte array for the bitmap of the item.
-     *
-     * @return The byte array for the bitmap
-     */
-    public byte[] getMyBitmapArray() {
-        return myBitmapArray;
     }
 
     /**
@@ -525,7 +523,6 @@ public class ItemDisplaySellingFrag implements Serializable {
                         tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
                     }
                     bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                    myBitmapArray = tmp;
                     myBitmap = bitmap;
                     myAdapter.notifyItemChanged(myIndex);
                     Log.d("myTag", "We have notified the adapter to insert me: ");

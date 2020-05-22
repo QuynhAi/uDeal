@@ -3,6 +3,7 @@ package edu.tacoma.uw.udeal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -162,10 +163,13 @@ public class SellingFrag extends Fragment {
             @Override
             public void onClick(View view) {
                 ItemDisplaySellingFrag item = (ItemDisplaySellingFrag) view.getTag();
+                Bitmap temp = item.getMyBitmap();
+                item.resetBitmaps();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ItemDisplaySellingDetailActivity.class);
                 intent.putExtra(ItemDisplaySellingDetailActivity.ARG_ITEM_ID, item);
                 context.startActivity(intent);
+                item.setMyBitmap(temp);
             }
         };
 

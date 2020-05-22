@@ -3,10 +3,12 @@ package edu.tacoma.uw.udeal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,8 +32,18 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import inbox.ChatActivity;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,8 +130,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         }
 
         if (mItemDisplay != null) {
-            byte[] tmp = mItemDisplay.getMyBitmapArray();
-            ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
+            //TODO: new ImageTask().execute(mItemDisplay.getMyURL());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
@@ -177,5 +188,82 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
         mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
+    }
+
+    /**
+     * This class handles the async task that retrives the image
+     * from S3.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class ImageTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the image from S3.
+         *
+         * @param urls The URL to review the image.
+         * @return The response from the connection
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    java.net.URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to download the image, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * If successful, the bitmap of the item is updated. If unsuccessful,
+         * the method returns.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
+        @Override
+        public void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Log.d("myTag", s);
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success")) {
+                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+                    Bitmap bitmap = null;
+                    byte[] tmp = new byte[values.length()];
+                    for (int i = 0; i < values.length(); i++) {
+                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
+                    }
+                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+                    if(mItemDisplay != null) {
+                        ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(bitmap);
+                        Log.d("myTag", "We have done it!");
+                    }
+                }
+
+            } catch (JSONException e) {
+                Log.d("myTag", "FAILURE");
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -160,10 +161,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ItemDisplay item = (ItemDisplay) view.getTag();
+                Bitmap temp = item.getMyBitmap();
+                item.resetBitmaps();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ItemDisplayDetailActivity.class);
                 intent.putExtra(ItemDisplayDetailActivity.ARG_ITEM_ID, item);
                 context.startActivity(intent);
+                item.setMyBitmap(temp);
             }
         };
 
