@@ -197,9 +197,9 @@ public class MessageInboxActivity extends AppCompatActivity {
             //holder.profile.setText(mValues.get(position).id);
             holder.name.setText(mValues.get(position).getSellerName());
             holder.item_name.setText(mValues.get(position).getItemName());
-            holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
             //Log.e("onBind", String.valueOf(mValues.get(position).getMyBitmap()));
             if(mValues.get(position).getMyBitmap() != null) {
+                holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
                 holder.item_image.setVisibility(holder.item_image.VISIBLE);
             } else {
                 holder.item_image.setVisibility(holder.item_image.GONE);

@@ -118,12 +118,11 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 check.append("&itemurl=");
                 check.append(mItemDisplay.getMyURL());
                 new UserInboxTaskGet().execute(check.toString());
-                Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
+                //Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
 
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
-                Log.e("ItemDisplayDetailActivi", "here");
                 context.startActivity(intent);
             }
         });
@@ -156,7 +155,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         }
 
         if (mItemDisplay != null) {
-            //TODO: new ImageTask().execute(mItemDisplay.getMyURL());
+            //TODO:
+            new ImageTask().execute(mItemDisplay.getMyURL());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
