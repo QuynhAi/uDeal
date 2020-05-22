@@ -56,7 +56,7 @@ public class WriteReview extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.write_review, container, false);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        toolbar.setTitle("Change Password");
+        toolbar.setTitle("Write a Review");
         toolbar.setTitleTextColor(Color.WHITE);
 
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
