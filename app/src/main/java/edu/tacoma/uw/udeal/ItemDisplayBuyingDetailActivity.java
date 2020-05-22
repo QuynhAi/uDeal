@@ -132,8 +132,7 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
         }
 
         if (mItemDisplay != null) {
-            //TODO:
-             new ImageTask().execute(mItemDisplay.getMyURL());
+            //TODO: new ImageTask().execute(mItemDisplay.getMyURL());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
