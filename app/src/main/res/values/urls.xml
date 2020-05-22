@@ -24,4 +24,5 @@
     <string name="relist">https://udeal-app-services-backend.herokuapp.com/relist</string>
     <string name="update_item_photo">https://udeal-app-services-backend.herokuapp.com/updateitemphoto</string>
     <string name="update_item_text">https://udeal-app-services-backend.herokuapp.com/updateitemtext</string>
+    <string name="add_review">https://udeal-app-services-backend.herokuapp.com/addreview</string>
 </resources>
