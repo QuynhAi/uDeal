@@ -114,6 +114,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
+                Log.e("ItemDisplayDetailActivi", "here");
                 context.startActivity(intent);
             }
         });
