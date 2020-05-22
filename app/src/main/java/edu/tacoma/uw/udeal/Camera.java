@@ -583,6 +583,9 @@ public class Camera extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
+                    Intent np = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                    np.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(np);
                     Toast.makeText(getActivity().getApplicationContext(), "Successfully uploaded image", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Error uploading image to server", Toast.LENGTH_SHORT).show();
