@@ -86,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.inbox_detail_container);
         if (savedInstanceState == null) {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
-            setTitle(mItem.getOtherUserName());
+            setTitle(mItem.getSellerName());
         }
 
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
@@ -105,8 +105,9 @@ public class ChatActivity extends AppCompatActivity {
                     mArguments = new JSONObject();
                     try {
                         StringBuilder url = new StringBuilder(getString(R.string.message));
+                        mArguments.put(Message.ITEMURL, mItem.getItemPicture());
                         mArguments.put(Message.SENDER, current);
-                        mArguments.put(Message.RECIPIENT, mItem.getOtherUserName());
+                        mArguments.put(Message.RECIPIENT, mItem.getSellerName());
                         mArguments.put(Message.CONTENT, msg);
                         new MessageTaskPost().execute(url.toString());
                         messageTextField.setText("");
@@ -131,17 +132,20 @@ public class ChatActivity extends AppCompatActivity {
         url.append("?sender=");
         url.append(current);
         url.append("&recipient=");
-        url.append(mItem.getOtherUserName());
+        url.append(mItem.getSellerName());
+        url.append("&itemurl=");
+        url.append(mItem.getItemPicture());
         new MessageTaskGet().execute(url.toString());
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
                 handler.postDelayed(runnable, delay);
                 StringBuilder url = new StringBuilder(getString(R.string.message));
-                // use params, http://nguyen97-services-backend.herokuapp.com/message?sender=Ai&recipient=Test
                 url.append("?sender=");
                 url.append(current);
                 url.append("&recipient=");
-                url.append(mItem.getOtherUserName());
+                url.append(mItem.getSellerName());
+                url.append("&itemurl=");
+                url.append(mItem.getItemPicture());
                 new MessageTaskGet().execute(url.toString());
             }
         }, delay);
@@ -205,7 +209,7 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            if ((mValues.get(position).getSender()).equals(mItem.getOtherUserName()) ){
+            if ((mValues.get(position).getSender()).equals(mItem.getSellerName()) ){
                 holder.mIdView.setText(mValues.get(position).getSender());
                 holder.mContentView.setText(mValues.get(position).getMessage());
             } else {
@@ -217,7 +221,7 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             int viewType = 1; //Default is 1
-            if ((mValues.get(position).getSender()).equals(mItem.getOtherUserName())) {
+            if ((mValues.get(position).getSender()).equals(mItem.getSellerName())) {
                 viewType = 0; //if zero, their_message layout
             }
             return viewType;
@@ -313,12 +317,14 @@ public class ChatActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success") == true) {
                     if(!messageList.isEmpty()){
                         Log.e("messageList", String.valueOf(messageList));
-                        messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
+                        messageList.add(new Message(mArguments.get(Message.ITEMURL).toString(),
+                                mArguments.get(Message.SENDER).toString(),
                                 mArguments.get(Message.RECIPIENT).toString(),
                                 mArguments.get(Message.CONTENT).toString(), "0"));
                         adapter.notifyDataSetChanged();
                     } else {
-                        messageList.add(new Message(mArguments.get(Message.SENDER).toString(),
+                        messageList.add(new Message(mArguments.get(Message.ITEMURL).toString(),
+                                mArguments.get(Message.SENDER).toString(),
                                 mArguments.get(Message.RECIPIENT).toString(),
                                 mArguments.get(Message.CONTENT).toString(), "0"));
                         setupRecyclerView((RecyclerView) recyclerView);

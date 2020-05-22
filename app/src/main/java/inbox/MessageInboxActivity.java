@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import edu.tacoma.uw.udeal.CartActivity;
 import edu.tacoma.uw.udeal.MainActivity;
@@ -61,6 +63,8 @@ public class MessageInboxActivity extends AppCompatActivity {
     /** The current string. */
     private String current;
 
+    SearchView searchView;
+
     /**
      * Sets up the messages.
      *
@@ -86,14 +90,36 @@ public class MessageInboxActivity extends AppCompatActivity {
         if (findViewById(R.id.inbox_detail_container) != null) {
             mTwoPane = true;
         }
+        if(mUserList == null){
+            StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
+            url.append("?currentuser=");
+            url.append(current);
+            new UserInboxTask().execute(url.toString());
+        }
+        searchView=(SearchView) findViewById(R.id.search_inbox);
+        searchView.setQueryHint("Search View");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getBaseContext(), query, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Toast.makeText(getBaseContext(), newText, Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
     }
 
     @Override
     public void onResume(){
         super.onResume();
         if(mUserList == null){
-            //new MessageInboxActivity.UserInboxTask().execute(getString(R.string.register));
-            new UserInboxTask().execute(getString(R.string.members));
+            StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
+            url.append("?currentuser=");
+            url.append(current);
+            new UserInboxTask().execute(url.toString());
         }
     }
 
@@ -169,10 +195,15 @@ public class MessageInboxActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             //holder.profile.setText(mValues.get(position).id);
-            holder.name.setText(mValues.get(position).getOtherUserName());
-            holder.profile.setImageResource(R.drawable.ic_person_black_24dp);
-            //holder.item_image.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
-
+            holder.name.setText(mValues.get(position).getSellerName());
+            holder.item_name.setText(mValues.get(position).getItemName());
+            holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
+            //Log.e("onBind", String.valueOf(mValues.get(position).getMyBitmap()));
+            if(mValues.get(position).getMyBitmap() != null) {
+                holder.item_image.setVisibility(holder.item_image.VISIBLE);
+            } else {
+                holder.item_image.setVisibility(holder.item_image.GONE);
+            }
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -186,8 +217,8 @@ public class MessageInboxActivity extends AppCompatActivity {
          * The View Holder for the recycler view.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            /** The image view. */
-            final ImageView profile;
+            /** The name text view. */
+            final TextView item_name;
 
             /** The name text view. */
             final TextView name;
@@ -202,7 +233,7 @@ public class MessageInboxActivity extends AppCompatActivity {
              */
             ViewHolder(View view) {
                 super(view);
-                profile = (ImageView) view.findViewById(R.id.inbox_profile);
+                item_name = (TextView) view.findViewById(R.id.item_name);
                 name = (TextView) view.findViewById(R.id.content);
                 item_image = (ImageView)view.findViewById(R.id.inbox_item_view);
             }
@@ -264,7 +295,7 @@ public class MessageInboxActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("names"));
+                    mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("users"));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
                     }
@@ -272,6 +303,8 @@ public class MessageInboxActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
                         Toast.LENGTH_SHORT).show();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
         }
     }

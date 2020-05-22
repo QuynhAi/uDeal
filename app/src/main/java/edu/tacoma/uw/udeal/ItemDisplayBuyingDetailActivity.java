@@ -46,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import model.ItemDisplayBuyingFrag;
 import model.UserInbox;
@@ -58,7 +59,7 @@ import model.UserInbox;
  * @author TCSS 450 Team 8
  * @version 1.0
  */
-public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     /** The item ID. */
     public static final String ARG_ITEM_ID = "item_id";
@@ -89,9 +90,14 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
                 String current = settings.getString(getString(R.string.username), "");
                 // temporary, change to
-                UserInbox item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                        mItemDisplay.getMyUsername(), mItemDisplay.getMyUsername());
-                Log.e("ItemDisplayDetailActivi", String.valueOf(item.getOtherUserName()));
+
+                UserInbox item = null;
+                try {
+                    item = new UserInbox(current, mItemDisplay.getMyUsername(),
+                            mItemDisplay.getMyURL(), mItemDisplay.getMyURL());
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
@@ -106,7 +112,6 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                         getIntent().getSerializableExtra(ARG_ITEM_ID));
                 if (arguments.containsKey(ARG_ITEM_ID)) {
                     mItemDisplay = (ItemDisplayBuyingFrag) arguments.getSerializable(ARG_ITEM_ID);
-
                     CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     if (appBarLayout != null) {
                         appBarLayout.setTitle(mItemDisplay.getMyTitle());
