@@ -146,9 +146,14 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
         Button edit = (Button) findViewById(R.id.edit);
         edit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ItemDisplayDetailActivity.class);
+                Intent intent = new Intent(getApplicationContext(), UpdateTextActivity.class);
                 intent.putExtra("ItemID", mItemDisplay.getMyItemID());
                 intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                intent.putExtra("Title", mItemDisplay.getMyTitle());
+                intent.putExtra("Location", mItemDisplay.getMyLocation());
+                intent.putExtra("Price", mItemDisplay.getMyPrice());
+                intent.putExtra("Category", mItemDisplay.getMyCategory());
+                intent.putExtra("Description", mItemDisplay.getMyDescription());
                 startActivity(intent);
             }
         });
