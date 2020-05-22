@@ -3,10 +3,12 @@ package edu.tacoma.uw.udeal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,18 +25,31 @@ import com.google.android.material.snackbar.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import inbox.ChatActivity;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import model.ItemDisplaySellingFrag;
 import model.UserInbox;
@@ -67,34 +82,18 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_display_detail);
+        setContentView(R.layout.activity_item_display_selling_detail);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Sending a message to the seller", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
-                String current = settings.getString(getString(R.string.username), "");
-                // temporary, change to
-                UserInbox item = null;
-                try {
-                    item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                            mItemDisplay.getMyURL(), mItemDisplay.getMyURL());
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
-                context.startActivity(intent);
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }
-        });
-
-
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
 
         if (savedInstanceState == null) {
@@ -113,20 +112,64 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
             }
         }
 
+        Switch mSwitch = (Switch) findViewById((R.id.list_switch));
+
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton cb, boolean on) {
+                mItemDisplay.setMyListed(on);
+                if (on) {
+                    ((Switch) findViewById(R.id.list_switch)).setText("Status: Your item is posted and can be seen by other users.");
+                } else {
+                    ((Switch) findViewById(R.id.list_switch)).setText("Status: Your item has been archived and cannot be seen by other users.");
+                }
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("");
-        }
+        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
+
+
+        Button replace = (Button) findViewById(R.id.replace);
+        replace.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateItemPictureActivity.class);
+                intent.putExtra("ItemID", mItemDisplay.getMyItemID());
+                intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                startActivity(intent);
+            }
+        });
+        Button edit = (Button) findViewById(R.id.edit);
+        edit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateTextActivity.class);
+                intent.putExtra("ItemID", mItemDisplay.getMyItemID());
+                intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                intent.putExtra("Title", mItemDisplay.getMyTitle());
+                intent.putExtra("Location", mItemDisplay.getMyLocation());
+                intent.putExtra("Price", mItemDisplay.getMyPrice());
+                intent.putExtra("Category", mItemDisplay.getMyCategory());
+                intent.putExtra("Description", mItemDisplay.getMyDescription());
+                startActivity(intent);
+            }
+        });
 
         if (mItemDisplay != null) {
-            byte[] tmp = mItemDisplay.getMyBitmapArray();
-            ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(BitmapFactory.decodeByteArray(tmp, 0, tmp.length));
+            //TODO: new ImageTask().execute(mItemDisplay.getMyURL());
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(mItemDisplay.getMyTitle());
+            }
+            ((Switch) findViewById(R.id.list_switch)).setChecked(mItemDisplay.getMyListed());
+            if(mItemDisplay.getMyListed()) {
+                mSwitch.setText("Status: Your item is posted and can be seen by other users.");
+            } else {
+                mSwitch.setText("Status: Your item has been archived and cannot be seen by other users.");
+            }
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
@@ -146,7 +189,7 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, MainActivity.class));
+            navigateUpTo(new Intent(this, CartActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -184,5 +227,83 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
         mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
+    }
+
+
+    /**
+     * This class handles the async task that retrives the image
+     * from S3.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class ImageTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the image from S3.
+         *
+         * @param urls The URL to review the image.
+         * @return The response from the connection
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    java.net.URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to download the image, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * If successful, the bitmap of the item is updated. If unsuccessful,
+         * the method returns.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
+        @Override
+        public void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Log.d("myTag", s);
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success")) {
+                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
+                    Bitmap bitmap = null;
+                    byte[] tmp = new byte[values.length()];
+                    for (int i = 0; i < values.length(); i++) {
+                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
+                    }
+                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+                    if(mItemDisplay != null) {
+                        ((ImageView) findViewById(R.id.item_image_id)).setImageBitmap(bitmap);
+                        Log.d("myTag", "We have done it!");
+                    }
+                }
+
+            } catch (JSONException e) {
+                Log.d("myTag", "FAILURE");
+            }
+        }
     }
 }

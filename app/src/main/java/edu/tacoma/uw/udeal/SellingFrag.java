@@ -3,6 +3,7 @@ package edu.tacoma.uw.udeal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -137,6 +138,14 @@ public class SellingFrag extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // TODO: When using phone back button, it goes back correctly but if you click again, it is not using
+        // TODO: the refreshed data. So if you toggle List off, and then use phone back button, then go back
+        // TODO: to same item, the changes are not reflected. We need to find a way to refresh the data.
+    }
+
     /**
      * The class that handles the recycler view adapter.
      */
@@ -154,10 +163,13 @@ public class SellingFrag extends Fragment {
             @Override
             public void onClick(View view) {
                 ItemDisplaySellingFrag item = (ItemDisplaySellingFrag) view.getTag();
+                Bitmap temp = item.getMyBitmap();
+                item.resetBitmaps();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ItemDisplaySellingDetailActivity.class);
                 intent.putExtra(ItemDisplaySellingDetailActivity.ARG_ITEM_ID, item);
                 context.startActivity(intent);
+                item.setMyBitmap(temp);
             }
         };
 

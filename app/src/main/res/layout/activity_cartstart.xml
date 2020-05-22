@@ -20,12 +20,13 @@
 
     </com.google.android.material.tabs.TabLayout>
 
-    <FrameLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="625dp"
         android:layout_below="@+id/tabLayout"
         android:layout_above="@id/bottom_toolbar" />
+        />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_toolbar"

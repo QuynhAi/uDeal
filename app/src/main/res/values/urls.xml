@@ -17,4 +17,11 @@
     <string name="load_limited_specific">https://udeal-app-services-backend.herokuapp.com/photos/limited/specific</string>
     <string name="message">https://udeal-app-services-backend.herokuapp.com/message</string>
     <string name="user_inbox">https://udeal-app-services-backend.herokuapp.com/userInbox</string>
+    <string name="change_password">https://udeal-app-services-backend.herokuapp.com/register/password</string>
+    <string name="add_profile_photo">https://udeal-app-services-backend.herokuapp.com/register/profilephoto</string>
+    <string name="get_profile_url">https://udeal-app-services-backend.herokuapp.com/register/profilephoto/specific?username=</string>
+    <string name="delist">https://udeal-app-services-backend.herokuapp.com/delist</string>
+    <string name="relist">https://udeal-app-services-backend.herokuapp.com/relist</string>
+    <string name="update_item_photo">https://udeal-app-services-backend.herokuapp.com/updateitemphoto</string>
+    <string name="update_item_text">https://udeal-app-services-backend.herokuapp.com/updateitemtext</string>
 </resources>

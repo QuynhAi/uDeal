@@ -62,34 +62,11 @@ public class ProfileActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.invite) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, new InviteFriends()).addToBackStack(null).commit();
-        } else if (item.getItemId() == R.id.settings){
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, new SettingsFrag()).addToBackStack(null).commit();
-        } else if (item.getItemId() == R.id.action_logout) {
-            SharedPreferences sharedPreferences =
-                    getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-            sharedPreferences.edit().putBoolean(getString(R.string.LOGGEDIN), false)
-                    .commit();
-
-            sharedPreferences.edit().remove(getString(R.string.email))
-                    .commit();
-
-            sharedPreferences.edit().remove(getString(R.string.username))
-                    .commit();
-
-            sharedPreferences.edit().remove(getString(R.string.member_id))
-                    .commit();
-
-            sharedPreferences.edit().remove(getString(R.string.fullname))
-                    .commit();
-
-            Intent i = new Intent(this, Login.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        if (item.getItemId() == R.id.settings){
+            Intent i = new Intent(ProfileActivity.this, SettingsActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
-            finish();
+            overridePendingTransition(0,0);
         }
         return super.onOptionsItemSelected(item);
     }
