@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".CartActivity">
 
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
@@ -23,7 +24,9 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="625dp"
-        android:layout_below="@id/tabLayout" />
+        android:layout_below="@+id/tabLayout"
+        android:layout_above="@id/bottom_toolbar" />
+        />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_toolbar"
