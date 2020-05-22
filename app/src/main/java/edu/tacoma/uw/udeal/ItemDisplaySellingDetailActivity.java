@@ -123,7 +123,23 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
 
 
         Button replace = (Button) findViewById(R.id.replace);
+        replace.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateItemPictureActivity.class);
+                intent.putExtra("ItemID", mItemDisplay.getMyItemID());
+                intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                startActivity(intent);
+            }
+        });
         Button edit = (Button) findViewById(R.id.edit);
+        edit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ItemDisplayDetailActivity.class);
+                intent.putExtra("ItemID", mItemDisplay.getMyItemID());
+                intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                startActivity(intent);
+            }
+        });
 
         if (mItemDisplay != null) {
             if (actionBar != null) {

@@ -21,4 +21,5 @@
     <string name="get_profile_url">https://udeal-app-services-backend.herokuapp.com/register/profilephoto/specific?username=</string>
     <string name="delist">https://udeal-app-services-backend.herokuapp.com/delist</string>
     <string name="relist">https://udeal-app-services-backend.herokuapp.com/relist</string>
+    <string name="update_item_photo">https://udeal-app-services-backend.herokuapp.com/updateitemphoto</string>
 </resources>
