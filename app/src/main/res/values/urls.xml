@@ -28,4 +28,6 @@
     <string name="get_my_reviews">https://udeal-app-services-backend.herokuapp.com/reviews/specific/reviewed?reviewed=</string>
     <string name="average_rating">https://udeal-app-services-backend.herokuapp.com/reviews/specific/average?reviewed=</string>
     <string name="get_my_written">https://udeal-app-services-backend.herokuapp.com/reviews/specific/reviewer?reviewer=</string>
+    <string name="get_specific_user_name">https://udeal-app-services-backend.herokuapp.com/members/name/specific?username=</string>
+
 </resources>
