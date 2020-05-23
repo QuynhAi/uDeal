@@ -62,10 +62,10 @@ public class Person extends Fragment {
 
 
     /** The load limit for recycler view. */
-    private static int LOAD_LIMIT = 3;
+    private static int LOAD_LIMIT = 5;
 
     /** The number of items to load initially. */
-    private static int INITIAL_LOAD = 3;
+    private static int INITIAL_LOAD = 5;
 
     /** The list of item displays. */
     private List<Review> mItemList;
