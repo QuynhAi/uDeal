@@ -4,6 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * This class handles the item that will be displayed
@@ -126,7 +131,18 @@ public class Review implements Serializable {
      * @return My date review was posted
      */
     public String getMyDatePosted() {
-        return myDatePosted;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        try {
+            Date date = format.parse(myDatePosted);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.HOUR, -7);
+            Date temp = cal.getTime();
+            format.applyPattern("MMM dd, yyyy hh:mm a");
+            return format.format(temp);
+        } catch (ParseException e) {
+            return myDatePosted;
+        }
     }
 
     /**
