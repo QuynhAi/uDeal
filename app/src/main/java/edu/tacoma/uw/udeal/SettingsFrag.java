@@ -114,8 +114,8 @@ public class SettingsFrag extends Fragment {
         });
         myReviews.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                //        new MyReviews()).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ReviewsWrittenFragment()).addToBackStack(null).commit();
             }
         });
 
