@@ -7,11 +7,7 @@ android:layout_height="match_parent"
 android:fitsSystemWindows="true"
 tools:context=".Person">
 
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="0dp"
@@ -22,11 +18,11 @@ tools:context=".Person">
             android:id="@+id/profile_pic"
             android:layout_width="175dp"
             android:layout_height="175dp"
-            android:layout_marginTop="100dp"
-            android:scaleType="centerCrop"
+            android:layout_marginTop="36dp"
             android:adjustViewBounds="true"
-            android:cropToPadding="true"
             android:background="@drawable/round_rec_profile"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -55,10 +51,33 @@ tools:context=".Person">
             app:layout_constraintTop_toBottomOf="@+id/profile_name" />
 
 
+        <RatingBar
+            android:id="@+id/stars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_location" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:name="edu.tacoma.uw.udeal.ItemListFragment"
+            android:layout_width="378dp"
+            android:layout_height="667dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".CartActivity"
+            tools:listitem="@layout/review_item"
+            app:layout_constraintTop_toBottomOf="@+id/stars"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
