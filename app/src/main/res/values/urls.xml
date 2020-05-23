@@ -26,4 +26,5 @@
     <string name="update_item_text">https://udeal-app-services-backend.herokuapp.com/updateitemtext</string>
     <string name="add_review">https://udeal-app-services-backend.herokuapp.com/addreview</string>
     <string name="get_my_reviews">https://udeal-app-services-backend.herokuapp.com/reviews/specific/reviewed?reviewed=</string>
+    <string name="average_rating">https://udeal-app-services-backend.herokuapp.com/reviews/specific/average?reviewed=</string>
 </resources>
