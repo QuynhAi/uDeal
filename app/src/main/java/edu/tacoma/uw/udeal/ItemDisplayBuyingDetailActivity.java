@@ -27,10 +27,13 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.cardview.widget.CardView;
 
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,6 +72,9 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
 
     /** The ItemDisplayBuyingFrag object used for retrieving the information. */
     private ItemDisplayBuyingFrag mItemDisplay;
+
+    /** The rating bar. */
+    private RatingBar mRatingBar;
 
     /**
      * Creates the activity by setting text of the views and the image of the item.
@@ -131,8 +137,22 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             actionBar.setTitle("");
         }
 
+        CardView user = (CardView) findViewById(R.id.cardviewholder);
+        user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = view.getContext();
+                Intent intent = new Intent(context, OtherUserProfile.class);
+                intent.putExtra("memberID", mItemDisplay.getMyMemberID());
+                intent.putExtra("username", mItemDisplay.getMyUsername());
+                context.startActivity(intent);
+            }
+        });
+
+
         if (mItemDisplay != null) {
             //TODO: new ImageTask().execute(mItemDisplay.getMyURL());
+            ((TextView) findViewById(R.id.date_posted)).setText("Posted on " + mItemDisplay.getMyDatePosted());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
             ((TextView) findViewById(R.id.item_price)).setText("$" + String.format("%.2f", mItemDisplay.getMyPrice()));
@@ -140,6 +160,9 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             ((TextView) findViewById(R.id.item_seller)).setText(mItemDisplay.getMyUsername());
             ((TextView) findViewById(R.id.item_description)).setText(mItemDisplay.getMyDescription());
         }
+
+        mRatingBar = findViewById(R.id.stars);
+        new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + mItemDisplay.getMyUsername());
     }
 
     /**
@@ -186,7 +209,12 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             }
         }
 
-        LatLng coordinates = myCoordinates.get(0);
+        LatLng coordinates;
+        try {
+            coordinates = myCoordinates.get(0);
+        } catch (IndexOutOfBoundsException e) {
+            coordinates = new LatLng(0, 0);
+        }
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
         mMap.addCircle(new CircleOptions().center(coordinates).radius(5000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 11));
@@ -266,6 +294,72 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
 
             } catch (JSONException e) {
                 Log.d("myTag", "FAILURE");
+            }
+        }
+    }
+
+    /**
+     * The async task to get the average rating.
+     */
+    private class GetRatingBarAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the average rating from the database.
+         *
+         * @param urls The URL to get the information from the database.
+         * @return The response from the connection
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to get rating bar average, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+
+        /**
+         * If successful, the average rating is set.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to get rating information: " + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success")) {
+                    double myAverage = jsonObject.getJSONArray("names").getJSONObject(0).getDouble("avg");
+                    mRatingBar.setRating((float) myAverage);
+                }
+            } catch (JSONException e) {
+                Log.d("myTag", "Error when processing average rating or no reviews posted");
+                //Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                //        Toast.LENGTH_LONG).show();
             }
         }
     }
