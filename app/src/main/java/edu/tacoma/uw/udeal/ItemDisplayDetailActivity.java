@@ -231,7 +231,12 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             }
         }
 
-        LatLng coordinates = myCoordinates.get(0);
+        LatLng coordinates;
+        try {
+            coordinates = myCoordinates.get(0);
+        } catch (IndexOutOfBoundsException e) {
+            coordinates = new LatLng(0, 0);
+        }
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
         mMap.addCircle(new CircleOptions().center(coordinates).radius(5000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 11));
