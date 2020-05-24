@@ -16,6 +16,11 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import edu.tacoma.uw.udeal.BuyingFrag;
 
@@ -312,7 +317,18 @@ public class ItemDisplayBuyingFrag implements Serializable {
      * @return The date the item was posted
      */
     public String getMyDatePosted() {
-        return myDatePosted;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        try {
+            Date date = format.parse(myDatePosted);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.HOUR, -7);
+            Date temp = cal.getTime();
+            format.applyPattern("MMM dd, yyyy hh:mm a");
+            return format.format(temp);
+        } catch (ParseException e) {
+            return myDatePosted;
+        }
     }
 
     /**
