@@ -187,20 +187,10 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
         new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + mItemDisplay.getMyUsername());
     }
 
-    /**
-     * Allows the back button to be displayed based on boolean value.
-     *
-     * @param item The menu item.
-     * @return Boolean value for options item selected
-     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, MainActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     /**
