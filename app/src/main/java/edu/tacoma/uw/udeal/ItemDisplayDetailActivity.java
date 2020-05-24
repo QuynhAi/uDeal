@@ -177,10 +177,10 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             ((TextView) findViewById(R.id.date_posted)).setText("Posted on " + mItemDisplay.getMyDatePosted());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
-            ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
+            ((TextView) findViewById(R.id.item_price)).setText("$" + String.format("%.2f", mItemDisplay.getMyPrice()));
             ((TextView) findViewById(R.id.item_location)).setText(mItemDisplay.getMyLocation());
-            ((TextView) findViewById(R.id.item_seller)).setText("Sold by " + mItemDisplay.getMyUsername());
-            ((TextView) findViewById(R.id.item_description)).setText("Description: " + mItemDisplay.getMyDescription());
+            ((TextView) findViewById(R.id.item_seller)).setText(mItemDisplay.getMyUsername());
+            ((TextView) findViewById(R.id.item_description)).setText(mItemDisplay.getMyDescription());
         }
 
         mRatingBar = findViewById(R.id.stars);
@@ -233,8 +233,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
 
         LatLng coordinates = myCoordinates.get(0);
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
-        mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
+        mMap.addCircle(new CircleOptions().center(coordinates).radius(5000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 11));
     }
 
     /**
