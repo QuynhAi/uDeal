@@ -65,12 +65,14 @@ public class UserInbox implements Serializable {
      * @param itemName The profile picture
      * @param itemPicture The item picture
      */
-    public UserInbox(String currentUserName, String seller, String itemName, String itemPicture) throws ExecutionException, InterruptedException {
+    public UserInbox(String currentUserName, String seller, String itemName, String itemPicture, boolean taskRequired) throws ExecutionException, InterruptedException {
         this.currentUserName = currentUserName;
         this.itemPicture = itemPicture;
-        new ImageTask().execute(this.itemPicture).get();
         this.itemName = itemName;
         this.seller = seller;
+        if (taskRequired){
+            new ImageTask().execute(this.itemPicture).get();
+        }
         //Log.e("bitMap" , String.valueOf(myBitmap));
     }
 
@@ -89,9 +91,9 @@ public class UserInbox implements Serializable {
                 JSONObject obj = arr.getJSONObject(i);
 
                 UserInbox userInbox = new UserInbox(obj.getString(UserInbox.CURRENT_USER_NAME), obj.getString(UserInbox.SELLER),
-                        obj.getString(UserInbox.ITEM_NAME), obj.getString(UserInbox.ITEM_PICTURE));
+                        obj.getString(UserInbox.ITEM_NAME), obj.getString(UserInbox.ITEM_PICTURE), true);
                 if (!userInboxList.contains(userInbox)){
-                    userInboxList.add(userInbox);
+                    userInboxList.add(0, userInbox);
                 }
 
             }
@@ -143,15 +145,9 @@ public class UserInbox implements Serializable {
         return myBitmap;
     }
 
-    /**
-     * Gets the byte array for the bitmap of the item.
-     *
-     * @return The byte array for the bitmap
-     */
-    public byte[] getMyBitmapArray() {
-        return myBitmapArray;
+    public void setMyBitmap(Bitmap bitmap) {
+        myBitmap = bitmap;
     }
-
     /**
      * This class handles the async task that retrives the image
      * from S3.
@@ -203,7 +199,6 @@ public class UserInbox implements Serializable {
                         tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
                     }
                     bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                    myBitmapArray = tmp;
                     myBitmap = bitmap;
                     //Log.e("myTag", String.valueOf(myBitmap));
                 }

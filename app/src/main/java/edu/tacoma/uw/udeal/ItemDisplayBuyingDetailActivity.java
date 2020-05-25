@@ -46,6 +46,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -97,14 +98,25 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
                 String current = settings.getString(getString(R.string.username), "");
                 // temporary, change to
-
                 UserInbox item = null;
                 try {
                     item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                            mItemDisplay.getMyURL(), mItemDisplay.getMyURL());
-                } catch (InterruptedException | ExecutionException e) {
+                            mItemDisplay.getMyTitle(), mItemDisplay.getMyURL(), false);
+                }catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
+                StringBuilder check = new StringBuilder(getString(R.string.user_inbox));
+                check.append("/check?currentuser=");
+                check.append(current);
+                check.append("&seller=");
+                check.append(mItemDisplay.getMyUsername());
+                check.append("&itemname=");
+                check.append(mItemDisplay.getMyTitle());
+                check.append("&itemurl=");
+                check.append(mItemDisplay.getMyURL());
+                new UserInboxTaskGet().execute(check.toString());
+                //Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
+
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
@@ -379,6 +391,159 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 Log.d("myTag", "Error when processing average rating or no reviews posted");
                 //Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
                 //        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+    /**
+     * This class posts a message between two users.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class UserInboxTaskPost extends AsyncTask<String, Void, String> {
+        /**
+         * Posts the message between two users.
+         *
+         * @param urls The URL endpoints
+         * @return The response from the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+            String current = settings.getString(getString(R.string.username), "");
+
+            JSONObject mArguments = new JSONObject();
+            try {
+                mArguments.put(UserInbox.CURRENT_USER_NAME, current);
+                mArguments.put(UserInbox.SELLER, mItemDisplay.getMyUsername());
+                mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle());
+                mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            for (String url : urls) {
+                //Log.e("urConnection", String.valueOf(url));
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+
+                    wr.write(mArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            Log.e("Response", String.valueOf(response));
+            return response;
+        }
+
+        /**
+         * If successful, we get the messages and add it to the list.
+         *
+         * @param s The response from the async task
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success") == true) {
+                    Toast.makeText(getApplicationContext(), "Success",
+                            Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * This class get all messages from two specific users
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    public class UserInboxTaskGet extends AsyncTask<String, Void, String> {
+        /**
+         * Retrives messages between two users.
+         *
+         * @param urls The URL endpoint
+         * @return The response from the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to check, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * If successful, we get the messages between the two users and add it to the list.
+         *
+         * @param s The response from the async task
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success") == true) {
+                    new UserInboxTaskPost().execute(getString(R.string.user_inbox));
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

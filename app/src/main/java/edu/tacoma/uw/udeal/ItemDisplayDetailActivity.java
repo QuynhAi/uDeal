@@ -110,7 +110,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 UserInbox item = null;
                 try {
                     item = new UserInbox(current, mItemDisplay.getMyUsername(),
-                            mItemDisplay.getMyTitle(), mItemDisplay.getMyURL());
+                            mItemDisplay.getMyTitle(), mItemDisplay.getMyURL(), false);
                 }catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
@@ -346,7 +346,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
      * @author TCSS 450 Team 8
      * @version 1.0
      */
-    public class UserInboxTaskPost extends AsyncTask<String, Void, String> {
+    private class UserInboxTaskPost extends AsyncTask<String, Void, String> {
         /**
          * Posts the message between two users.
          *
@@ -432,7 +432,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
      * @author TCSS 450 Team 8
      * @version 1.0
      */
-    private class UserInboxTaskGet extends AsyncTask<String, Void, String> {
+    public class UserInboxTaskGet extends AsyncTask<String, Void, String> {
         /**
          * Retrives messages between two users.
          *
