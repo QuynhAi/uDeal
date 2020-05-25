@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -185,6 +186,34 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
 
         mRatingBar = findViewById(R.id.stars);
         new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + mItemDisplay.getMyUsername());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_share, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share_button:
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody="Take a look at this " + mItemDisplay.getMyTitle() + " sold by " + mItemDisplay.getMyUsername()
+                        + ", selling for $" + String.format("%.2f", mItemDisplay.getMyPrice())
+                        + " on uDeal. Download the uDeal app today to check it out.";
+                String shareSubject="Take a look at this item on uDeal";
+
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+
+                startActivity(Intent.createChooser(sharingIntent, "Share Using"));
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
