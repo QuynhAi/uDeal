@@ -14,20 +14,34 @@
         android:layout_alignParentTop="true"
         android:layout_height="wrap_content">
     </SearchView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_container"
-        android:name="inbox.InboxListFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_toolbar"
-        android:layout_below="@id/search_inbox"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:text='Please wait, loading...'
-        app:layoutManager="LinearLayoutManager"
-        tools:context="inbox.InboxListActivity"
-        tools:listitem="@layout/inbox_list_content"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@id/search_inbox">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/loadInbox"
+            android:visibility="visible"
+            android:layout_gravity="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fragment_container"
+            android:name="inbox.InboxListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text='Please wait, loading...'
+            app:layoutManager="LinearLayoutManager"
+            tools:context="inbox.InboxListActivity"
+            android:visibility="invisible"
+            tools:listitem="@layout/inbox_list_content">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_toolbar"
