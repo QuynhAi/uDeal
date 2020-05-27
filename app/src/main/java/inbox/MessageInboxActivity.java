@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,10 +16,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,11 +69,12 @@ public class MessageInboxActivity extends AppCompatActivity {
     /** The current string. */
     private String current;
 
-    SearchView searchView;
+    private SearchView searchView;
 
     /** The bitmap that represents the photo of the item. */
     private transient Bitmap myBitmap;
 
+    private ProgressBar loadInbox;
     /**
      * Sets up the messages.
      *
@@ -87,12 +91,14 @@ public class MessageInboxActivity extends AppCompatActivity {
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
+        loadInbox = (ProgressBar) findViewById(R.id.loadInbox);
 
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
         current = settings.getString(getString(R.string.username), "");
         mRecyclerView = findViewById(R.id.fragment_container);
         assert mRecyclerView != null;
         setupRecyclerView((RecyclerView) mRecyclerView);
+
         if (findViewById(R.id.inbox_detail_container) != null) {
             mTwoPane = true;
         }
@@ -102,20 +108,6 @@ public class MessageInboxActivity extends AppCompatActivity {
             url.append(current);
             new UserInboxTask().execute(url.toString());
         }
-        searchView=(SearchView) findViewById(R.id.search_inbox);
-        searchView.setQueryHint("Search View");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getBaseContext(), query, Toast.LENGTH_LONG).show();
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //Toast.makeText(getBaseContext(), newText, Toast.LENGTH_LONG).show();
-                return false;
-            }
-        });
     }
 
     @Override
@@ -137,6 +129,10 @@ public class MessageInboxActivity extends AppCompatActivity {
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         if (mUserList != null){
             recyclerView.setAdapter(new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList, mTwoPane));
+            Log.e("are you done?", "done3");
+            mRecyclerView.setVisibility(RecyclerView.VISIBLE);
+            loadInbox.setVisibility(ProgressBar.INVISIBLE);
+
         }
     }
 
@@ -352,97 +348,35 @@ public class MessageInboxActivity extends AppCompatActivity {
                 }
             };
     /**
-     * This class handles the async task that retrives the image
-     * from S3.
-     *
-     * @author TCSS 450 Team 8
-     * @version 1.0
+     * Prepare to put the search item on menu
      */
-    private class ImageTask extends AsyncTask<String, Void, String> {
-        /**
-         * Retrieves the image from S3.
-         *
-         * @param urls The URL to review the image.
-         * @return The response from the connection
-         */
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            //Log.e("Are you here?" , "are you here?");
-            for (String url : urls) {
-                try {
-                    java.net.URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
 
-                    InputStream content = urlConnection.getInputStream();
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setQueryHint(getResources().getString(R.string.search));
 
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
 
-                } catch (Exception e) {
-                    response = "Unable to download the image, Reason: "
-                            + e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
+                Toast.makeText(getApplicationContext(), "You tried to submit a search query",
+                        Toast.LENGTH_LONG).show();
+                return true;
             }
-            // temporary
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getBoolean("success")) {
-                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
-                    Bitmap bitmap = null;
-                    byte[] tmp = new byte[values.length()];
-                    for (int i = 0; i < values.length(); i++) {
-                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
-                    }
-                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                    myBitmap = bitmap;
-                    //Log.e("myTag", String.valueOf(myBitmap));
-                }
-
-            } catch (JSONException e) {
-                Log.d("myTag", "FAILURE");
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
             }
-            return response;
-        }
+        });
 
-        /**
-         * If successful, the bitmap of the item is updated. If unsuccessful,
-         * the method returns.
-         *
-         * @param s The response from the async task
-         * @throws JSONException if the JSONObject cannot be created
-         */
-        @Override
-        public void onPostExecute(String s) {
-            if (s.startsWith("Unable to")) {
-                Log.d("myTag", s);
-                return;
-            }
-//            try {
-//                JSONObject jsonObject = new JSONObject(s);
-//                if (jsonObject.getBoolean("success")) {
-//                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
-//                    Bitmap bitmap = null;
-//                    byte[] tmp = new byte[values.length()];
-//                    for (int i = 0; i < values.length(); i++) {
-//                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
-//                    }
-//                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-//                    myBitmapArray = tmp;
-//                    myBitmap = bitmap;
-//                    Log.e("myTag", String.valueOf(myBitmap));
-//                }
-//
-//            } catch (JSONException e) {
-//                Log.d("myTag", "FAILURE");
-//            }
-        }
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
     }
 }
