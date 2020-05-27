@@ -119,7 +119,7 @@ public class InviteFriends extends Fragment {
             new AddItemAsyncTask().execute(urlTextFields.toString());
         } catch (JSONException e) {
             Toast.makeText(getActivity().getApplicationContext(), "Error with JSON creation" +
-                    e.getMessage() , Toast.LENGTH_SHORT).show();
+                    e.getMessage() , Toast.LENGTH_LONG).show();
         }
     }
 
@@ -180,13 +180,13 @@ public class InviteFriends extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-                    int insertedID = resultObject.getJSONArray("names").getJSONObject(0).getInt("item_id");
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully sent invite", Toast.LENGTH_SHORT).show();
+//                    int insertedID = resultObject.getJSONArray("names").getJSONObject(0).getInt("item_id");
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully sent invite", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
-                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }

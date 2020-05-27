@@ -52,8 +52,8 @@ public class EmailItem implements  Serializable{
          *
          * @return The member ID
          */
-        public int getmUserID() {
-            return mUserID;
+        public String getmUserID() {
+            return Integer.toString(mUserID);
         }
 
         /**
