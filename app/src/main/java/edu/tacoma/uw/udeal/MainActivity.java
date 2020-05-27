@@ -103,10 +103,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         searchText = "";
         categoryText = "";
-        //commented out because to use icon or not for home page
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setLogo(R.mipmap.ic_launcher_round);
-//        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);

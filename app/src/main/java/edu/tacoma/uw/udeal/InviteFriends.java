@@ -45,7 +45,7 @@ public class InviteFriends extends Fragment {
     private Button invite;
     private EditText firstName;
     private EditText lastName;
-    private EditText email;
+    private EditText emailo;
     private EmailItem addThisItem;
 
     /** The tag. */
@@ -84,7 +84,7 @@ public class InviteFriends extends Fragment {
         invite = (Button) view.findViewById(R.id.invitebutton);
         firstName = (EditText) view.findViewById(R.id.firstName);
         lastName = (EditText) view.findViewById(R.id.lastName);
-        email = (EditText) view.findViewById(R.id.email);
+        emailo = (EditText) view.findViewById(R.id.emailout);
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +93,7 @@ public class InviteFriends extends Fragment {
                 int id = settings.getInt(getString(R.string.member_id), 0);
                 String fName = firstName.getText().toString();
                 String lName = lastName.getText().toString();
-                String oemail = email.getText().toString();
+                String oemail = emailo.getText().toString();
                 EmailItem item = new EmailItem(id, fName, lName, oemail);
                 addThisItem = item;
                 onAddItem(item);
@@ -180,8 +180,10 @@ public class InviteFriends extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-//                    int insertedID = resultObject.getJSONArray("names").getJSONObject(0).getInt("item_id");
                     Toast.makeText(getActivity().getApplicationContext(), "Successfully sent invite", Toast.LENGTH_LONG).show();
+                    firstName.setText("");
+                    lastName.setText("");
+                    emailo.setText("");
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_LONG).show();
                 }
