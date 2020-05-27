@@ -32,6 +32,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import model.Item;
+
 
 /**
  * A fragment for the settings of the application.

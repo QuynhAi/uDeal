@@ -4,7 +4,7 @@
 
     <string name="register">https://udeal-app-services-backend.herokuapp.com/register</string>
     <string name="login">https://udeal-app-services-backend.herokuapp.com/login</string>
-
+    <string name="sendinvite">https://udeal-app-services-backend.herokuapp.com/sendinvitation</string>
     <string name="additem">https://udeal-app-services-backend.herokuapp.com/additem</string>
     <string name="addphoto">https://udeal-app-services-backend.herokuapp.com/addphoto</string>
     <string name="upload">https://udeal-app-services-backend.herokuapp.com/upload</string>
