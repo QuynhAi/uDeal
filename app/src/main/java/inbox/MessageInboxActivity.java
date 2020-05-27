@@ -64,13 +64,9 @@ public class MessageInboxActivity extends AppCompatActivity {
     /** The recycler view. */
     private RecyclerView mRecyclerView;
 
-    /** The column count. */
-    private int mColumnCount = 1;
 
     /** The current string. */
     private String current;
-
-    private SearchView searchView;
 
     private TextView loadInbox;
 
@@ -325,48 +321,5 @@ public class MessageInboxActivity extends AppCompatActivity {
                     return false;
                 }
             };
-    /**
-     * Prepare to put the search item on menu
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
-        searchView.setQueryHint(getResources().getString(R.string.search));
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionClick(int position) {
-                return true;
-            }
-
-            @Override
-            public boolean onSuggestionSelect(int position) {
-                // Your code here
-                return true;
-            }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                Toast.makeText(getApplicationContext(), "You tried to submit a search query",
-                        Toast.LENGTH_LONG).show();
-                return true;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return true;
-            }
-        });
-
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        return true;
-    }
 }
