@@ -14,12 +14,15 @@
         android:layout_above="@id/bottom_toolbar"
         >
 
-        <ProgressBar
+        <TextView
+            android:id="@+id/loadInbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/loadInbox"
-            android:visibility="visible"
-            android:layout_gravity="center" />
+            android:layout_gravity="center|center_vertical"
+            android:paddingTop="200dp"
+            android:text="Loading..."
+            android:textAlignment="center"
+            android:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment_container"

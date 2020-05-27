@@ -9,6 +9,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -71,10 +72,10 @@ public class MessageInboxActivity extends AppCompatActivity {
 
     private SearchView searchView;
 
-    /** The bitmap that represents the photo of the item. */
-    private transient Bitmap myBitmap;
+    private TextView loadInbox;
 
-    private ProgressBar loadInbox;
+    /** The recycler view adapter. */
+    private SimpleItemRecyclerViewAdapter adapter;
     /**
      * Sets up the messages.
      *
@@ -91,23 +92,11 @@ public class MessageInboxActivity extends AppCompatActivity {
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
-        loadInbox = (ProgressBar) findViewById(R.id.loadInbox);
+        loadInbox = (TextView) findViewById(R.id.loadInbox);
 
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
         current = settings.getString(getString(R.string.username), "");
         mRecyclerView = findViewById(R.id.fragment_container);
-        assert mRecyclerView != null;
-        setupRecyclerView((RecyclerView) mRecyclerView);
-
-        if (findViewById(R.id.inbox_detail_container) != null) {
-            mTwoPane = true;
-        }
-        if(mUserList == null){
-            StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
-            url.append("?currentuser=");
-            url.append(current);
-            new UserInboxTask().execute(url.toString());
-        }
     }
 
     @Override
@@ -128,11 +117,11 @@ public class MessageInboxActivity extends AppCompatActivity {
      */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         if (mUserList != null){
-            recyclerView.setAdapter(new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList, mTwoPane));
+            adapter = new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList);
+            recyclerView.setAdapter(adapter);
             Log.e("are you done?", "done3");
+            loadInbox.setVisibility(TextView.INVISIBLE);
             mRecyclerView.setVisibility(RecyclerView.VISIBLE);
-            loadInbox.setVisibility(ProgressBar.INVISIBLE);
-
         }
     }
 
@@ -151,8 +140,6 @@ public class MessageInboxActivity extends AppCompatActivity {
         /** The list of user inboxes. */
         private final List<UserInbox> mValues;
 
-        /** The two pane boolean. */
-        private final boolean mTwoPane;
 
         /** The view on click listener. */
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -178,13 +165,10 @@ public class MessageInboxActivity extends AppCompatActivity {
          *
          * @param parent The parent activity
          * @param items The list of user inboxes
-         * @param twoPane Boolean two pane
          */
-        SimpleItemRecyclerViewAdapter(MessageInboxActivity parent, List<UserInbox> items,
-                                      boolean twoPane) {
+        SimpleItemRecyclerViewAdapter(MessageInboxActivity parent, List<UserInbox> items) {
             mValues = items;
             mParentActivity = parent;
-            mTwoPane = twoPane;
         }
 
         @Override
@@ -198,14 +182,8 @@ public class MessageInboxActivity extends AppCompatActivity {
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             holder.name.setText(mValues.get(position).getSellerName());
             holder.item_name.setText(mValues.get(position).getItemName());
-            if(mValues.get(position).getMyBitmap() != null) {
-                holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
-                mValues.get(position).setMyBitmap(null);
-                holder.item_image.setVisibility(holder.item_image.VISIBLE);
-            } else {
-                holder.item_image.setVisibility(holder.item_image.GONE);
-            }
-            //Log.e("TESTing" , String.valueOf(mValues.get(position).getMyBitmap()));
+            holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
+            mValues.get(position).setMyBitmap(null);
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -359,7 +337,18 @@ public class MessageInboxActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search));
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                return true;
+            }
 
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                // Your code here
+                return true;
+            }
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -370,6 +359,7 @@ public class MessageInboxActivity extends AppCompatActivity {
             }
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 return true;
             }
         });
