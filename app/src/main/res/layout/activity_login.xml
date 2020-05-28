@@ -59,7 +59,7 @@
         android:layout_width="320dp"
         android:layout_height="60dp"
         android:layout_marginTop="52dp"
-        android:hint="Username"
+        android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"

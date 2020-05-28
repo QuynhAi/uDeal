@@ -4,22 +4,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.media.Rating;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,33 +43,31 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.ItemDisplay;
 import model.ItemDisplaySellingFrag;
-
+import model.Review;
 
 /**
- * The Selling fragment that is displayed when the user navigates to the shopping
- * cart tab. This is the first fragment that is shown when the tab is clicked.
- * This holds the recycler view of items that the user can scroll through.
+ * Fragment for display the user person.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
  */
-public class SellingFrag extends Fragment {
-
+public class ReviewsWrittenFragment extends Fragment {
     /** The load limit for recycler view. */
-    private static int LOAD_LIMIT = 4;
+    private static int LOAD_LIMIT = 10;
 
     /** The number of items to load initially. */
-    private static int INITIAL_LOAD = 4;
+    private static int INITIAL_LOAD = 10;
 
     /** The list of item displays. */
-    private List<ItemDisplaySellingFrag> mItemList;
+    private List<Review> mItemList;
 
     /** The recycler view for the items. */
     private RecyclerView mRecyclerView;
 
     /** The adapter for the recycler view. */
-    public SellingFrag.SimpleItemRecyclerViewAdapter mAdapter;
+    public ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter mAdapter;
 
     /** Boolean whether to load more items. */
     private boolean loading = true;
@@ -76,27 +84,51 @@ public class SellingFrag extends Fragment {
     /** The linear layout manager for the recycler view. */
     private LinearLayoutManager mLayoutManager;
 
+    /** The rating bar for the user. */
+    private RatingBar mRatingBar;
+
     /**
-     * Sets up the recycler view and starts an async task to retrieve item information
-     * from the database.
+     * Creates the view and sets up the image capture ability for the user photo.
      *
-     * @param savedInstanceState The saved instance state.
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The saved instance state
+     * @return The view
      */
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_selling, container, false);
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.reviews_written, container, false);
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Reviews I've Written");
+        toolbar.setTitleTextColor(Color.WHITE);
+
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.colorWhite), PorterDuff.Mode.SRC_ATOP);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),SettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+                getActivity().overridePendingTransition(0,0);
+            }
+        });
 
         mItemList = new ArrayList<>();
         mRecyclerView = view.findViewById(R.id.recyclerView);
         assert mRecyclerView != null;
         initialRecyclerView((RecyclerView) mRecyclerView);
         SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-        int theID = settings.getInt(getString(R.string.member_id), 0);
-        new SellingFrag.DisplayItemsAsyncTask().execute(getString(R.string.load_limited_myitems) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theSellerID=" + theID);
+        String theUsername = settings.getString(getString(R.string.username), "");
+        new ReviewsWrittenFragment.GetReviewsAsyncTask().execute(getString(R.string.get_my_written) + theUsername + "&limit=" + INITIAL_LOAD + "&offset=" + 0);
 
         return view;
     }
+
 
     /**
      * Initializes the recycler view.
@@ -104,7 +136,7 @@ public class SellingFrag extends Fragment {
      * @param recyclerView The recycler view to be initalized
      */
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
-        mAdapter = new SellingFrag.SimpleItemRecyclerViewAdapter((CartActivity) getActivity(), mItemList);
+        mAdapter = new ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter((SettingsActivity) getActivity(), mItemList);
         mRecyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -128,9 +160,8 @@ public class SellingFrag extends Fragment {
                             loading = false;
                             Log.v("hello", "Last Item Wow !");
                             SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                            int theID = settings.getInt(getString(R.string.member_id), 0);
-                            new SellingFrag.DisplayItemsAsyncTask()
-                                    .execute(getString(R.string.load_limited_myitems) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount + "&theSellerID=" + theID);
+                            String theUsername = settings.getString(getString(R.string.username), "");
+                            new ReviewsWrittenFragment.GetReviewsAsyncTask().execute(getString(R.string.get_my_written) + theUsername + "&limit=" + LOAD_LIMIT + "&offset=" + totalItemCount);
                         }
                     }
                 }
@@ -142,28 +173,10 @@ public class SellingFrag extends Fragment {
      * The class that handles the recycler view adapter.
      */
     public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder> {
+            extends RecyclerView.Adapter<ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final CartActivity mParentActivity;
-        private final List<ItemDisplaySellingFrag> mValues;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            /**
-             * Displays the item when the item is clicked on the recycler view.
-             *
-             * @param view The view
-             */
-            @Override
-            public void onClick(View view) {
-                ItemDisplaySellingFrag item = (ItemDisplaySellingFrag) view.getTag();
-                Bitmap temp = item.getMyBitmap();
-                item.resetBitmaps();
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ItemDisplaySellingDetailActivity.class);
-                intent.putExtra(ItemDisplaySellingDetailActivity.ARG_ITEM_ID, item);
-                context.startActivity(intent);
-                item.setMyBitmap(temp);
-            }
-        };
+        private final SettingsActivity mParentActivity;
+        private final List<Review> mValues;
 
         /**
          * Sets up the recycler view adapter.
@@ -171,17 +184,17 @@ public class SellingFrag extends Fragment {
          * @param parent The parent activity
          * @param items The list of items
          */
-        SimpleItemRecyclerViewAdapter(CartActivity parent,
-                                      List<ItemDisplaySellingFrag> items) {
+        SimpleItemRecyclerViewAdapter(SettingsActivity parent,
+                                      List<Review> items) {
             mValues = items;
             mParentActivity = parent;
         }
 
         @Override
-        public SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_item, parent, false);
-            return new SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder(view);
+                    .inflate(R.layout.review_item, parent, false);
+            return new ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
         /**
@@ -192,31 +205,13 @@ public class SellingFrag extends Fragment {
          * @param position The position of the item
          */
         @Override
-        public void onBindViewHolder(final SellingFrag.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).getMyTitle());
-            holder.mImageView.setImageBitmap(mValues.get(position).getMyBitmap());
-            if(mValues.get(position).getMyBitmap() != null) {
-                holder.mImageView.setVisibility(holder.mImageView.VISIBLE);
-                holder.mPBar.setVisibility(holder.mPBar.GONE);
-            } else {
-                holder.mImageView.setVisibility(holder.mImageView.GONE);
-                holder.mPBar.setVisibility(holder.mPBar.VISIBLE);
-            }
-            final ItemDisplaySellingFrag temp = mValues.get(position);
-            holder.mLikeImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    temp.setMyLiked(!temp.getmyLiked());
-                }
-            });
-            if(mValues.get(position).getmyLiked()) {
-                holder.mLikeImage.setImageResource(R.drawable.heart_icon_pressed);
+        public void onBindViewHolder(final ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
+            holder.mNameRoleView.setText("As a " + mValues.get(position).getMyRole().toLowerCase() + ", you reviewed \n" + mValues.get(position).getMyReviewed() );
+            holder.mDescription.setText(mValues.get(position).getMyReview());
+            holder.mDateView.setText(mValues.get(position).getMyDatePosted());
+            holder.mRatingBar.setRating( (float) mValues.get(position).getMyRating());
 
-            } else {
-                holder.mLikeImage.setImageResource(R.drawable.heart_icon);
-            }
             holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
         }
 
         @Override
@@ -228,14 +223,14 @@ public class SellingFrag extends Fragment {
          * The ViewHolder for the recycler view.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            /** The title text view. */
-            final TextView mIdView;
-            /** The image view. */
-            final ImageView mImageView;
-            /** The heart icon image. */
-            final ImageView mLikeImage;
-            /** The progress bar. */
-            final ProgressBar mPBar;
+            /** The name and role text view */
+            final TextView mNameRoleView;
+            /** The date text view. */
+            final TextView mDateView;
+            /** The description text view. */
+            final TextView mDescription;
+            /** The star rating. */
+            final RatingBar mRatingBar;
 
             /**
              * Initializes fields accordingly with their correct ID.
@@ -244,18 +239,18 @@ public class SellingFrag extends Fragment {
              */
             ViewHolder(View view) {
                 super(view);
-                mPBar = (ProgressBar) view.findViewById(R.id.pBar);
-                mIdView = (TextView) view.findViewById(R.id.textViewTitle);
-                mImageView = (ImageView) view.findViewById(R.id.imageViewImage);
-                mLikeImage = (ImageView) view.findViewById(R.id.heartImage);
+                mNameRoleView = (TextView) view.findViewById(R.id.textViewTitle);
+                mDateView = (TextView) view.findViewById(R.id.reviewDate);
+                mDescription = (TextView) view.findViewById(R.id.reviewDescription);
+                mRatingBar = (RatingBar) view.findViewById(R.id.stars);
             }
         }
     }
 
     /**
-     * The async task to display items.
+     * The async task to get the reviews.
      */
-    private class DisplayItemsAsyncTask extends AsyncTask<String, Void, String> {
+    private class GetReviewsAsyncTask extends AsyncTask<String, Void, String> {
         /**
          * Retrieves the information from the database.
          *
@@ -309,12 +304,9 @@ public class SellingFrag extends Fragment {
                 if (jsonObject.getBoolean("success")) {
                     JSONArray myJSONArray = jsonObject.getJSONArray("names");
                     for(int i = 0; i < myJSONArray.length(); i++) {
-                        int temp = mItemList.size();
                         if(getActivity() != null) {
                             Log.d("myLog", "onPostExecute: Success");
-                            SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                            int theID = settings.getInt(getString(R.string.member_id), 0);
-                            mItemList.add(ItemDisplaySellingFrag.parseItemJson(myJSONArray.getJSONObject(i), temp, mAdapter, theID));
+                            mItemList.add(Review.parseItemJson(myJSONArray.getJSONObject(i)));
                             mAdapter.notifyItemInserted(mItemList.size() - 1);
                             loading = true;
                         } else {

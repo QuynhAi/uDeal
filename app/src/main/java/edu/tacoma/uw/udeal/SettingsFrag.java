@@ -52,6 +52,12 @@ public class SettingsFrag extends Fragment {
     /** The TextView for inviting others. */
     private TextView inviteOthers;
 
+    /** The TextView for writing a review. */
+    private TextView writeReview;
+
+    /** The TextView for viewing my reviews. */
+    private TextView myReviews;
+
     /** The TextView for signing out. */
     private TextView signOut;
 
@@ -73,6 +79,8 @@ public class SettingsFrag extends Fragment {
                 startActivity(intent);
             }
         });
+        writeReview = (TextView) view.findViewById(R.id.writereview);
+        myReviews = (TextView) view.findViewById(R.id.myreviews);
         updateProfilePhoto = (TextView) view.findViewById(R.id.updateprofilephoto);
         changePassword = (TextView) view.findViewById(R.id.changepassword);
         inviteOthers = (TextView) view.findViewById(R.id.inviteothers);
@@ -96,6 +104,18 @@ public class SettingsFrag extends Fragment {
             public void onClick(View v){
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new InviteFriends()).addToBackStack(null).commit();
+            }
+        });
+        writeReview.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new WriteReview()).addToBackStack(null).commit();
+            }
+        });
+        myReviews.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ReviewsWrittenFragment()).addToBackStack(null).commit();
             }
         });
 

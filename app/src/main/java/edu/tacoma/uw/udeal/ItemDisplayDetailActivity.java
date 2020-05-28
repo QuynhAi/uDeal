@@ -23,14 +23,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +83,9 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
 
     /** The ItemDisplay object used for retrieving the information. */
     private ItemDisplay mItemDisplay;
+
+    /** The rating bar. */
+    private RatingBar mRatingBar;
 
     /**
      * Creates the activity by setting text of the views and the image of the item.
@@ -154,32 +160,66 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             actionBar.setTitle("");
         }
 
+        CardView user = (CardView) findViewById(R.id.cardviewholder);
+        user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = view.getContext();
+                Intent intent = new Intent(context, OtherUserProfile.class);
+                intent.putExtra("memberID", mItemDisplay.getMyMemberID());
+                intent.putExtra("username", mItemDisplay.getMyUsername());
+                context.startActivity(intent);
+            }
+        });
+
+
         if (mItemDisplay != null) {
-            //TODO:
             new ImageTask().execute(mItemDisplay.getMyURL());
+            ((TextView) findViewById(R.id.date_posted)).setText("Posted on " + mItemDisplay.getMyDatePosted());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
-            ((TextView) findViewById(R.id.item_price)).setText("$" + mItemDisplay.getMyPrice());
+            ((TextView) findViewById(R.id.item_price)).setText("$" + String.format("%.2f", mItemDisplay.getMyPrice()));
             ((TextView) findViewById(R.id.item_location)).setText(mItemDisplay.getMyLocation());
-            ((TextView) findViewById(R.id.item_seller)).setText("Seller: " + mItemDisplay.getMyUsername());
-            ((TextView) findViewById(R.id.item_description)).setText("Description: " + mItemDisplay.getMyDescription());
+            ((TextView) findViewById(R.id.item_seller)).setText(mItemDisplay.getMyUsername());
+            ((TextView) findViewById(R.id.item_description)).setText(mItemDisplay.getMyDescription());
         }
+
+        mRatingBar = findViewById(R.id.stars);
+        new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + mItemDisplay.getMyUsername());
     }
 
-    /**
-     * Allows the back button to be displayed based on boolean value.
-     *
-     * @param item The menu item.
-     * @return Boolean value for options item selected
-     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_share, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, MainActivity.class));
-            return true;
+        switch (item.getItemId()) {
+            case R.id.share_button:
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody="Take a look at this " + mItemDisplay.getMyTitle() + " sold by " + mItemDisplay.getMyUsername()
+                        + ", selling for $" + String.format("%.2f", mItemDisplay.getMyPrice())
+                        + " on uDeal. Download the uDeal app today to check it out.";
+                String shareSubject="Take a look at this item on uDeal";
+
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+
+                startActivity(Intent.createChooser(sharingIntent, "Share Using"));
+                break;
         }
+
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     /**
@@ -210,10 +250,15 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             }
         }
 
-        LatLng coordinates = myCoordinates.get(0);
+        LatLng coordinates;
+        try {
+            coordinates = myCoordinates.get(0);
+        } catch (IndexOutOfBoundsException e) {
+            coordinates = new LatLng(0, 0);
+        }
         mMap.addMarker(new MarkerOptions().position(coordinates).title("Marker"));
-        mMap.addCircle(new CircleOptions().center(coordinates).radius(10000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 10));
+        mMap.addCircle(new CircleOptions().center(coordinates).radius(5000).strokeColor(Color.RED).fillColor(0x220000FF).strokeWidth(5));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 11));
     }
 
     /**
@@ -443,6 +488,72 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
                         Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * The async task to get the average rating.
+     */
+    private class GetRatingBarAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Retrieves the average rating from the database.
+         *
+         * @param urls The URL to get the information from the database.
+         * @return The response from the connection
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to get rating bar average, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+
+        /**
+         * If successful, the average rating is set.
+         *
+         * @param s The response from the async task
+         * @throws JSONException if the JSONObject cannot be created
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to get rating information: " + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success")) {
+                    double myAverage = jsonObject.getJSONArray("names").getJSONObject(0).getDouble("avg");
+                    mRatingBar.setRating((float) myAverage);
+                }
+            } catch (JSONException e) {
+                Log.d("myTag", "Error when processing average rating or no reviews posted");
+                //Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                //        Toast.LENGTH_LONG).show();
             }
         }
     }

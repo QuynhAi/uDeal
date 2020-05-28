@@ -9,6 +9,12 @@
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/filter_search"
+        android:title="Filter"
+        android:icon="@drawable/ic_filter_list_black_24dp"
+        app:showAsAction="always" />
+
 </menu>
 
 <!--    app:queryHint="@string/search"-->

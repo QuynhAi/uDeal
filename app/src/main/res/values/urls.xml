@@ -4,7 +4,7 @@
 
     <string name="register">https://udeal-app-services-backend.herokuapp.com/register</string>
     <string name="login">https://udeal-app-services-backend.herokuapp.com/login</string>
-
+    <string name="sendinvite">https://udeal-app-services-backend.herokuapp.com/sendinvitation</string>
     <string name="additem">https://udeal-app-services-backend.herokuapp.com/additem</string>
     <string name="addphoto">https://udeal-app-services-backend.herokuapp.com/addphoto</string>
     <string name="upload">https://udeal-app-services-backend.herokuapp.com/upload</string>
@@ -24,4 +24,10 @@
     <string name="relist">https://udeal-app-services-backend.herokuapp.com/relist</string>
     <string name="update_item_photo">https://udeal-app-services-backend.herokuapp.com/updateitemphoto</string>
     <string name="update_item_text">https://udeal-app-services-backend.herokuapp.com/updateitemtext</string>
+    <string name="add_review">https://udeal-app-services-backend.herokuapp.com/addreview</string>
+    <string name="get_my_reviews">https://udeal-app-services-backend.herokuapp.com/reviews/specific/reviewed?reviewed=</string>
+    <string name="average_rating">https://udeal-app-services-backend.herokuapp.com/reviews/specific/average?reviewed=</string>
+    <string name="get_my_written">https://udeal-app-services-backend.herokuapp.com/reviews/specific/reviewer?reviewer=</string>
+    <string name="get_specific_user_name">https://udeal-app-services-backend.herokuapp.com/members/name/specific?username=</string>
+
 </resources>

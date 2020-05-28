@@ -14,6 +14,55 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#fff"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/writereview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Write A Review"
+            android:textStyle="bold"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:padding="15dp"
+            style="@style/TextAppearance.AppCompat.Headline"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#fff"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/myreviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reviews I've Written"
+            android:textStyle="bold"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:padding="15dp"
+            style="@style/TextAppearance.AppCompat.Headline"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#fff"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
 
     <TextView
         android:id="@+id/updateprofilephoto"
@@ -22,9 +71,18 @@
         android:text="Update Profile Photo"
         android:textStyle="bold"
         android:textColor="#000"
-        android:padding="20dp"
-        android:background="@drawable/outline"
+        android:padding="15dp"
         android:textSize="16sp"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#fff"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
 
     <TextView
         android:id="@+id/changepassword"
@@ -34,9 +92,18 @@
         android:textStyle="bold"
         android:textColor="#000"
         android:textSize="16sp"
-        android:padding="20dp"
-        android:background="@drawable/outline"
+        android:padding="15dp"
         style="@style/TextAppearance.AppCompat.Headline"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#fff"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
 
     <TextView
         android:id="@+id/inviteothers"
@@ -46,9 +113,18 @@
         android:textStyle="bold"
         android:textColor="#000"
         android:textSize="16sp"
-        android:padding="20dp"
-        android:background="@drawable/outline"
+        android:padding="15dp"
         style="@style/TextAppearance.AppCompat.Headline"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#f99"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
 
     <TextView
         android:id="@+id/signout"
@@ -58,7 +134,8 @@
         android:textStyle="bold"
         android:textColor="#000"
         android:textSize="16sp"
-        android:padding="20dp"
-        android:background="@drawable/outline"
+        android:padding="15dp"
         style="@style/TextAppearance.AppCompat.Headline"/>
+
+    </androidx.cardview.widget.CardView>
 </androidx.appcompat.widget.LinearLayoutCompat>

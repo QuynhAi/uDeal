@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -35,8 +39,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,10 +59,10 @@ import model.ItemDisplay;
 public class MainActivity extends AppCompatActivity {
 
     /** The load limit for recycler view. */
-    private static int LOAD_LIMIT = 3;
+    private static int LOAD_LIMIT = 4;
 
     /** The number of items to load initially. */
-    private static int INITIAL_LOAD = 3;
+    private static int INITIAL_LOAD = 4;
 
     /** The list of item displays. */
     private List<ItemDisplay> mItemList;
@@ -81,6 +88,20 @@ public class MainActivity extends AppCompatActivity {
     /** The linear layout manager for the recycler view. */
     private LinearLayoutManager mLayoutManager;
 
+    /** The search query. */
+    private String searchText;
+
+    /** The category query. */
+    private String categoryText;
+
+    /** The categories. */
+    private final String[] filterItems = new String[]{"All", "Appliances", "Auto Parts", "Books and Magazines", "Cars and Trucks",
+            "Cell Phones", "Clothing and Shoes",  "Computer Equipment", "Electronics", "Furniture", "General", "Home and Garden",
+            "Musical Instruments", "Photography", "Sports and Outdoors", "Tickets", "Tools and Machinery"};
+
+    /** The selected filter. */
+    private int selectedFilter;
+
     /**
      * Sets up the recycler view and starts an async task to retrieve item information
      * from the database.
@@ -91,12 +112,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        searchText = "";
+        categoryText = "";
 
-        //commented out because to use icon or not for home page
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setLogo(R.mipmap.ic_launcher_round);
-//        getSupportActionBar().setDisplayUseLogoEnabled(true);
-
+        selectedFilter = 0;
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
@@ -106,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         initialRecyclerView((RecyclerView) mRecyclerView);
         SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
         int theID = settings.getInt(getString(R.string.member_id), 0);
-        new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID);
+        new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID + "&search=" + searchText + "&category=" + categoryText);
     }
 
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -136,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
                             int theID = settings.getInt(getString(R.string.member_id), 0);
                             new DisplayItemsAsyncTask()
-                                    .execute(getString(R.string.load_limited) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount + "&theLikerID=" + theID);
+                                    .execute(getString(R.string.load_limited) + "?limit=" + LOAD_LIMIT + "&offset=" + totalItemCount + "&theLikerID=" + theID  + "&search=" + searchText + "&category=" + categoryText);
                         }
                     }
                 }
@@ -315,6 +334,9 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success")) {
                     JSONArray myJSONArray = jsonObject.getJSONArray("names");
+                    if(myJSONArray.length() == 0 && mItemList.size() == 0) {
+                        Toast.makeText(MainActivity.this, "No results for the query.", Toast.LENGTH_LONG).show();
+                    }
                     for(int i = 0; i < myJSONArray.length(); i++) {
                         int temp = mItemList.size();
                         SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
@@ -383,20 +405,37 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        final SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-                Toast.makeText(MainActivity.this, "You tried to submit a search query",
-                        Toast.LENGTH_LONG).show();
+                mItemList.clear();
+                searchView.clearFocus();
+                searchText = query.replaceAll(" ", "+");
+                mAdapter.notifyDataSetChanged();
+                SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                int theID = settings.getInt(getString(R.string.member_id), 0);
+                new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID + "&search=" + searchText + "&category=" + categoryText);
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
                 return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mItemList.clear();
+                searchText = "";
+                mAdapter.notifyDataSetChanged();
+                SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                int theID = settings.getInt(getString(R.string.member_id), 0);
+                new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID + "&search=" + searchText + "&category=" + categoryText);
+                return false;
             }
         });
 
@@ -406,8 +445,42 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.filter_search) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Filter");
+            builder.setSingleChoiceItems(filterItems, selectedFilter, null);
+            builder.setPositiveButton("Filter", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    ListView lw = ((AlertDialog)dialog).getListView();
+                    String checkedItem = lw.getAdapter().getItem(lw.getCheckedItemPosition()).toString();
+                    selectedFilter = lw.getCheckedItemPosition();
+                    if(checkedItem.equals("All")) {
+                        categoryText = "";
+                    } else {
+                        categoryText = checkedItem;
+                    }
+                    mItemList.clear();
+                    mAdapter.notifyDataSetChanged();
+                    SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                    int theID = settings.getInt(getString(R.string.member_id), 0);
+                    new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID + "&search=" + searchText + "&category=" + categoryText);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    //Cancel
+                }
+            });
+            AlertDialog filter = builder.create();
+            filter.show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
 
 
