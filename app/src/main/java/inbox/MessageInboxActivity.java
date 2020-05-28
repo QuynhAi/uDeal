@@ -4,35 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,7 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import edu.tacoma.uw.udeal.CartActivity;
 import edu.tacoma.uw.udeal.MainActivity;
 import edu.tacoma.uw.udeal.PostActivity;
@@ -82,14 +69,12 @@ public class MessageInboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("Inbox");
         setContentView(R.layout.activity_message_inbox);
-
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
         loadInbox = (TextView) findViewById(R.id.loadInbox);
-
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
         current = settings.getString(getString(R.string.username), "");
         mRecyclerView = findViewById(R.id.fragment_container);
@@ -135,7 +120,6 @@ public class MessageInboxActivity extends AppCompatActivity {
 
         /** The list of user inboxes. */
         private final List<UserInbox> mValues;
-
 
         /** The view on click listener. */
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
