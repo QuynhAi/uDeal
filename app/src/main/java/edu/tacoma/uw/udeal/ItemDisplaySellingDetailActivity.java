@@ -177,7 +177,6 @@ public class ItemDisplaySellingDetailActivity extends AppCompatActivity implemen
         });
 
         if (mItemDisplay != null) {
-            //TODO:
             new ImageTask().execute(mItemDisplay.getMyURL());
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
