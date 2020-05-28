@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -91,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
     /** The category query. */
     private String categoryText;
 
+    /** The categories. */
+    private final String[] filterItems = new String[]{"All", "Appliances", "Auto Parts", "Books and Magazines", "Cars and Trucks",
+            "Cell Phones", "Clothing and Shoes",  "Computer Equipment", "Electronics", "Furniture", "General", "Home and Garden",
+            "Musical Instruments", "Photography", "Sports and Outdoors", "Tickets", "Tools and Machinery"};
+
+    /** The selected filter. */
+    private int selectedFilter;
+
     /**
      * Sets up the recycler view and starts an async task to retrieve item information
      * from the database.
@@ -104,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         searchText = "";
         categoryText = "";
 
+        selectedFilter = 0;
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
@@ -433,8 +445,42 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.filter_search) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Filter");
+            builder.setSingleChoiceItems(filterItems, selectedFilter, null);
+            builder.setPositiveButton("Filter", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    ListView lw = ((AlertDialog)dialog).getListView();
+                    String checkedItem = lw.getAdapter().getItem(lw.getCheckedItemPosition()).toString();
+                    selectedFilter = lw.getCheckedItemPosition();
+                    if(checkedItem.equals("All")) {
+                        categoryText = "";
+                    } else {
+                        categoryText = checkedItem;
+                    }
+                    mItemList.clear();
+                    mAdapter.notifyDataSetChanged();
+                    SharedPreferences settings = getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                    int theID = settings.getInt(getString(R.string.member_id), 0);
+                    new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID + "&search=" + searchText + "&category=" + categoryText);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    //Cancel
+                }
+            });
+            AlertDialog filter = builder.create();
+            filter.show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
 
 
