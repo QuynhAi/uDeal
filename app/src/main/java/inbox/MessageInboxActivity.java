@@ -100,7 +100,6 @@ public class MessageInboxActivity extends AppCompatActivity {
         if (mUserList != null){
             adapter = new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList);
             recyclerView.setAdapter(adapter);
-            Log.e("are you done?", "done3");
             loadInbox.setVisibility(TextView.INVISIBLE);
             mRecyclerView.setVisibility(RecyclerView.VISIBLE);
         }
@@ -258,6 +257,8 @@ public class MessageInboxActivity extends AppCompatActivity {
                     mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("users"));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
+                    } else {
+                        loadInbox.setText("You have not message any sellers!");
                     }
                 }
             } catch (JSONException e) {

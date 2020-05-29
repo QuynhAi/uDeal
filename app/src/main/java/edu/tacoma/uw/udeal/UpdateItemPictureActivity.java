@@ -94,6 +94,9 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
     /** The arguments for the async task. */
     private JSONObject  mArguments;
 
+    /** The arguments for the async task. */
+    private JSONObject  mArgumentsInbox;
+
     /** The tag. */
     private String TAG = "addNewItem";
 
@@ -125,6 +128,7 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         itemID = b.getInt("ItemID");
         memberID = b.getInt("MemberID");
+
 
         setTitle("Update Item Photo");
 
@@ -225,14 +229,28 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
     public void onAddProfilePhoto() {
         // Handle unique key of image (put in database)
         StringBuilder url = new StringBuilder(getString(R.string.update_item_photo));
+        StringBuilder inboxurl = new StringBuilder(getString(R.string.user_inbox));
+        inboxurl.append("/updateImage");
         mArguments = new JSONObject();
+        mArgumentsInbox = new JSONObject();
         // Create the unique URL extension
         String tempPhotoID = generatePhotoID();
         try {
             mArguments.put("itemID", itemID);
             mArguments.put("memberID", memberID);
             mArguments.put("url", tempPhotoID);
+
+            SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+            String current = settings.getString(getString(R.string.username), "");
+            mArgumentsInbox.put("seller", current);
+            mArgumentsInbox.put("itemid", Integer.toString(itemID));
+            String myPhotoUrl = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + tempPhotoID;
+            mArgumentsInbox.put("newimage", myPhotoUrl);
+            //Log.e("newimage", myPhotoUrl);
+
             new AddPhotoAsyncTask().execute(url.toString());
+            new UpdateItemInboxAsyncTask().execute(inboxurl.toString());
+
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "URL Error with JSON creation: " +
                     e.getMessage() , Toast.LENGTH_SHORT).show();
@@ -453,5 +471,51 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
             }
         }
     }
-
+    /**
+     * The async task to add a photo.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class UpdateItemInboxAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Handles the post of the image URL to the photo database
+         *
+         * @param urls The URL to establish the connection
+         * @return The result of the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("PUT");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+                    Log.i(TAG, mArgumentsInbox.toString());
+                    wr.write(mArgumentsInbox.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to add the new item, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+    }
 }

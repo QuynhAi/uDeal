@@ -220,8 +220,8 @@ public class UpdateTextActivity extends AppCompatActivity {
             SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
             String current = settings.getString(getString(R.string.username), "");
             mArgumentsInbox.put("seller", current);
+            mArgumentsInbox.put("itemid", Integer.toString(itemID));
             mArgumentsInbox.put("newtitle", item.getmTitle());
-            mArgumentsInbox.put("oldtitle", title);
             new UpdateItemInboxAsyncTask().execute(inboxurl.toString());
             new UpdateItemAsyncTask().execute(urlTextFields.toString());
         } catch (JSONException e) {
