@@ -164,7 +164,7 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
 
 
         if (mItemDisplay != null) {
-            //TODO: new ImageTask().execute(mItemDisplay.getMyURL());
+            new ImageTask().execute(mItemDisplay.getMyURL());
             ((TextView) findViewById(R.id.date_posted)).setText("Posted on " + mItemDisplay.getMyDatePosted());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
