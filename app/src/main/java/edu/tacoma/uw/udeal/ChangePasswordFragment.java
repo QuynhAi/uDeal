@@ -33,6 +33,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import model.EmailItem;
+import model.NewPassEmail;
+
 
 /**
  * A fragment for the settings of the application.
@@ -48,8 +51,12 @@ public class ChangePasswordFragment extends Fragment {
     /** The update password button. */
     private Button updateBtn;
 
-    /** The JSON object for the arguments. */
+    /** The JSON object for the arguments. update pass */
     private JSONObject mArguments;
+
+    /** The JSON object for the arguments. email update*/
+    private JSONObject mArguments2;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -156,12 +163,105 @@ public class ChangePasswordFragment extends Fragment {
             try{
                 JSONObject resultObject = new JSONObject(result);
                 if(resultObject.getBoolean("success") == true){
+                    SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                            Context.MODE_PRIVATE);
+                    String name = settings.getString(getString(R.string.fullname), "");
+                    String email = settings.getString(getString(R.string.email), "");
+                    NewPassEmail item = new NewPassEmail(name, email);
+                    emailNotice(item);
                     Toast.makeText(getActivity(), "Password updated successfully.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Password update was unsuccessful.", Toast.LENGTH_SHORT).show();
                 }
             }catch(JSONException e){
                 Toast.makeText(getActivity(), e.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Adds the item and creates async task to handle the upload to the database.
+     *
+     * @param item The item to be added to the database
+     */
+    public void emailNotice(NewPassEmail item) {
+        StringBuilder urlTextFields = new StringBuilder(getString(R.string.sendpwupdate));
+        mArguments2 = new JSONObject();
+        try {
+            mArguments2.put(NewPassEmail.USER_NAME, item.getmUserName());
+            mArguments2.put(NewPassEmail.USER_EMAIL, item.getmEmail());
+
+
+            new ChangePassAsyncTask().execute(urlTextFields.toString());
+        } catch (JSONException e) {
+            Toast.makeText(getActivity().getApplicationContext(), "Error with JSON creation" +
+                    e.getMessage() , Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * The async task to send password update email.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class ChangePassAsyncTask extends AsyncTask<String, Void, String> {
+        /**
+         * Handles the post of the emails text fields to the database.
+         *
+         * @param urls The URL to establish the connection
+         * @return The result of the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+                    Log.i("argument2", mArguments2.toString());
+                    wr.write(mArguments2.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to send email, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * If successful, the invite is successfully sent.
+         *
+         * @param result The result of the async task
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONObject resultObject = new JSONObject(result);
+                if (resultObject.getBoolean("success") == true) {
+
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
