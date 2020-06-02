@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -79,8 +80,18 @@ public class AddNewUser extends AppCompatActivity {
                 String username = usernameEdit.getText().toString();
                 String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                UserRegister user = new UserRegister(firstName, lastname, email, username, password);
-                onAddUser(user);
+                if (!email.contains("@") || !email.contains(".edu")) {
+                    Toast.makeText(v.getContext(), "Enter valid .edu email address",
+                            Toast.LENGTH_LONG).show();
+                    emailEdit.requestFocus();
+                } else if (TextUtils.isEmpty(password) || password.length() < 6){
+                    Toast.makeText(v.getContext(), "Enter valid password (at least 6 characters)",
+                            Toast.LENGTH_LONG).show();
+                    passwordEdit.requestFocus();
+                } else {
+                    UserRegister user = new UserRegister(firstName, lastname, email, username, password);
+                    onAddUser(user);
+                }
             }
         });
     }

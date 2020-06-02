@@ -94,9 +94,15 @@ public class InviteFriends extends Fragment {
                 String fName = firstName.getText().toString();
                 String lName = lastName.getText().toString();
                 String oemail = emailo.getText().toString();
-                EmailItem item = new EmailItem(id, fName, lName, oemail);
-                addThisItem = item;
-                onAddItem(item);
+                if (!oemail.contains("@") || !oemail.contains(".edu")) {
+                    Toast.makeText(v.getContext(), "Enter valid .edu email address",
+                            Toast.LENGTH_LONG).show();
+                    emailo.requestFocus();
+                } else {
+                    EmailItem item = new EmailItem(id, fName, lName, oemail);
+                    addThisItem = item;
+                    onAddItem(item);
+                }
             }
         });
         return view;

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import java.net.URL;
 
 import model.EmailItem;
 import model.NewPassEmail;
+import model.UserRegister;
 
 
 /**
@@ -85,7 +87,13 @@ public class ChangePasswordFragment extends Fragment {
         updateBtn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 String password = myPassword.getText().toString();
-                onUpdatePassword(password);
+                if (TextUtils.isEmpty(password) || password.length() < 6){
+                    Toast.makeText(v.getContext(), "Enter valid password (at least 6 characters)",
+                            Toast.LENGTH_LONG).show();
+                    myPassword.requestFocus();
+                } else {
+                    onUpdatePassword(password);
+                }
             }
         });
         return view;
@@ -169,6 +177,7 @@ public class ChangePasswordFragment extends Fragment {
                     String email = settings.getString(getString(R.string.email), "");
                     NewPassEmail item = new NewPassEmail(name, email);
                     emailNotice(item);
+                    myPassword.setText("");
                     Toast.makeText(getActivity(), "Password updated successfully.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Password update was unsuccessful.", Toast.LENGTH_SHORT).show();
