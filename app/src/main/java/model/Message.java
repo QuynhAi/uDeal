@@ -31,7 +31,7 @@ public class Message {
 
 
     /** The sender string. */
-    public static final String ITEMURL = "itemurl";
+    public static final String ITEMID = "itemid";
 
     /** The sender string. */
     public static final String SENDER = "sender";
@@ -103,7 +103,7 @@ public class Message {
             //Log.e("MESSAGE", String.valueOf(arr));
             for (int i = 0; i< arr.length(); i++){
                 JSONObject obj = arr.getJSONObject(i);
-                Message msg = new Message(obj.getString(Message.ITEMURL), obj.getString(Message.SENDER),
+                Message msg = new Message(obj.getString(Message.ITEMID), obj.getString(Message.SENDER),
                         obj.getString(Message.RECIPIENT), obj.getString(Message.CONTENT), obj.getString(Message.TIME_STAMP));
                 msgList.add(msg);
 

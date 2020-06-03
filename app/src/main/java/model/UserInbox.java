@@ -33,6 +33,9 @@ public class UserInbox implements Serializable {
     /** The seller username string. */
     public static final String SELLER = "seller";
 
+    /** item id */
+    public static final String ITEM_ID = "itemid";
+
     /** The profile picture string. */
     public static final String ITEM_NAME = "itemname";
 
@@ -51,12 +54,11 @@ public class UserInbox implements Serializable {
     /** The current username. */
     private String currentUserName;
 
-    /** The bitmap array of the item. */
-    private byte[] myBitmapArray = {};
-
     /** The bitmap that represents the photo of the item. */
     private transient Bitmap myBitmap;
 
+    /** item id */
+    private String itemid;
 
     /**
      * Initializes the fields in the user inbox.
@@ -65,8 +67,9 @@ public class UserInbox implements Serializable {
      * @param itemName The profile picture
      * @param itemPicture The item picture
      */
-    public UserInbox(String currentUserName, String seller, String itemName, String itemPicture, boolean taskRequired) throws ExecutionException, InterruptedException {
+    public UserInbox(String currentUserName, String seller, String itemid, String itemName, String itemPicture, boolean taskRequired) throws ExecutionException, InterruptedException {
         this.currentUserName = currentUserName;
+        this.itemid = itemid;
         this.itemPicture = itemPicture;
         this.itemName = itemName;
         this.seller = seller;
@@ -90,8 +93,11 @@ public class UserInbox implements Serializable {
             for (int i = 0; i< arr.length(); i++){
                 JSONObject obj = arr.getJSONObject(i);
 
-                UserInbox userInbox = new UserInbox(obj.getString(UserInbox.CURRENT_USER_NAME), obj.getString(UserInbox.SELLER),
-                        obj.getString(UserInbox.ITEM_NAME), obj.getString(UserInbox.ITEM_PICTURE), true);
+                UserInbox userInbox = new UserInbox(obj.getString(UserInbox.CURRENT_USER_NAME),
+                        obj.getString(UserInbox.SELLER),
+                        obj.getString(UserInbox.ITEM_ID),
+                        obj.getString(UserInbox.ITEM_NAME),
+                        obj.getString(UserInbox.ITEM_PICTURE), true);
                 if (!userInboxList.contains(userInbox)){
                     userInboxList.add(0, userInbox);
                 }
@@ -101,6 +107,10 @@ public class UserInbox implements Serializable {
         return userInboxList;
     }
 
+    /**
+     * get the item id
+     */
+    public String getItemId(){return itemid;}
     /**
      * Gets the current user name.
      *

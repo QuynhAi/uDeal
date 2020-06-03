@@ -4,35 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,7 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import edu.tacoma.uw.udeal.CartActivity;
 import edu.tacoma.uw.udeal.MainActivity;
 import edu.tacoma.uw.udeal.PostActivity;
@@ -64,13 +51,9 @@ public class MessageInboxActivity extends AppCompatActivity {
     /** The recycler view. */
     private RecyclerView mRecyclerView;
 
-    /** The column count. */
-    private int mColumnCount = 1;
 
     /** The current string. */
     private String current;
-
-    private SearchView searchView;
 
     private TextView loadInbox;
 
@@ -86,14 +69,12 @@ public class MessageInboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("Inbox");
         setContentView(R.layout.activity_message_inbox);
-
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         Menu menu = bottomNav.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
         loadInbox = (TextView) findViewById(R.id.loadInbox);
-
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
         current = settings.getString(getString(R.string.username), "");
         mRecyclerView = findViewById(R.id.fragment_container);
@@ -119,7 +100,6 @@ public class MessageInboxActivity extends AppCompatActivity {
         if (mUserList != null){
             adapter = new MessageInboxActivity.SimpleItemRecyclerViewAdapter(this, mUserList);
             recyclerView.setAdapter(adapter);
-            Log.e("are you done?", "done3");
             loadInbox.setVisibility(TextView.INVISIBLE);
             mRecyclerView.setVisibility(RecyclerView.VISIBLE);
         }
@@ -139,7 +119,6 @@ public class MessageInboxActivity extends AppCompatActivity {
 
         /** The list of user inboxes. */
         private final List<UserInbox> mValues;
-
 
         /** The view on click listener. */
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -278,6 +257,8 @@ public class MessageInboxActivity extends AppCompatActivity {
                     mUserList = UserInbox.parseUserInboxJson(jsonObject.getString("users"));
                     if (!mUserList.isEmpty()) {
                         setupRecyclerView((RecyclerView) mRecyclerView);
+                    } else {
+                        loadInbox.setText("You have not message any sellers!");
                     }
                 }
             } catch (JSONException e) {
@@ -325,48 +306,5 @@ public class MessageInboxActivity extends AppCompatActivity {
                     return false;
                 }
             };
-    /**
-     * Prepare to put the search item on menu
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
-        searchView.setQueryHint(getResources().getString(R.string.search));
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionClick(int position) {
-                return true;
-            }
-
-            @Override
-            public boolean onSuggestionSelect(int position) {
-                // Your code here
-                return true;
-            }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                Toast.makeText(getApplicationContext(), "You tried to submit a search query",
-                        Toast.LENGTH_LONG).show();
-                return true;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return true;
-            }
-        });
-
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        return true;
-    }
 }

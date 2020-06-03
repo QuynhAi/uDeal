@@ -109,7 +109,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 // temporary, change to
                 UserInbox item = null;
                 try {
-                    item = new UserInbox(current, mItemDisplay.getMyUsername(),
+                    item = new UserInbox(current, mItemDisplay.getMyUsername(), Integer.toString(mItemDisplay.getMyItemID()),
                             mItemDisplay.getMyTitle(), mItemDisplay.getMyURL(), false);
                 }catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -121,10 +121,10 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 check.append(mItemDisplay.getMyUsername());
                 check.append("&itemname=");
                 check.append(mItemDisplay.getMyTitle());
-                check.append("&itemurl=");
-                check.append(mItemDisplay.getMyURL());
+                check.append("&itemid=");
+                check.append(mItemDisplay.getMyItemID());
+                //Log.e("check", String.valueOf(check));
                 new UserInboxTaskGet().execute(check.toString());
-                //Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
 
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ChatActivity.class);
@@ -364,7 +364,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             try {
                 mArguments.put(UserInbox.CURRENT_USER_NAME, current);
                 mArguments.put(UserInbox.SELLER, mItemDisplay.getMyUsername());
-                mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle()); // temporary
+                mArguments.put(UserInbox.ITEM_ID, Integer.toString(mItemDisplay.getMyItemID()));
+                mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle());
                 mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
 
             } catch (JSONException e) {
@@ -483,6 +484,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
+                    Log.e("True", "true");
                     new UserInboxTaskPost().execute(getString(R.string.user_inbox));
                 }
             } catch (JSONException e) {

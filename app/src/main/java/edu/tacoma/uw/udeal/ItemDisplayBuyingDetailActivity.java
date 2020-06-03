@@ -100,7 +100,7 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 // temporary, change to
                 UserInbox item = null;
                 try {
-                    item = new UserInbox(current, mItemDisplay.getMyUsername(),
+                    item = new UserInbox(current, mItemDisplay.getMyUsername(),Integer.toString(mItemDisplay.getMyItemID()),
                             mItemDisplay.getMyTitle(), mItemDisplay.getMyURL(), false);
                 }catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -112,8 +112,8 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 check.append(mItemDisplay.getMyUsername());
                 check.append("&itemname=");
                 check.append(mItemDisplay.getMyTitle());
-                check.append("&itemurl=");
-                check.append(mItemDisplay.getMyURL());
+                check.append("&itemid=");
+                check.append(mItemDisplay.getMyItemID());
                 new UserInboxTaskGet().execute(check.toString());
                 //Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
 
@@ -420,6 +420,7 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             try {
                 mArguments.put(UserInbox.CURRENT_USER_NAME, current);
                 mArguments.put(UserInbox.SELLER, mItemDisplay.getMyUsername());
+                mArguments.put(UserInbox.ITEM_ID, Integer.toString(mItemDisplay.getMyItemID()));
                 mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle());
                 mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
 

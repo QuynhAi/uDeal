@@ -55,8 +55,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.ItemDisplaySellingFrag;
-import model.UserInbox;
-
 
 /**
  * An activity representing a single ItemDisplaySellingFrag item. This is

@@ -105,7 +105,7 @@ public class ChatActivity extends AppCompatActivity {
                     mArguments = new JSONObject();
                     try {
                         StringBuilder url = new StringBuilder(getString(R.string.message));
-                        mArguments.put(Message.ITEMURL, mItem.getItemPicture());
+                        mArguments.put(Message.ITEMID, mItem.getItemId());
                         mArguments.put(Message.SENDER, current);
                         mArguments.put(Message.RECIPIENT, mItem.getSellerName());
                         mArguments.put(Message.CONTENT, msg);
@@ -133,8 +133,8 @@ public class ChatActivity extends AppCompatActivity {
         url.append(current);
         url.append("&recipient=");
         url.append(mItem.getSellerName());
-        url.append("&itemurl=");
-        url.append(mItem.getItemPicture());
+        url.append("&itemid=");
+        url.append(mItem.getItemId());
         new MessageTaskGet().execute(url.toString());
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
@@ -144,8 +144,8 @@ public class ChatActivity extends AppCompatActivity {
                 url.append(current);
                 url.append("&recipient=");
                 url.append(mItem.getSellerName());
-                url.append("&itemurl=");
-                url.append(mItem.getItemPicture());
+                url.append("&itemid=");
+                url.append(mItem.getItemId());
                 new MessageTaskGet().execute(url.toString());
             }
         }, delay);
@@ -317,13 +317,13 @@ public class ChatActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success") == true) {
                     if(!messageList.isEmpty()){
                         Log.e("messageList", String.valueOf(messageList));
-                        messageList.add(new Message(mArguments.get(Message.ITEMURL).toString(),
+                        messageList.add(new Message(mArguments.get(Message.ITEMID).toString(),
                                 mArguments.get(Message.SENDER).toString(),
                                 mArguments.get(Message.RECIPIENT).toString(),
                                 mArguments.get(Message.CONTENT).toString(), "0"));
                         adapter.notifyDataSetChanged();
                     } else {
-                        messageList.add(new Message(mArguments.get(Message.ITEMURL).toString(),
+                        messageList.add(new Message(mArguments.get(Message.ITEMID).toString(),
                                 mArguments.get(Message.SENDER).toString(),
                                 mArguments.get(Message.RECIPIENT).toString(),
                                 mArguments.get(Message.CONTENT).toString(), "0"));
