@@ -123,7 +123,6 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 check.append(mItemDisplay.getMyTitle());
                 check.append("&itemid=");
                 check.append(mItemDisplay.getMyItemID());
-                //Log.e("check", String.valueOf(check));
                 new UserInboxTaskGet().execute(check.toString());
 
                 Context context = view.getContext();
@@ -346,7 +345,7 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
      * @author TCSS 450 Team 8
      * @version 1.0
      */
-    private class UserInboxTaskPost extends AsyncTask<String, Void, String> {
+    private class UserInboxTaskPostBuyer extends AsyncTask<String, Void, String> {
         /**
          * Posts the message between two users.
          *
@@ -428,6 +427,94 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
     }
 
     /**
+     * This class posts a message between two users.
+     *
+     * @author TCSS 450 Team 8
+     * @version 1.0
+     */
+    private class UserInboxTaskPostSeller extends AsyncTask<String, Void, String> {
+        /**
+         * Posts the message between two users.
+         *
+         * @param urls The URL endpoints
+         * @return The response from the async task
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
+            String current = settings.getString(getString(R.string.username), "");
+
+            JSONObject mArguments = new JSONObject();
+            try {
+                mArguments.put(UserInbox.SELLER, current);
+                mArguments.put(UserInbox.CURRENT_USER_NAME, mItemDisplay.getMyUsername());
+                mArguments.put(UserInbox.ITEM_ID, Integer.toString(mItemDisplay.getMyItemID()));
+                mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle());
+                mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            for (String url : urls) {
+                //Log.e("urConnection", String.valueOf(url));
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr =
+                            new OutputStreamWriter(urlConnection.getOutputStream());
+
+                    wr.write(mArguments.toString());
+                    wr.flush();
+                    wr.close();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            Log.e("Response", String.valueOf(response));
+            return response;
+        }
+
+        /**
+         * If successful, we get the messages and add it to the list.
+         *
+         * @param s The response from the async task
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            if (s.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getBoolean("success") == true) {
+                    Toast.makeText(getApplicationContext(), "Success",
+                            Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    /**
      * This class get all messages from two specific users
      *
      * @author TCSS 450 Team 8
@@ -485,7 +572,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
                     Log.e("True", "true");
-                    new UserInboxTaskPost().execute(getString(R.string.user_inbox));
+                    new UserInboxTaskPostBuyer().execute(getString(R.string.user_inbox));
+                    new UserInboxTaskPostSeller().execute(getString(R.string.user_inbox));
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
