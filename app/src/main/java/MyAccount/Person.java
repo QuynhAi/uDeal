@@ -1,4 +1,4 @@
-package edu.tacoma.uw.udeal;
+package MyAccount;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,10 +33,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.tacoma.uw.udeal.R;
 import model.Review;
 
-public class OtherUserProfile extends AppCompatActivity {
-
+/**
+ * Fragment for display the user person.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
+public class Person extends Fragment {
 
     /** The profile image for the user. */
     private ImageView myProfileImage;
@@ -45,6 +52,7 @@ public class OtherUserProfile extends AppCompatActivity {
 
     /** The text view for the username. */
     private TextView myUsername;
+
 
     /** The load limit for recycler view. */
     private static int LOAD_LIMIT = 5;
@@ -59,7 +67,7 @@ public class OtherUserProfile extends AppCompatActivity {
     private RecyclerView mRecyclerView;
 
     /** The adapter for the recycler view. */
-    public OtherUserProfile.SimpleItemRecyclerViewAdapter mAdapter;
+    public Person.SimpleItemRecyclerViewAdapter mAdapter;
 
     /** Boolean whether to load more items. */
     private boolean loading = true;
@@ -79,56 +87,44 @@ public class OtherUserProfile extends AppCompatActivity {
     /** The rating bar for the user. */
     private RatingBar mRatingBar;
 
-    /** The member username. */
-    private String mUsername;
-
-    /** The member ID. */
-    private int mMemberID;
-
     /**
-     * Sets up the recycler view and starts an async task to retrieve item information
-     * from the database.
+     * Creates the view and sets up the image capture ability for the user photo.
      *
-     * @param savedInstanceState The saved instance state.
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The saved instance state
+     * @return The view
      */
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_other_user_profile);
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getActivity().setTitle("My Account");
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Bundle b = getIntent().getExtras();
-        mMemberID = b.getInt("memberID");
-        mUsername = b.getString("username");
-
-        setTitle(mUsername +"'s Profile");
+        View view = inflater.inflate(R.layout.activity_person, container, false);
 
         mItemList = new ArrayList<>();
-        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView = view.findViewById(R.id.recyclerView);
         assert mRecyclerView != null;
         initialRecyclerView((RecyclerView) mRecyclerView);
-        new OtherUserProfile.GetReviewsAsyncTask().execute(getString(R.string.get_my_reviews) + mUsername + "&limit=" + INITIAL_LOAD + "&offset=" + 0);
+        SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+        String theUsername = settings.getString(getString(R.string.username), "");
+        new Person.GetReviewsAsyncTask().execute(getString(R.string.get_my_reviews) + theUsername + "&limit=" + INITIAL_LOAD + "&offset=" + 0);
 
-        myProfileImage = (ImageView) findViewById(R.id.profile_pic);
+        myProfileImage = (ImageView) view.findViewById(R.id.profile_pic);
 
         // Get the text from inputs
-        myName = (TextView) findViewById(R.id.profile_name);
-        new GetFullName().execute(getString(R.string.get_specific_user_name) + mUsername);
-        myUsername = (TextView) findViewById(R.id.profile_location);
-        myUsername.setText("@" + mUsername);
+        myName = (TextView) view.findViewById(R.id.profile_name);
+        String fullName = settings.getString(getString(R.string.fullname), "");
+        myName.setText(fullName);
+        String userName = settings.getString(getString(R.string.username), "");
+        myUsername = (TextView) view.findViewById(R.id.profile_location);
+        myUsername.setText("@" +  userName);
 
-        mRatingBar = (RatingBar) findViewById(R.id.stars);
-        new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + mUsername);
+        mRatingBar = (RatingBar) view.findViewById(R.id.stars);
+        new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + theUsername);
 
-        new GetImageURLAsyncTask().execute(getString(R.string.get_profile_url) + mUsername);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+        new GetImageURLAsyncTask().execute(getString(R.string.get_profile_url) + userName);
+        return view;
     }
 
 
@@ -138,9 +134,9 @@ public class OtherUserProfile extends AppCompatActivity {
      * @param recyclerView The recycler view to be initalized
      */
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
-        mAdapter = new OtherUserProfile.SimpleItemRecyclerViewAdapter(this, mItemList);
+        mAdapter = new Person.SimpleItemRecyclerViewAdapter((ProfileActivity) getActivity(), mItemList);
         mRecyclerView.setAdapter(mAdapter);
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             /**
@@ -161,7 +157,9 @@ public class OtherUserProfile extends AppCompatActivity {
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
                             Log.v("hello", "Last Item Wow !");
-                            new OtherUserProfile.GetReviewsAsyncTask().execute(getString(R.string.get_my_reviews) + mUsername + "&limit=" + LOAD_LIMIT + "&offset=" + totalItemCount);
+                            SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                            String theUsername = settings.getString(getString(R.string.username), "");
+                            new Person.GetReviewsAsyncTask().execute(getString(R.string.get_my_reviews) + theUsername + "&limit=" + LOAD_LIMIT + "&offset=" + totalItemCount);
                         }
                     }
                 }
@@ -173,9 +171,9 @@ public class OtherUserProfile extends AppCompatActivity {
      * The class that handles the recycler view adapter.
      */
     public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<OtherUserProfile.SimpleItemRecyclerViewAdapter.ViewHolder> {
+            extends RecyclerView.Adapter<Person.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final OtherUserProfile mParentActivity;
+        private final ProfileActivity mParentActivity;
         private final List<Review> mValues;
 
         /**
@@ -184,17 +182,17 @@ public class OtherUserProfile extends AppCompatActivity {
          * @param parent The parent activity
          * @param items The list of items
          */
-        SimpleItemRecyclerViewAdapter(OtherUserProfile parent,
+        SimpleItemRecyclerViewAdapter(ProfileActivity parent,
                                       List<Review> items) {
             mValues = items;
             mParentActivity = parent;
         }
 
         @Override
-        public OtherUserProfile.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public Person.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.review_item, parent, false);
-            return new OtherUserProfile.SimpleItemRecyclerViewAdapter.ViewHolder(view);
+            return new Person.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
         /**
@@ -205,7 +203,7 @@ public class OtherUserProfile extends AppCompatActivity {
          * @param position The position of the item
          */
         @Override
-        public void onBindViewHolder(final OtherUserProfile.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(final Person.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
             holder.mNameRoleView.setText(mValues.get(position).getMyReviewer() + ": " + mValues.get(position).getMyRole());
             holder.mDescription.setText(mValues.get(position).getMyReview());
             holder.mDateView.setText(mValues.get(position).getMyDatePosted());
@@ -295,7 +293,7 @@ public class OtherUserProfile extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
-                Toast.makeText(getApplicationContext(), "Unable to get items information: " + s, Toast.LENGTH_SHORT)
+                Toast.makeText(getActivity(), "Unable to get items information: " + s, Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
@@ -304,7 +302,7 @@ public class OtherUserProfile extends AppCompatActivity {
                 if (jsonObject.getBoolean("success")) {
                     JSONArray myJSONArray = jsonObject.getJSONArray("names");
                     for(int i = 0; i < myJSONArray.length(); i++) {
-                        if(getApplicationContext() != null) {
+                        if(getActivity() != null) {
                             Log.d("myLog", "onPostExecute: Success");
                             mItemList.add(Review.parseItemJson(myJSONArray.getJSONObject(i)));
                             mAdapter.notifyItemInserted(mItemList.size() - 1);
@@ -316,13 +314,14 @@ public class OtherUserProfile extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 Log.d("myTag", "FAILURE");
-                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                Toast.makeText(getActivity(), "JSON Error: " + e.getMessage(),
                         Toast.LENGTH_LONG).show();
             }
         }
     }
 
-   /**
+
+    /**
      * This class handles the async task that retrives the image
      * from S3.
      *
@@ -446,7 +445,7 @@ public class OtherUserProfile extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
-                Toast.makeText(getApplicationContext(), "Unable to get items information: " + s, Toast.LENGTH_SHORT)
+                Toast.makeText(getActivity(), "Unable to get items information: " + s, Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
@@ -459,12 +458,12 @@ public class OtherUserProfile extends AppCompatActivity {
                     } else {
                         String getImageURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
                         Log.d("myTag", getImageURL);
-                        new OtherUserProfile.ImageTask().execute(getImageURL);
+                        new ImageTask().execute(getImageURL);
                     }
                 }
             } catch (JSONException e) {
                 Log.d("myTag", "FAILURE");
-                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                Toast.makeText(getActivity(), "JSON Error: " + e.getMessage(),
                         Toast.LENGTH_LONG).show();
             }
         }
@@ -518,7 +517,7 @@ public class OtherUserProfile extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if (s.startsWith("Unable to")) {
-                Toast.makeText(getApplicationContext(), "Unable to get rating information: " + s, Toast.LENGTH_SHORT)
+                Toast.makeText(getActivity(), "Unable to get rating information: " + s, Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
@@ -529,77 +528,9 @@ public class OtherUserProfile extends AppCompatActivity {
                     mRatingBar.setRating((float) myAverage);
                 }
             } catch (JSONException e) {
-                Log.d("myTag", "Error when processing average rating or no reviews posted");
-                //Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
-                //        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    /**
-     * The async task to get the user first and last name.
-     */
-    private class GetFullName extends AsyncTask<String, Void, String> {
-        /**
-         * Retrieves the full name from the database
-         *
-         * @param urls The URL to get the information from the database.
-         * @return The response from the connection
-         */
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                    InputStream content = urlConnection.getInputStream();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    response = "Unable to get full name, Reason: "
-                            + e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
-        }
-
-
-        /**
-         * If successful, the full name is set
-         *
-         * @param s The response from the async task
-         * @throws JSONException if the JSONObject cannot be created
-         */
-        @Override
-        protected void onPostExecute(String s) {
-            if (s.startsWith("Unable to")) {
-                Toast.makeText(getApplicationContext(), "Unable to get full name information: " + s, Toast.LENGTH_SHORT)
-                        .show();
-                return;
-            }
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                if (jsonObject.getBoolean("success")) {
-                    String first = jsonObject.getJSONArray("names").getJSONObject(0).getString("first_name");
-                    String last = jsonObject.getJSONArray("names").getJSONObject(0).getString("last_name");
-                    String fullname = first + " " + last;
-                    myName.setText(fullname);
-                }
-            } catch (JSONException e) {
-                Log.d("myTag", "Error when processing names");
-                //Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
-                //        Toast.LENGTH_LONG).show();
+                Log.d("myTag", "Error when processing average rating");
+                Toast.makeText(getActivity(), "JSON Error: " + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

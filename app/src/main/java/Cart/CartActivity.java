@@ -1,4 +1,4 @@
-package edu.tacoma.uw.udeal;
+package Cart;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,10 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import edu.tacoma.uw.udeal.MainActivity;
+import Post.PostActivity;
+import MyAccount.ProfileActivity;
+import edu.tacoma.uw.udeal.R;
 import inbox.MessageInboxActivity;
 
 /**

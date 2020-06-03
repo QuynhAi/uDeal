@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import edu.tacoma.uw.udeal.BuyingFrag;
+import Cart.BuyingFrag;
 
 /**
  * This class handles the item that will be displayed

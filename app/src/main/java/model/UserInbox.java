@@ -210,46 +210,12 @@ public class UserInbox implements Serializable {
                     }
                     bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
                     myBitmap = bitmap;
-                    //Log.e("myTag", String.valueOf(myBitmap));
                 }
 
             } catch (JSONException e) {
                 Log.d("myTag", "FAILURE");
             }
             return response;
-        }
-
-        /**
-         * If successful, the bitmap of the item is updated. If unsuccessful,
-         * the method returns.
-         *
-         * @param s The response from the async task
-         * @throws JSONException if the JSONObject cannot be created
-         */
-        @Override
-        public void onPostExecute(String s) {
-            if (s.startsWith("Unable to")) {
-                Log.d("myTag", s);
-                return;
-            }
-//            try {
-//                JSONObject jsonObject = new JSONObject(s);
-//                if (jsonObject.getBoolean("success")) {
-//                    JSONArray values = jsonObject.getJSONObject("values").getJSONObject("Body").getJSONArray("data");
-//                    Bitmap bitmap = null;
-//                    byte[] tmp = new byte[values.length()];
-//                    for (int i = 0; i < values.length(); i++) {
-//                        tmp[i] = (byte) (((int) values.get(i)) & 0xFF);
-//                    }
-//                    bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-//                    myBitmapArray = tmp;
-//                    myBitmap = bitmap;
-//                    Log.e("myTag", String.valueOf(myBitmap));
-//                }
-//
-//            } catch (JSONException e) {
-//                Log.d("myTag", "FAILURE");
-//            }
         }
     }
 }

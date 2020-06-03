@@ -1,25 +1,16 @@
-package edu.tacoma.uw.udeal;
+package Settings;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.Rating;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.ItemDisplay;
-import model.ItemDisplaySellingFrag;
+import edu.tacoma.uw.udeal.R;
 import model.Review;
 
 /**
@@ -110,7 +100,7 @@ public class ReviewsWrittenFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),SettingsActivity.class);
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);

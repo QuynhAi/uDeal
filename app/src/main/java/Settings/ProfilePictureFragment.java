@@ -1,4 +1,4 @@
-package edu.tacoma.uw.udeal;
+package Settings;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,22 +13,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -53,16 +45,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
 
-import model.Item;
+import edu.tacoma.uw.udeal.R;
 
 /**
- * The camera fragment gives the user the ability to post an item. This allows the user
- * to select, or upload a photo, and enter the required information about their item.
+ * The profile pircture fragment gives the user the ability update their profile picture. This allows the user
+ * to select, or upload a photo.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
  */
-public class UpdateItemPictureActivity extends AppCompatActivity {
+public class ProfilePictureFragment extends Fragment {
 
     /** The url tag. */
     public static final String MY_URL_TAG = "url";
@@ -94,9 +86,6 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
     /** The arguments for the async task. */
     private JSONObject  mArguments;
 
-    /** The arguments for the async task. */
-    private JSONObject  mArgumentsInbox;
-
     /** The tag. */
     private String TAG = "addNewItem";
 
@@ -109,32 +98,40 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
     /** The filename of the photo. */
     private String imageUploadName;
 
-    /** THe item ID. */
-    private int itemID;
-
-    /** The member ID. */
-    private int memberID;
-
     /**
-     * Sets up the tabbed layout for the activity.
+     * Creates the view by setting up the text fields, the dropdown menu, and the ability to
+     * select a photo and take a photo of the item.
      *
-     * @param savedInstanceState The saved instance state.
+     * @param inflater The layout inflater
+     * @param container The view group
+     * @param savedInstanceState The saved instance state
+     * @return The view
      */
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_item_picture);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile_picture, container, false);
 
-        Bundle b = getIntent().getExtras();
-        itemID = b.getInt("ItemID");
-        memberID = b.getInt("MemberID");
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Update Profile Photo");
+        toolbar.setTitleTextColor(Color.WHITE);
 
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.colorWhite), PorterDuff.Mode.SRC_ATOP);
 
-        setTitle("Update Item Photo");
-
-        myImageView = (ImageView) findViewById(R.id.selectedphoto);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+                getActivity().overridePendingTransition(0,0);
+            }
+        });
+        myImageView = (ImageView) view.findViewById(R.id.selectedphoto);
         // Take picture button to open up the camera
-        takePicture = (Button) findViewById(R.id.takePicture);
+        takePicture = (Button) view.findViewById(R.id.takePicture);
         takePicture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -142,15 +139,12 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
             }
         });
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         // Select picture button opens up folder
-        selectPicture = (Button) findViewById(R.id.selectPicture);
+        selectPicture = (Button) view.findViewById(R.id.selectPicture);
         selectPicture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                if (ActivityCompat.checkSelfPermission(UpdateItemPictureActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != getPackageManager().PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(UpdateItemPictureActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
                 } else {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto, PICK_FROM_GALLERY);
@@ -158,20 +152,16 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
             }
         });
 
-        postItem = (Button) findViewById(R.id.post);
+        postItem = (Button) view.findViewById(R.id.post);
         postItem.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onAddProfilePhoto();
-                //finish?
-               // navigateUpTo(new Intent(getApplicationContext(), CartActivity.class));
+                SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                        Context.MODE_PRIVATE);
+                String uName = settings.getString(getString(R.string.username), "");
+                onAddProfilePhoto(uName);
             }
         });
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+        return view;
     }
 
     /**
@@ -185,25 +175,25 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
 
-        if (reqCode == TAKE_PHOTO && resultCode == RESULT_OK)
+        if (reqCode == TAKE_PHOTO && resultCode == getActivity().RESULT_OK)
         {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             tempPhotoStorage = photo;
             myImageView.setImageBitmap(photo);
         }
-        else if (reqCode == PICK_FROM_GALLERY && resultCode == RESULT_OK) {
+        else if (reqCode == PICK_FROM_GALLERY && resultCode == getActivity().RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 tempPhotoStorage = selectedImage;
                 myImageView.setImageBitmap(selectedImage);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -213,7 +203,7 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
         switch (requestCode) {
             case PICK_FROM_GALLERY:
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == getActivity().getPackageManager().PERMISSION_GRANTED) {
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
                 } else {
@@ -225,34 +215,21 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
 
     /**
      * Handles the adding of the image of the item.
+     *
+     * @param theUsername
      */
-    public void onAddProfilePhoto() {
+    public void onAddProfilePhoto(String theUsername) {
         // Handle unique key of image (put in database)
-        StringBuilder url = new StringBuilder(getString(R.string.update_item_photo));
-        StringBuilder inboxurl = new StringBuilder(getString(R.string.user_inbox));
-        inboxurl.append("/updateImage");
+        StringBuilder url = new StringBuilder(getString(R.string.add_profile_photo));
         mArguments = new JSONObject();
-        mArgumentsInbox = new JSONObject();
         // Create the unique URL extension
         String tempPhotoID = generatePhotoID();
         try {
-            mArguments.put("itemID", itemID);
-            mArguments.put("memberID", memberID);
+            mArguments.put("username", theUsername);
             mArguments.put("url", tempPhotoID);
-
-            SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
-            String current = settings.getString(getString(R.string.username), "");
-            mArgumentsInbox.put("seller", current);
-            mArgumentsInbox.put("itemid", Integer.toString(itemID));
-            String myPhotoUrl = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + tempPhotoID;
-            mArgumentsInbox.put("newimage", myPhotoUrl);
-            //Log.e("newimage", myPhotoUrl);
-
             new AddPhotoAsyncTask().execute(url.toString());
-            new UpdateItemInboxAsyncTask().execute(inboxurl.toString());
-
         } catch (JSONException e) {
-            Toast.makeText(getApplicationContext(), "URL Error with JSON creation: " +
+            Toast.makeText(getActivity().getApplicationContext(), "URL Error with JSON creation: " +
                     e.getMessage() , Toast.LENGTH_SHORT).show();
         }
         // Posts image and puts it into S3
@@ -276,7 +253,7 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
      */
     private void processImage() {
         try {
-            File f = new File(getApplicationContext().getCacheDir(), "tempimage.jpg");
+            File f = new File(getActivity().getApplicationContext().getCacheDir(), "tempimage.jpg");
             f.createNewFile();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             tempPhotoStorage.compress(Bitmap.CompressFormat.JPEG, 100, out);
@@ -348,12 +325,12 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-                    Toast.makeText(getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -459,63 +436,14 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-                    Intent np = new Intent(getApplicationContext(), CartActivity.class);
-                    np.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(np);
-                    Toast.makeText(getApplicationContext(), "Successfully uploaded image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully uploaded image", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error uploading image to server", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Error uploading image to server", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
-    /**
-     * The async task to add a photo.
-     *
-     * @author TCSS 450 Team 8
-     * @version 1.0
-     */
-    private class UpdateItemInboxAsyncTask extends AsyncTask<String, Void, String> {
-        /**
-         * Handles the post of the image URL to the photo database
-         *
-         * @param urls The URL to establish the connection
-         * @return The result of the async task
-         */
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-                    urlConnection.setRequestMethod("PUT");
-                    urlConnection.setRequestProperty("Content-Type", "application/json");
-                    urlConnection.setDoOutput(true);
-                    OutputStreamWriter wr =
-                            new OutputStreamWriter(urlConnection.getOutputStream());
-                    Log.i(TAG, mArgumentsInbox.toString());
-                    wr.write(mArgumentsInbox.toString());
-                    wr.flush();
-                    wr.close();
-                    InputStream content = urlConnection.getInputStream();
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                } catch (Exception e) {
-                    response = "Unable to add the new item, Reason: "
-                            + e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
-        }
-    }
+
 }

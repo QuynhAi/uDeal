@@ -1,4 +1,4 @@
-package edu.tacoma.uw.udeal;
+package Authentication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import edu.tacoma.uw.udeal.R;
 import model.UserRegister;
 
 /**

@@ -1,4 +1,4 @@
-package edu.tacoma.uw.udeal;
+package Cart;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.tacoma.uw.udeal.R;
 import model.ItemDisplayBuyingFrag;
 
 

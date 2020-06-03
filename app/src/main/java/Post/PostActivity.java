@@ -1,74 +1,58 @@
-package edu.tacoma.uw.udeal;
+package Post;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import Cart.CartActivity;
+import MyAccount.ProfileActivity;
+import edu.tacoma.uw.udeal.MainActivity;
+import edu.tacoma.uw.udeal.R;
 import inbox.MessageInboxActivity;
 
 /**
- * The activity that holds the fragment for the user profile.
+ * The activity that holds the fragment for posting an item.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
  */
-public class ProfileActivity extends AppCompatActivity {
+public class PostActivity extends AppCompatActivity {
+
+    /** The post fragment. */
+    private Fragment postFragment;
 
     /**
-     * Creates the activity and sets up the profile fragment.
+     * Creates the activity and sets up the post fragment.
      *
      * @param savedInstanceState The saved instance state
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_post);
+
         BottomNavigationView bottomNav = findViewById(R.id.bottom_toolbar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         Menu menu = bottomNav.getMenu();
-        MenuItem menuItem = menu.getItem(4);
+        MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
 
         //I added this if statement to keep the selected fragment when rotating the device
         if (savedInstanceState == null) {
+            postFragment = new Camera();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new Person()).commit();
+                    postFragment).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, postFragment).commit();
         }
-        Fragment personfragment = new Person();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, personfragment).commit();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_toolbar,menu);
-        return true;
-    }
-
-    /**
-     * Removes the shared preferences on logout and sets up the actions for the menu items.
-     *
-     * @param item The menu item
-     * @return Boolean value for options item selected
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.settings){
-            Intent i = new Intent(ProfileActivity.this, SettingsActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(i);
-            overridePendingTransition(0,0);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     /** The bottom navigation view for the application. */
@@ -78,30 +62,30 @@ public class ProfileActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
-                            Intent h = new Intent(ProfileActivity.this, MainActivity.class);
+                            Intent h = new Intent(PostActivity.this, MainActivity.class);
                             h.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(h);
                             overridePendingTransition(0,0);
                             break;
                         case R.id.nav_camera:
-                            Intent p = new Intent(ProfileActivity.this, PostActivity.class);
-                            p.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(p);
-                            overridePendingTransition(0,0);
                             break;
                         case R.id.nav_inbox:
-                            Intent i = new Intent(ProfileActivity.this, MessageInboxActivity.class);
+                            Intent i = new Intent(PostActivity.this, MessageInboxActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(i);
                             overridePendingTransition(0,0);
                             break;
                         case R.id.nav_cart:
-                            Intent c = new Intent(ProfileActivity.this, CartActivity.class);
+                            Intent c = new Intent(PostActivity.this, CartActivity.class);
                             c.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(c);
                             overridePendingTransition(0,0);
                             break;
                         case R.id.nav_person:
+                            Intent np = new Intent(PostActivity.this, ProfileActivity.class);
+                            np.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(np);
+                            overridePendingTransition(0,0);
                             break;
                     }
                     return false;
