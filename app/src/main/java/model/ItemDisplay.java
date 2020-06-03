@@ -96,6 +96,8 @@ public class ItemDisplay implements Serializable {
     private transient MainActivity.SimpleItemRecyclerViewAdapter myAdapter;
     /** The bitmap that represents the photo of the item. */
     private transient Bitmap myBitmap;
+    /** Indicates whether we are in testing mode or not. */
+    private boolean myTestingMode;
 
     /**
      * Initializes all fields and calls an async task to
@@ -138,6 +140,50 @@ public class ItemDisplay implements Serializable {
         this.myUsername = myUsername;
         this.myLiked = myLiked;
         this.myLikerID = myLikerID;
+        this.myTestingMode = false;
+    }
+
+    /**
+     * Initializes all fields and sets them to their corresponding values. This constructor
+     * is only used for JUnit testing to prevent async tasks from being executed while testing.
+     *
+     * @param myItemID The item ID
+     * @param myMemberID The member ID
+     * @param myURL The URL of the photo
+     * @param myTitle The title of the item
+     * @param myLocation The location of the item
+     * @param myDescription The description of the item
+     * @param myCategory The category of the item
+     * @param myPrice The price of the item
+     * @param myListed The boolean whether the is listed
+     * @param myDatePosted The date the item was posted
+     * @param myIndex The index of the item
+     * @param myAdapter The adapter for the item
+     * @param myUsername The username of the poster of the item
+     * @param myLiked The boolean whether or not this item is liked
+     * @param myLikerID The member ID of the liker
+     * @param testingMode The testing mode
+     */
+    public ItemDisplay(int myItemID, int myMemberID, String myURL, String myTitle, String myLocation,
+                       String myDescription, String myCategory, double myPrice, boolean myListed,
+                       String myDatePosted, int myIndex, MainActivity.SimpleItemRecyclerViewAdapter myAdapter,
+                       String myUsername, boolean myLiked, int myLikerID, boolean testingMode) {
+        this.myItemID = myItemID;
+        this.myMemberID = myMemberID;
+        this.myURL = "https://udeal-app-services-backend.herokuapp.com/download?myfilename=" + myURL;
+        this.myTitle = myTitle;
+        this.myLocation = myLocation;
+        this.myDescription = myDescription;
+        this.myCategory = myCategory;
+        this.myPrice = myPrice;
+        this.myListed = myListed;
+        this.myDatePosted = myDatePosted;
+        this.myIndex = myIndex;
+        this.myAdapter = myAdapter;
+        this.myUsername = myUsername;
+        this.myLiked = myLiked;
+        this.myLikerID = myLikerID;
+        this.myTestingMode = testingMode;
     }
 
     /**
@@ -223,7 +269,9 @@ public class ItemDisplay implements Serializable {
 
     public void resetBitmaps() {
         myBitmap = null;
-        Log.d("myTag", "resetBitmaps: WE HAVE RESET BITMAPS");
+        if(!myTestingMode) {
+            Log.d("myTag", "resetBitmaps: WE HAVE RESET BITMAPS");
+        }
     }
 
     /**
@@ -403,29 +451,31 @@ public class ItemDisplay implements Serializable {
      */
     public void setMyLiked(boolean myLiked) {
         this.myLiked = myLiked;
-        if(this.myLiked) {
-            StringBuilder urlURL = new StringBuilder("https://udeal-app-services-backend.herokuapp.com/addlikes");
-            mArguments = new JSONObject();
-            try {
-                mArguments.put(ItemDisplay.LIKED_ITEM_ID, myItemID);
-                mArguments.put(ItemDisplay.LIKER_ID, myLikerID);
-                mArguments.put(ItemDisplay.LIKED, this.myLiked);
-                new LikedAsyncTask().execute(urlURL.toString());
-            } catch(JSONException e) {
-                Log.d("myTag", "INSERTION LIKE: Error in JSON creation");
+        if(!myTestingMode) {
+            if (this.myLiked) {
+                StringBuilder urlURL = new StringBuilder("https://udeal-app-services-backend.herokuapp.com/addlikes");
+                mArguments = new JSONObject();
+                try {
+                    mArguments.put(ItemDisplay.LIKED_ITEM_ID, myItemID);
+                    mArguments.put(ItemDisplay.LIKER_ID, myLikerID);
+                    mArguments.put(ItemDisplay.LIKED, this.myLiked);
+                    new LikedAsyncTask().execute(urlURL.toString());
+                } catch (JSONException e) {
+                    Log.d("myTag", "INSERTION LIKE: Error in JSON creation");
+                }
+            } else {
+                StringBuilder urlURL = new StringBuilder("https://udeal-app-services-backend.herokuapp.com/deleteLike");
+                mArguments = new JSONObject();
+                try {
+                    mArguments.put(ItemDisplay.LIKED_ITEM_ID, myItemID);
+                    mArguments.put(ItemDisplay.LIKER_ID, myLikerID);
+                    new DeleteAsyncTask().execute(urlURL.toString());
+                } catch (JSONException e) {
+                    Log.d("myTag", "DELETION LIKE: Error in JSON creation");
+                }
             }
-        } else {
-            StringBuilder urlURL = new StringBuilder("https://udeal-app-services-backend.herokuapp.com/deleteLike");
-            mArguments = new JSONObject();
-            try {
-                mArguments.put(ItemDisplay.LIKED_ITEM_ID, myItemID);
-                mArguments.put(ItemDisplay.LIKER_ID, myLikerID);
-                new DeleteAsyncTask().execute(urlURL.toString());
-            } catch(JSONException e) {
-                Log.d("myTag", "DELETION LIKE: Error in JSON creation");
-            }
+            myAdapter.notifyItemChanged(myIndex);
         }
-        myAdapter.notifyItemChanged(myIndex);
     }
 
     /**
