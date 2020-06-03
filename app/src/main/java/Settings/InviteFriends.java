@@ -30,7 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import edu.tacoma.uw.udeal.R;
-import SettingsActivity;
 import model.EmailItem;
 
 
