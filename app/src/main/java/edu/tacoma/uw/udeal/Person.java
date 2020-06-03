@@ -536,8 +536,6 @@ public class Person extends Fragment {
                 }
             } catch (JSONException e) {
                 Log.d("myTag", "Error when processing average rating");
-                Toast.makeText(getActivity(), "JSON Error: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
             }
         }
     }
