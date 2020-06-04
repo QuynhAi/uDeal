@@ -87,12 +87,10 @@ public class MessageInboxActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        if(mUserList == null){
-            StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
-            url.append("?currentuser=");
-            url.append(current);
-            new UserInboxTask().execute(url.toString());
-        }
+        StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
+        url.append("?currentuser=");
+        url.append(current);
+        new UserInboxTask().execute(url.toString());
     }
 
     /**

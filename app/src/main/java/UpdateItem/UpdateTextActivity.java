@@ -81,19 +81,19 @@ public class UpdateTextActivity extends AppCompatActivity {
     /** The category string. */
     private String categoryString;
 
-    /** The title. */
+    /* The title String */
     private String title;
 
-    /** The location. */
+    /* The location String */
     private String location;
 
-    /** The category. */
+    /* The category String */
     private String category;
 
-    /** The description. */
+    /* The description String */
     private String description;
 
-    /** The price. */
+    /* The price double */
     private double price;
 
     /**

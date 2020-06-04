@@ -106,7 +106,6 @@ public class Message {
                 Message msg = new Message(obj.getString(Message.ITEMID), obj.getString(Message.SENDER),
                         obj.getString(Message.RECIPIENT), obj.getString(Message.CONTENT), obj.getString(Message.TIME_STAMP));
                 msgList.add(msg);
-
             }
         }
         return msgList;

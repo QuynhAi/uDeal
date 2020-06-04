@@ -1,8 +1,7 @@
-package Cart;
+package Cart.Sell;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -19,20 +18,21 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 import androidx.cardview.widget.CardView;
 
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,32 +40,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Cart.CartActivity;
+import Cart.OtherUserProfile;
 import edu.tacoma.uw.udeal.R;
-import inbox.ChatActivity;
+import UpdateItem.UpdateItemPictureActivity;
+import UpdateItem.UpdateTextActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import model.ItemDisplayBuyingFrag;
-import model.UserInbox;
-
+import model.ItemDisplaySellingFrag;
 
 /**
- * An activity representing a single ItemDisplayBuyingFrag item. This is
- * used for the "Liked Items" tab on the application.
+ * An activity representing a single ItemDisplaySellingFrag item. This is
+ * used for the "Posted Items" tab on the application.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
  */
-public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class ItemDisplaySellingDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     /** The item ID. */
     public static final String ARG_ITEM_ID = "item_id";
@@ -73,8 +72,8 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
     /** The Google map to be displayed. */
     private GoogleMap mMap;
 
-    /** The ItemDisplayBuyingFrag object used for retrieving the information. */
-    private ItemDisplayBuyingFrag mItemDisplay;
+    /** The ItemDisplaySellingFrag object used for retrieving the information. */
+    private ItemDisplaySellingFrag mItemDisplay;
 
     /** The rating bar. */
     private RatingBar mRatingBar;
@@ -88,42 +87,19 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_display_buying_detail);
+        setContentView(R.layout.activity_item_display_selling_detail);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Sending a message to the seller", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
-                String current = settings.getString(getString(R.string.username), "");
-                // temporary, change to
-                UserInbox item = null;
-                try {
-                    item = new UserInbox(current, mItemDisplay.getMyUsername(),Integer.toString(mItemDisplay.getMyItemID()),
-                            mItemDisplay.getMyTitle(), mItemDisplay.getMyURL(), false);
-                }catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-                StringBuilder check = new StringBuilder(getString(R.string.user_inbox));
-                check.append("/check?currentuser=");
-                check.append(current);
-                check.append("&seller=");
-                check.append(mItemDisplay.getMyUsername());
-                check.append("&itemname=");
-                check.append(mItemDisplay.getMyTitle());
-                check.append("&itemid=");
-                check.append(mItemDisplay.getMyItemID());
-                new UserInboxTaskGet().execute(check.toString());
-                //Log.e("ItemDisplayDetailActivi", String.valueOf(item.getSellerName()));
-
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
-                context.startActivity(intent);
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }
-        });
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
@@ -131,7 +107,8 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 arguments.putSerializable(ARG_ITEM_ID,
                         getIntent().getSerializableExtra(ARG_ITEM_ID));
                 if (arguments.containsKey(ARG_ITEM_ID)) {
-                    mItemDisplay = (ItemDisplayBuyingFrag) arguments.getSerializable(ARG_ITEM_ID);
+                    mItemDisplay = (ItemDisplaySellingFrag) arguments.getSerializable(ARG_ITEM_ID);
+
                     CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     if (appBarLayout != null) {
                         appBarLayout.setTitle(mItemDisplay.getMyTitle());
@@ -140,16 +117,51 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             }
         }
 
+        Switch mSwitch = (Switch) findViewById((R.id.list_switch));
+
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton cb, boolean on) {
+                mItemDisplay.setMyListed(on);
+                if (on) {
+                    ((Switch) findViewById(R.id.list_switch)).setText("Status: Your item is posted and can be seen by other users.");
+                } else {
+                    ((Switch) findViewById(R.id.list_switch)).setText("Status: Your item has been archived and cannot be seen by other users.");
+                }
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("");
-        }
+        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_action_bar));
+
+
+        Button replace = (Button) findViewById(R.id.replace);
+        replace.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateItemPictureActivity.class);
+                intent.putExtra("ItemID", mItemDisplay.getMyItemID());
+                intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                startActivity(intent);
+            }
+        });
+        Button edit = (Button) findViewById(R.id.edit);
+        edit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateTextActivity.class);
+                intent.putExtra("ItemID", mItemDisplay.getMyItemID());
+                intent.putExtra("MemberID", mItemDisplay.getMyMemberID());
+                intent.putExtra("Title", mItemDisplay.getMyTitle());
+                intent.putExtra("Location", mItemDisplay.getMyLocation());
+                intent.putExtra("Price", mItemDisplay.getMyPrice());
+                intent.putExtra("Category", mItemDisplay.getMyCategory());
+                intent.putExtra("Description", mItemDisplay.getMyDescription());
+                startActivity(intent);
+            }
+        });
 
         CardView user = (CardView) findViewById(R.id.cardviewholder);
         user.setOnClickListener(new View.OnClickListener() {
@@ -163,9 +175,18 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
             }
         });
 
-
         if (mItemDisplay != null) {
             new ImageTask().execute(mItemDisplay.getMyURL());
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(mItemDisplay.getMyTitle());
+            }
+            ((Switch) findViewById(R.id.list_switch)).setChecked(mItemDisplay.getMyListed());
+            if(mItemDisplay.getMyListed()) {
+                mSwitch.setText("Status: Your item is posted and can be seen by other users.");
+            } else {
+                mSwitch.setText("Status: Your item has been archived and cannot be seen by other users.");
+            }
             ((TextView) findViewById(R.id.date_posted)).setText("Posted on " + mItemDisplay.getMyDatePosted());
             ((TextView) findViewById(R.id.item_title)).setText(mItemDisplay.getMyTitle());
             ((TextView) findViewById(R.id.item_category)).setText("Category: " + mItemDisplay.getMyCategory());
@@ -180,54 +201,18 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
     }
 
     /**
-     * Supports navigating up when pressing back.
+     * Allows the back button to be displayed based on boolean value.
      *
-     * @return True to navigate up
-     */
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
-
-    /**
-     * Creates the options menu with share button.
-     *
-     * @param menu The menu for the item display buying detail activity.
-     * @return Creating options menu boolean.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_share, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Setting the actions when a menu item is selected. Sets up content
-     * sharing for the item.
-     *
-     * @param item The item to be placed in the menu
-     * @return Boolean value for options item selected in the menu
+     * @param item The menu item.
+     * @return Boolean value for options item selected
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.share_button:
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String shareBody="Take a look at this " + mItemDisplay.getMyTitle() + " sold by " + mItemDisplay.getMyUsername()
-                        + ", selling for $" + String.format("%.2f", mItemDisplay.getMyPrice())
-                        + " on uDeal. Download the uDeal app today to check it out.";
-                String shareSubject="Take a look at this item on uDeal";
-
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
-
-                startActivity(Intent.createChooser(sharingIntent, "Share Using"));
-                break;
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            navigateUpTo(new Intent(this, CartActivity.class));
+            return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -410,160 +395,6 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
                 Log.d("myTag", "Error when processing average rating or no reviews posted");
                 //Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
                 //        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-
-    /**
-     * This class posts a message between two users.
-     *
-     * @author TCSS 450 Team 8
-     * @version 1.0
-     */
-    private class UserInboxTaskPost extends AsyncTask<String, Void, String> {
-        /**
-         * Posts the message between two users.
-         *
-         * @param urls The URL endpoints
-         * @return The response from the async task
-         */
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
-            String current = settings.getString(getString(R.string.username), "");
-
-            JSONObject mArguments = new JSONObject();
-            try {
-                mArguments.put(UserInbox.CURRENT_USER_NAME, current);
-                mArguments.put(UserInbox.SELLER, mItemDisplay.getMyUsername());
-                mArguments.put(UserInbox.ITEM_ID, Integer.toString(mItemDisplay.getMyItemID()));
-                mArguments.put(UserInbox.ITEM_NAME, mItemDisplay.getMyTitle());
-                mArguments.put(UserInbox.ITEM_PICTURE, mItemDisplay.getMyURL());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            for (String url : urls) {
-                //Log.e("urConnection", String.valueOf(url));
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setRequestProperty("Content-Type", "application/json");
-                    urlConnection.setDoOutput(true);
-                    OutputStreamWriter wr =
-                            new OutputStreamWriter(urlConnection.getOutputStream());
-
-                    wr.write(mArguments.toString());
-                    wr.flush();
-                    wr.close();
-                    InputStream content = urlConnection.getInputStream();
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                } catch (Exception e) {
-                    response = e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            Log.e("Response", String.valueOf(response));
-            return response;
-        }
-
-        /**
-         * If successful, we get the messages and add it to the list.
-         *
-         * @param s The response from the async task
-         */
-        @Override
-        protected void onPostExecute(String s) {
-            if (s.startsWith("Unable to")) {
-                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
-                        .show();
-                return;
-            }
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                if (jsonObject.getBoolean("success") == true) {
-                    Toast.makeText(getApplicationContext(), "Success",
-                            Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /**
-     * This class get all messages from two specific users
-     *
-     * @author TCSS 450 Team 8
-     * @version 1.0
-     */
-    public class UserInboxTaskGet extends AsyncTask<String, Void, String> {
-        /**
-         * Retrives messages between two users.
-         *
-         * @param urls The URL endpoint
-         * @return The response from the async task
-         */
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.setRequestProperty("Content-Type", "application/json");
-
-                    InputStream content = urlConnection.getInputStream();
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                } catch (Exception e) {
-                    response = "Unable to check, Reason: "
-                            + e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
-        }
-
-        /**
-         * If successful, we get the messages between the two users and add it to the list.
-         *
-         * @param s The response from the async task
-         */
-        @Override
-        protected void onPostExecute(String s) {
-            if (s.startsWith("Unable to")) {
-                Toast.makeText(getApplicationContext(), "Unable to download" + s, Toast.LENGTH_SHORT)
-                        .show();
-                return;
-            }
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                if (jsonObject.getBoolean("success") == true) {
-                    new UserInboxTaskPost().execute(getString(R.string.user_inbox));
-                }
-            } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }

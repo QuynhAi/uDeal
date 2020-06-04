@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import Cart.BuyingFrag;
+import Cart.Buy.BuyingFrag;
 
 /**
  * This class handles the item that will be displayed

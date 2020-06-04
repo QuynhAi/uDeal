@@ -42,8 +42,8 @@
         <activity android:name="Settings.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ItemDisplayDetailActivity" />
-        <activity android:name="Cart.ItemDisplaySellingDetailActivity" />
-        <activity android:name="Cart.ItemDisplayBuyingDetailActivity" />
+        <activity android:name="Cart.Sell.ItemDisplaySellingDetailActivity" />
+        <activity android:name="Cart.Buy.ItemDisplayBuyingDetailActivity" />
         <activity android:name="MyAccount.ProfileActivity" />
         <activity android:name="Cart.CartActivity" />
         <activity android:name="inbox.MessageInboxActivity" />
