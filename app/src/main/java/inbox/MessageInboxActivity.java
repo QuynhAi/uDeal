@@ -51,14 +51,15 @@ public class MessageInboxActivity extends AppCompatActivity {
     /** The recycler view. */
     private RecyclerView mRecyclerView;
 
-
     /** The current string. */
     private String current;
 
+    /** Text view for loading inbox. */
     private TextView loadInbox;
 
     /** The recycler view adapter. */
     private SimpleItemRecyclerViewAdapter adapter;
+
     /**
      * Sets up the messages.
      *
@@ -80,6 +81,9 @@ public class MessageInboxActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.fragment_container);
     }
 
+    /**
+     * Starts user inbox task on resume.
+     */
     @Override
     public void onResume(){
         super.onResume();
