@@ -18,14 +18,29 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-
+/**
+ * This class is an Instrumentation test that handles the
+ * testing for messaging a seller. This instrumentation
+ * will select the first item in the list, message the seller
+ * of that item, and then check if the message shows up
+ * in the user's messages.
+ *
+ * @author TCSS 450 Team 8
+ * @version 1.0
+ */
 @RunWith(AndroidJUnit4.class)
 public class MessageSellerTest {
 
+    /**
+     * The activity test rule for main activity.
+     */
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
 
+    /**
+     * Instrumentation test that tests the send to seller functionality.
+     */
     @Test
     public void sendSellerMessage() {
         // First scroll to the first item that needs to be clicked on
