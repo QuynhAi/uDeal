@@ -74,6 +74,7 @@ public class ChatActivity extends AppCompatActivity {
     /** The timer delay. */
     private int delay = 1000;
 
+
     /**
      * Sets up the recycler view for the chat and also calls an async task for the messages.
      *
@@ -120,7 +121,6 @@ public class ChatActivity extends AppCompatActivity {
 
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-
     }
 
     /**
@@ -396,9 +396,17 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     if (jsonObject.getBoolean("success") == true) {
-                        messageList = Message.parseMessageJson(jsonObject.getString("message"));
-                        if (!messageList.isEmpty()) {
-                            setupRecyclerView((RecyclerView) recyclerView);
+                        if(messageList != null){
+                            Message temp = messageList.get(messageList.size()-1);
+                            messageList = Message.parseMessageJson(jsonObject.getString("message"));
+                            if (!(messageList.get(messageList.size()-1).getMessage()).equals(temp.getMessage())) {
+                                setupRecyclerView((RecyclerView) recyclerView);
+                            }
+                        } else{
+                            messageList = Message.parseMessageJson(jsonObject.getString("message"));
+                            if (!messageList.isEmpty()) {
+                                setupRecyclerView((RecyclerView) recyclerView);
+                            }
                         }
                     }
                 } catch (JSONException e) {

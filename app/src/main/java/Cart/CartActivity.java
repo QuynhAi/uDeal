@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import Cart.Buy.BuyingFrag;
+import Cart.Sell.SellingFrag;
 import edu.tacoma.uw.udeal.MainActivity;
 import Post.PostActivity;
 import MyAccount.ProfileActivity;
