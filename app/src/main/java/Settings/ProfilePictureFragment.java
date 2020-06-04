@@ -325,7 +325,7 @@ public class ProfilePictureFragment extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
                 }
@@ -436,7 +436,12 @@ public class ProfilePictureFragment extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully uploaded image", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(),SettingsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(0,0);
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully updated profile photo", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Error uploading image to server", Toast.LENGTH_SHORT).show();
                 }
