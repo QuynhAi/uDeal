@@ -392,7 +392,7 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     if (jsonObject.getBoolean("success") == true) {
-                        if(messageList != null){
+                        if(messageList != null && !messageList.isEmpty()){
                             Message temp = messageList.get(messageList.size()-1);
                             messageList = Message.parseMessageJson(jsonObject.getString("message"));
                             if (!(messageList.get(messageList.size()-1).getMessage()).equals(temp.getMessage())) {
