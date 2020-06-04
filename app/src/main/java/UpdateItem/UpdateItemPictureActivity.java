@@ -43,8 +43,7 @@ import Cart.CartActivity;
 import edu.tacoma.uw.udeal.R;
 
 /**
- * The camera fragment gives the user the ability to post an item. This allows the user
- * to select, or upload a photo, and enter the required information about their item.
+ * This activity gives the user the ability to update their item picture.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
@@ -103,7 +102,7 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
     private int memberID;
 
     /**
-     * Sets up the tabbed layout for the activity.
+     * Sets up the activity to allow the user to update the item picture.
      *
      * @param savedInstanceState The saved instance state.
      */
@@ -155,6 +154,11 @@ public class UpdateItemPictureActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Support for navigating up. Finishes current activity.
+     *
+     * @return True to support navigation up.
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
