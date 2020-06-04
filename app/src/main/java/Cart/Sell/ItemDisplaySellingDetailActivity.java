@@ -1,4 +1,4 @@
-package Cart;
+package Cart.Sell;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Cart.CartActivity;
+import Cart.OtherUserProfile;
 import edu.tacoma.uw.udeal.R;
 import UpdateItem.UpdateItemPictureActivity;
 import UpdateItem.UpdateTextActivity;

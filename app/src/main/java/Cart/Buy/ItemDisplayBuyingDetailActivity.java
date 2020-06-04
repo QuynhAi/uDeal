@@ -1,4 +1,4 @@
-package Cart;
+package Cart.Buy;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Cart.OtherUserProfile;
 import edu.tacoma.uw.udeal.R;
 import inbox.ChatActivity;
 
