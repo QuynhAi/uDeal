@@ -127,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
         new DisplayItemsAsyncTask().execute(getString(R.string.load_limited) + "?limit=" + INITIAL_LOAD + "&offset=" + 0  + "&theLikerID=" + theID + "&search=" + searchText + "&category=" + categoryText);
     }
 
+    /**
+     * Intializes the recycler view.
+     *
+     * @param recyclerView The recycler view for the main activity
+     */
     private void initialRecyclerView(@NonNull RecyclerView recyclerView) {
         mAdapter = new SimpleItemRecyclerViewAdapter(this, mItemList);
         mRecyclerView.setAdapter(mAdapter);
@@ -395,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Prepare to put the search item on menu
+     * Prepare to put the search item on menu.
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -408,6 +413,12 @@ public class MainActivity extends AppCompatActivity {
         searchView.setQueryHint(getResources().getString(R.string.search));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            /**
+             * Performs the query by executing an async task to get relevant items from the db.
+             *
+             * @param query The query to process
+             * @return True if query is processed
+             */
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mItemList.clear();
@@ -444,6 +455,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Sets the appropriate filter and search items actions when they are selected in the menu.
+     * @param item The menu item
+     * @return True if item was selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.filter_search) {
