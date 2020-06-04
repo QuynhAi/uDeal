@@ -267,6 +267,11 @@ public class ItemDisplay implements Serializable {
         return myLocation;
     }
 
+    /**
+     * Resets bitmaps to null. Used when
+     * passing along item display to different
+     * activities.
+     */
     public void resetBitmaps() {
         myBitmap = null;
         if(!myTestingMode) {
@@ -393,6 +398,11 @@ public class ItemDisplay implements Serializable {
         return myBitmap;
     }
 
+    /**
+     * Sets the bitmap for the item.
+     *
+     * @param m The bitmap
+     */
     public void setMyBitmap(Bitmap m) {
         myBitmap = m;
     }
