@@ -42,7 +42,7 @@ import model.UserRegister;
 
 
 /**
- * A fragment for the settings of the application.
+ * A fragment for changing the password of the user.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
@@ -61,7 +61,14 @@ public class ChangePasswordFragment extends Fragment {
     /** The JSON object for the arguments. email update*/
     private JSONObject mArguments2;
 
-
+    /**
+     * Sets up the fragment for changing the password.
+     *
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The bundle saved instance
+     * @return The view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,6 +108,11 @@ public class ChangePasswordFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Updates the password by executing an async task.
+     *
+     * @param password The new password
+     */
     private void onUpdatePassword(String password) {
         StringBuilder url = new StringBuilder(getString(R.string.change_password));
         SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);

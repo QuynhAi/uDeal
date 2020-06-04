@@ -40,14 +40,25 @@ import model.EmailItem;
  * @version 1.0
  */
 public class InviteFriends extends Fragment {
+
+    /** The invite button. */
     private Button invite;
+
+    /** The first name edit text. */
     private EditText firstName;
+
+    /** The last name edit text. */
     private EditText lastName;
+
+    /** The email edit text. */
     private EditText emailo;
+
+    /** The email item to invite friends. */
     private EmailItem addThisItem;
 
     /** The tag. */
     private String TAG = "addNewItem";
+
     /** The arguments for the async task. */
     private JSONObject  mArguments;
 
@@ -57,6 +68,14 @@ public class InviteFriends extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Sets up the fragment for inviting friends.
+     *
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The bundle saved instance
+     * @return The view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

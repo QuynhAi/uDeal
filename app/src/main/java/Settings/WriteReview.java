@@ -37,7 +37,7 @@ import edu.tacoma.uw.udeal.R;
 
 
 /**
- * A fragment for the settings of the application.
+ * A fragment for writing a review about a transaction.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
@@ -68,8 +68,14 @@ public class WriteReview extends Fragment {
     /** The rating bar. */
     private RatingBar ratingBar;
 
-
-
+    /**
+     * Sets up the fragment for writing a review.
+     *
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The bundle saved instance
+     * @return The view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,6 +139,14 @@ public class WriteReview extends Fragment {
         return view;
     }
 
+    /**
+     * Adds a review by executing the async task.
+     *
+     * @param theReview The review
+     * @param theUsername The username of the one to be reviewed
+     * @param theRole The role of the user
+     * @param theRating The rating of the transaction
+     */
     private void addReview(String theReview, String theUsername, String theRole, double theRating) {
         SharedPreferences settings = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
@@ -151,7 +165,7 @@ public class WriteReview extends Fragment {
     }
 
     /**
-     * The async task to add an item.
+     * The async task to add a review.
      *
      * @author TCSS 450 Team 8
      * @version 1.0
@@ -198,7 +212,7 @@ public class WriteReview extends Fragment {
         }
 
         /**
-         * If successful, the item is successfully posted.
+         * If successful, the review is successfully posted.
          *
          * @param result The result of the async task
          */

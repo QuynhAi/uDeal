@@ -11,8 +11,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * This class handles the item that will be displayed
- * on the "Saved Items" tab of the application.
+ * This class handles a single review.
  *
  * @author TCSS 450 Team 8
  * @version 1.0

@@ -37,7 +37,7 @@ import edu.tacoma.uw.udeal.R;
 import model.Review;
 
 /**
- * Fragment for display the user person.
+ * Fragment for displaying the user person.
  *
  * @author TCSS 450 Team 8
  * @version 1.0

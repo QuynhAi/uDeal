@@ -180,18 +180,36 @@ public class ItemDisplayBuyingDetailActivity extends AppCompatActivity implement
         new GetRatingBarAsyncTask().execute(getString(R.string.average_rating) + mItemDisplay.getMyUsername());
     }
 
+    /**
+     * Supports navigating up when pressing back.
+     *
+     * @return True to navigate up
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
 
+    /**
+     * Creates the options menu with share button.
+     *
+     * @param menu The menu for the item display buying detail activity.
+     * @return Creating options menu boolean.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_share, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Setting the actions when a menu item is selected. Sets up content
+     * sharing for the item.
+     *
+     * @param item The item to be placed in the menu
+     * @return Boolean value for options item selected in the menu
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

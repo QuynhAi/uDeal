@@ -32,8 +32,7 @@ import edu.tacoma.uw.udeal.R;
 import model.Item;
 
 /**
- * The camera fragment gives the user the ability to post an item. This allows the user
- * to select, or upload a photo, and enter the required information about their item.
+ * This activity gives the user the ability to update the text fields of their item.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
@@ -48,6 +47,7 @@ public class UpdateTextActivity extends AppCompatActivity {
 
     /** The arguments for the async task for Inbox. */
     private JSONObject  mArgumentsInbox;
+
     /** The tag. */
     private String TAG = "addNewItem";
 
@@ -81,23 +81,23 @@ public class UpdateTextActivity extends AppCompatActivity {
     /** The category string. */
     private String categoryString;
 
-    /* The title String */
+    /** The title. */
     private String title;
 
-    /* The location String */
+    /** The location. */
     private String location;
 
-    /* The category String */
+    /** The category. */
     private String category;
 
-    /* The description String */
+    /** The description. */
     private String description;
 
-    /* The price double */
+    /** The price. */
     private double price;
 
     /**
-     * Sets up the tabbed layout for the activity.
+     * Sets up the ability to update the text of an item.
      *
      * @param savedInstanceState The saved instance state.
      */
@@ -110,8 +110,6 @@ public class UpdateTextActivity extends AppCompatActivity {
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
 
         Bundle b = getIntent().getExtras();
         itemID = b.getInt("ItemID");
@@ -176,6 +174,11 @@ public class UpdateTextActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Support for navigating up. Finishes current activity.
+     *
+     * @return True to support navigation up.
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
@@ -215,11 +218,8 @@ public class UpdateTextActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     /**
-     * The async task to update the item.
+     * The async task to update the item text fields.
      *
      * @author TCSS 450 Team 8
      * @version 1.0
@@ -354,7 +354,4 @@ public class UpdateTextActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
 }

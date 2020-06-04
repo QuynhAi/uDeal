@@ -46,6 +46,14 @@ public class SettingsFrag extends Fragment {
     /** The TextView for signing out. */
     private TextView signOut;
 
+    /**
+     * Sets up the fragment for the settings.
+     *
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The bundle saved instance
+     * @return The view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

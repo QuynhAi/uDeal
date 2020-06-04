@@ -178,6 +178,11 @@ public class ItemDisplaySellingFrag implements Serializable {
         this.myMemberID = myMemberID;
     }
 
+    /**
+     * Sets the bitmap for the item.
+     *
+     * @param m The bitmap
+     */
     public void setMyBitmap(Bitmap m) {
         myBitmap = m;
     }
@@ -227,6 +232,11 @@ public class ItemDisplaySellingFrag implements Serializable {
         return myLocation;
     }
 
+    /**
+     * Resets bitmaps to null. Used when
+     * passing along item display to different
+     * activities.
+     */
     public void resetBitmaps() {
         myBitmap = null;
         Log.d("myTag", "resetBitmaps: WE HAVE RESET BITMAPS");

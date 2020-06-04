@@ -155,9 +155,15 @@ public class UserInbox implements Serializable {
         return myBitmap;
     }
 
+    /**
+     * Sets the bitmap.
+     *
+     * @param bitmap The bitmap
+     */
     public void setMyBitmap(Bitmap bitmap) {
         myBitmap = bitmap;
     }
+
     /**
      * This class handles the async task that retrives the image
      * from S3.

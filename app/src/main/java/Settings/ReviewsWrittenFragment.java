@@ -38,7 +38,7 @@ import edu.tacoma.uw.udeal.R;
 import model.Review;
 
 /**
- * Fragment for display the user person.
+ * Fragment for displaying the reviews written.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
@@ -47,28 +47,28 @@ public class ReviewsWrittenFragment extends Fragment {
     /** The load limit for recycler view. */
     private static int LOAD_LIMIT = 10;
 
-    /** The number of items to load initially. */
+    /** The number of reviews to load initially. */
     private static int INITIAL_LOAD = 10;
 
-    /** The list of item displays. */
+    /** The list of reviews. */
     private List<Review> mItemList;
 
-    /** The recycler view for the items. */
+    /** The recycler view for the reviews. */
     private RecyclerView mRecyclerView;
 
     /** The adapter for the recycler view. */
     public ReviewsWrittenFragment.SimpleItemRecyclerViewAdapter mAdapter;
 
-    /** Boolean whether to load more items. */
+    /** Boolean whether to load more reviews. */
     private boolean loading = true;
 
-    /** Count of past visible items. */
+    /** Count of past visible reviews. */
     private int pastVisiblesItems;
 
-    /** Count of visible items. */
+    /** Count of visible reviews. */
     private int visibleItemCount;
 
-    /** Count of total items. */
+    /** Count of total reviews. */
     private int totalItemCount;
 
     /** The linear layout manager for the recycler view. */
@@ -78,7 +78,7 @@ public class ReviewsWrittenFragment extends Fragment {
     private RatingBar mRatingBar;
 
     /**
-     * Creates the view and sets up the image capture ability for the user photo.
+     * Creates the view and sets up the recycler view.
      *
      * @param inflater The layout inflater
      * @param container The view group container
@@ -188,8 +188,7 @@ public class ReviewsWrittenFragment extends Fragment {
         }
 
         /**
-         * Sets the appropriate text and image for the item. Also handles the heart icon and
-         * the progress bar display.
+         * Sets the appropriate values for the review.
          *
          * @param holder The recycler view holder
          * @param position The position of the item
