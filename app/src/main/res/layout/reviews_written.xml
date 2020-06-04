@@ -33,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            tools:context=".SettingsActivity"
+            tools:context="Settings.SettingsActivity"
             tools:listitem="@layout/review_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

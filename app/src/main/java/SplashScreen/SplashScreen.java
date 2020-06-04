@@ -1,10 +1,13 @@
-package edu.tacoma.uw.udeal;
+package SplashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import Authentication.Login;
+import edu.tacoma.uw.udeal.R;
 
 /**
  * The splash screen for the application.

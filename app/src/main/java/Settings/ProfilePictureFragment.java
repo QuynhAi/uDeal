@@ -1,4 +1,4 @@
-package edu.tacoma.uw.udeal;
+package Settings;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,13 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,11 +45,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
 
-import model.Item;
+import edu.tacoma.uw.udeal.R;
 
 /**
- * The camera fragment gives the user the ability to post an item. This allows the user
- * to select, or upload a photo, and enter the required information about their item.
+ * The profile pircture fragment gives the user the ability update their profile picture. This allows the user
+ * to select, or upload a photo.
  *
  * @author TCSS 450 Team 8
  * @version 1.0
@@ -127,7 +122,7 @@ public class ProfilePictureFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),SettingsActivity.class);
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);

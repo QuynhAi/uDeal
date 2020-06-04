@@ -28,10 +28,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import edu.tacoma.uw.udeal.CartActivity;
+import Cart.CartActivity;
 import edu.tacoma.uw.udeal.MainActivity;
-import edu.tacoma.uw.udeal.PostActivity;
-import edu.tacoma.uw.udeal.ProfileActivity;
+import Post.PostActivity;
+import MyAccount.ProfileActivity;
 import edu.tacoma.uw.udeal.R;
 import model.UserInbox;
 

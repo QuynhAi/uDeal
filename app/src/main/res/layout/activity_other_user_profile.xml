@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Person">
+    tools:context="MyAccount.Person">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="0dp"
         android:orientation="horizontal"
-        tools:context=".Person">
+        tools:context="MyAccount.Person">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview"
@@ -94,7 +94,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:context=".ProfileActivity"
+            tools:context="MyAccount.ProfileActivity"
             tools:listitem="@layout/review_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

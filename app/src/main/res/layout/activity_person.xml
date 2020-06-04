@@ -6,14 +6,14 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:fitsSystemWindows="true"
     android:layout_above="@id/bottom_toolbar"
-tools:context=".Person">
+tools:context="MyAccount.Person">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="345dp"
         android:layout_marginTop="0dp"
         android:orientation="horizontal"
-        tools:context=".Person">
+        tools:context="MyAccount.Person">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview"
@@ -93,7 +93,7 @@ tools:context=".Person">
         android:layout_height="280dp"
         android:layout_gravity="bottom|center"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".ProfileActivity"
+        tools:context="MyAccount.ProfileActivity"
         tools:listitem="@layout/review_item" />
     android:layout_above="@id/bottom_toolbar"
 

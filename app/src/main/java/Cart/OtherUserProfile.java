@@ -1,7 +1,5 @@
-package edu.tacoma.uw.udeal;
+package Cart;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -32,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.tacoma.uw.udeal.R;
 import model.Review;
 
 public class OtherUserProfile extends AppCompatActivity {

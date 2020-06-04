@@ -36,18 +36,18 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".OtherUserProfile"/>
-        <activity android:name=".UpdateTextActivity"/>
-        <activity android:name=".UpdateItemPictureActivity"/>
-        <activity android:name=".SettingsActivity"
+        <activity android:name="Cart.OtherUserProfile"/>
+        <activity android:name="UpdateItem.UpdateTextActivity"/>
+        <activity android:name="UpdateItem.UpdateItemPictureActivity"/>
+        <activity android:name="Settings.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ItemDisplayDetailActivity" />
-        <activity android:name=".ItemDisplaySellingDetailActivity" />
-        <activity android:name=".ItemDisplayBuyingDetailActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".CartActivity" />
+        <activity android:name="Cart.ItemDisplaySellingDetailActivity" />
+        <activity android:name="Cart.ItemDisplayBuyingDetailActivity" />
+        <activity android:name="MyAccount.ProfileActivity" />
+        <activity android:name="Cart.CartActivity" />
         <activity android:name="inbox.MessageInboxActivity" />
-        <activity android:name=".PostActivity" />
+        <activity android:name="Post.PostActivity" />
         <activity
             android:name="inbox.ChatActivity"
             android:label="@string/title_inbox_detail"
@@ -57,13 +57,13 @@
                 android:value="inbox.MessageInboxActivity" />
         </activity>
         <activity
-            android:name=".Login"
+            android:name="Authentication.Login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddNewUser"
+            android:name="Authentication.AddNewUser"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SplashScreen"
+            android:name="SplashScreen.SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -29,7 +29,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -41,9 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import Cart.OtherUserProfile;
 import inbox.ChatActivity;
 
 import java.io.BufferedReader;
@@ -52,17 +50,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import model.ItemDisplay;
-import model.Message;
 import model.UserInbox;
 
 
