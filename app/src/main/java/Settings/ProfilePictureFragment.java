@@ -48,7 +48,7 @@ import java.util.UUID;
 import edu.tacoma.uw.udeal.R;
 
 /**
- * The profile pircture fragment gives the user the ability update their profile picture. This allows the user
+ * The profile picture fragment gives the user the ability update their profile picture. This allows the user
  * to select, or upload a photo.
  *
  * @author TCSS 450 Team 8
