@@ -51,6 +51,8 @@ public class MessageSellerTest {
         onView(isRoot()).perform(ViewActions.pressBack());
 
         // Check if message was sent
+        // This test will pass only if the chat thread is at the top of your inbox. (position 0)
+        // Depending on different user accounts, the position of the chat thread may be different
         onView(withId(R.id.nav_inbox))
                 .perform(click());
         onView(isRoot()).perform(ViewActions.swipeUp());
