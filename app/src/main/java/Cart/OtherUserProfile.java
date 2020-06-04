@@ -124,6 +124,11 @@ public class OtherUserProfile extends AppCompatActivity {
         new GetImageURLAsyncTask().execute(getString(R.string.get_profile_url) + mUsername);
     }
 
+    /**
+     * Supports navigating up when pressing back.
+     *
+     * @return True to navigate up
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
@@ -322,7 +327,7 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
    /**
-     * This class handles the async task that retrives the image
+     * This class handles the async task that retrieves the image
      * from S3.
      *
      * @author TCSS 450 Team 8
