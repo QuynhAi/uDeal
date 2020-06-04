@@ -16,15 +16,6 @@ import edu.tacoma.uw.udeal.R;
  */
 public class SettingsActivity extends AppCompatActivity {
 
-   /** The TextView for updating profile photo. */
-   private TextView updateProfilePhoto;
-
-    /** The TextView for changing the password. */
-    private TextView changePassword;
-
-    /** The TextView for inviting others. */
-    private TextView inviteOthers;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
