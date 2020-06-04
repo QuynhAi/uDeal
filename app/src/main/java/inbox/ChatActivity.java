@@ -317,18 +317,14 @@ public class ChatActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success") == true) {
                     if(!messageList.isEmpty()){
                         Log.e("messageList", String.valueOf(messageList));
-                        messageList.add(new Message(mArguments.get(Message.ITEMID).toString(),
-                                mArguments.get(Message.SENDER).toString(),
-                                mArguments.get(Message.RECIPIENT).toString(),
-                                mArguments.get(Message.CONTENT).toString(), "0"));
-                        adapter.notifyDataSetChanged();
+
+                        setupRecyclerView((RecyclerView) recyclerView);
                     } else {
                         messageList.add(new Message(mArguments.get(Message.ITEMID).toString(),
                                 mArguments.get(Message.SENDER).toString(),
                                 mArguments.get(Message.RECIPIENT).toString(),
                                 mArguments.get(Message.CONTENT).toString(), "0"));
                         setupRecyclerView((RecyclerView) recyclerView);
-                        adapter.notifyDataSetChanged();
                     }
 
                 }
@@ -396,7 +392,7 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     if (jsonObject.getBoolean("success") == true) {
-                        if(messageList != null){
+                        if(messageList != null && !messageList.isEmpty()){
                             Message temp = messageList.get(messageList.size()-1);
                             messageList = Message.parseMessageJson(jsonObject.getString("message"));
                             if (!(messageList.get(messageList.size()-1).getMessage()).equals(temp.getMessage())) {

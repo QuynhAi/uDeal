@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -113,7 +114,7 @@ public class MessageInboxActivity extends AppCompatActivity {
      * @author TCSS 450 Team 8
      * @version 1.0
      */
-    private class SimpleItemRecyclerViewAdapter
+    public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<MessageInboxActivity.SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         /** The parent activity. */
@@ -127,17 +128,13 @@ public class MessageInboxActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 UserInbox item = (UserInbox) view.getTag();
-                if (mTwoPane) {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
-                    context.startActivity(intent);
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
-                    context.startActivity(intent);
-                }
+                Bitmap temp = item.getMyBitmap();
+                item.setMyBitmap(null);
+                Context context = view.getContext();
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(ChatActivity.ARG_ITEM_ID, item);
+                context.startActivity(intent);
+                item.setMyBitmap(temp);
             }
         };
 
@@ -164,7 +161,6 @@ public class MessageInboxActivity extends AppCompatActivity {
             holder.name.setText(mValues.get(position).getSellerName());
             holder.item_name.setText(mValues.get(position).getItemName());
             holder.item_image.setImageBitmap(mValues.get(position).getMyBitmap());
-            mValues.get(position).setMyBitmap(null);
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
