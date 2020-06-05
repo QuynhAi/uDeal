@@ -73,7 +73,7 @@ public class ChatActivity extends AppCompatActivity {
     private Runnable runnable;
 
     /** The timer delay. */
-    private int delay = 100;
+    private int delay = 1000;
 
 
     /**
