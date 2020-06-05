@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:layout_above="@id/bottom_toolbar"
     tools:context="MyAccount.Person">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="345dp"
         android:layout_marginTop="0dp"
         android:orientation="horizontal"
         tools:context="MyAccount.Person"
@@ -19,6 +21,7 @@
             android:id="@+id/cardview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:cardBackgroundColor="#fff"
             app:cardCornerRadius="15dp"
             app:cardElevation="3dp"
@@ -42,7 +45,8 @@
             android:id="@+id/profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
+            android:text="John Placeholder"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tacoma, Wa"
-            android:textSize="24sp"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_name" />
@@ -63,7 +67,6 @@
             android:id="@+id/stars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:isIndicator="true"
             android:numStars="5"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,18 +76,15 @@
 
         <TextView
             android:id="@+id/item_preview"
-            android:text="Reviews"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
+            android:text="My Reviews"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/stars"/>
-
-
+            app:layout_constraintTop_toBottomOf="@+id/stars" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -92,46 +92,10 @@
         android:layout_width="368dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
-        android:layout_marginTop="350dp"
+        android:layout_marginTop="345dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="MyAccount.ProfileActivity"
         tools:listitem="@layout/review_item" />
 
-
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!--<FrameLayout-->
-    <!--android:id="@+id/frameLayout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
-    <!--<include-->
-    <!--    layout="@layout/profile_feedback_content"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent" />-->
-    <!--</FrameLayout>-->
-
-    <!--<com.google.android.material.appbar.AppBarLayout-->
-    <!--android:id="@+id/app_bar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-    <!--<androidx.appcompat.widget.Toolbar-->
-    <!--    android:id="@+id/toolbar"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="?attr/actionBarSize"-->
-    <!--    app:popupTheme="@style/AppTheme.PopupOverlay" />-->
-
-    <!--</com.google.android.material.appbar.AppBarLayout>-->
-
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--android:id="@+id/fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="right|top"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--app:srcCompat="@drawable/settings_button" />-->

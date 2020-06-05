@@ -29,6 +29,7 @@
             android:name="edu.tacoma.uw.udeal.ItemListFragment"
             android:layout_width="378dp"
             android:layout_height="667dp"
+            android:layout_marginTop="55dp"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
