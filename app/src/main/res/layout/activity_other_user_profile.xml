@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="360dp"
         android:layout_marginTop="0dp"
         android:orientation="horizontal"
         tools:context="MyAccount.Person"
