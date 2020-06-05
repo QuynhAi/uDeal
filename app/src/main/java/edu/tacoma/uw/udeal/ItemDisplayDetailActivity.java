@@ -427,8 +427,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    Toast.makeText(getApplicationContext(), "Success",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "Success",
+//                            Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
@@ -514,8 +514,8 @@ public class ItemDisplayDetailActivity extends AppCompatActivity implements OnMa
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getBoolean("success") == true) {
-                    Toast.makeText(getApplicationContext(), "Success",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "Success",
+//                            Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),

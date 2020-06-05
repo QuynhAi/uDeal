@@ -407,7 +407,7 @@ public class Camera extends Fragment {
                 if (resultObject.getBoolean("success") == true) {
                     int insertedID = resultObject.getJSONArray("names").getJSONObject(0).getInt("item_id");
                     onAddImage(addThisItem, insertedID);
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
                 }
@@ -474,7 +474,7 @@ public class Camera extends Fragment {
             try {
                 JSONObject resultObject = new JSONObject(result);
                 if (resultObject.getBoolean("success") == true) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity().getApplicationContext(), "Successfully posted item", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Missing information", Toast.LENGTH_SHORT).show();
                 }

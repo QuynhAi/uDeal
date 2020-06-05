@@ -53,8 +53,8 @@ public class EmailItem implements  Serializable{
          * @return The member ID
          */
         public String getmUserID() {
-            return Integer.toString(mUserID);
-        }
+        return Integer.toString(mUserID);
+    }
 
         /**
          * Gets the title.
