@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:layout_above="@id/bottom_toolbar"
     tools:context="MyAccount.Person">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:text="My Reviews"
+            android:text="Reviews"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/stars" />
