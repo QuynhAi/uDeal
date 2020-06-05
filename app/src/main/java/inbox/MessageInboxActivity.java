@@ -94,6 +94,12 @@ public class MessageInboxActivity extends AppCompatActivity {
         new UserInboxTask().execute(url.toString());
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
     /**
      * Sets up the recycler view.
      *
