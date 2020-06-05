@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,7 +73,7 @@ public class ChatActivity extends AppCompatActivity {
     private Runnable runnable;
 
     /** The timer delay. */
-    private int delay = 1000;
+    private int delay = 100;
 
 
     /**
@@ -87,7 +88,12 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.inbox_detail_container);
         if (savedInstanceState == null) {
             mItem = (UserInbox)getIntent().getSerializableExtra(ARG_ITEM_ID);
-            setTitle(mItem.getSellerName());
+            //setTitle(mItem.getSellerName());
+        }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(mItem.getSellerName());
         }
 
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
@@ -121,13 +127,7 @@ public class ChatActivity extends AppCompatActivity {
 
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-    }
 
-    /**
-     * Calls an async task to get the messages.
-     */
-    @Override
-    public void onResume(){
         StringBuilder url = new StringBuilder(getString(R.string.message));
         url.append("?sender=");
         url.append(current);
@@ -149,7 +149,13 @@ public class ChatActivity extends AppCompatActivity {
                 new MessageTaskGet().execute(url.toString());
             }
         }, delay);
-        super.onResume();
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     /**
@@ -317,7 +323,6 @@ public class ChatActivity extends AppCompatActivity {
                 if (jsonObject.getBoolean("success") == true) {
                     if(!messageList.isEmpty()){
                         Log.e("messageList", String.valueOf(messageList));
-
                         setupRecyclerView((RecyclerView) recyclerView);
                     } else {
                         messageList.add(new Message(mArguments.get(Message.ITEMID).toString(),

@@ -78,11 +78,6 @@ public class MessageInboxActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences((getString(R.string.LOGIN_PREFS)), Context.MODE_PRIVATE);
         current = settings.getString(getString(R.string.username), "");
         mRecyclerView = findViewById(R.id.fragment_container);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
         StringBuilder url = new StringBuilder(getString(R.string.user_inbox));
         url.append("?currentuser=");
         url.append(current);
