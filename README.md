@@ -1,7 +1,8 @@
 # uDeal 
 
 uDeal is an Android application, which provides users a platform to buy, sell, and trade items. 
-# Video Demo Link
+
+## Video Demo Link
 
 https://drive.google.com/file/d/1WQRa4q5nPiba1UCFb_S1dh83zIbX_max/view?usp=sharing
 
