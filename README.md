@@ -19,3 +19,5 @@ Michael Zachary Loria
 
 ## Version
 1.0
+Give this app a test run.
+https://github.com/mzloria/UDeal/blob/master/udeal-app-release.apk
